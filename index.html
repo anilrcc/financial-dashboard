@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Analysis Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-blue: #3b82f6;
+            --accent-green: #22c55e;
+            --accent-indigo: #6366f1;
+            --accent-purple: #a855f7;
+            --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-section {
+            width: 100%;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            margin: 0 0 15px 0;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 20px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 20px 60px 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            border-color: transparent;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .card-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .arrow-icon {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: var(--text-main);
+        }
+
+        .card:hover .arrow-icon {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Card Themes */
+        .card.rblx .card-icon {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .card.cwst .card-icon {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .card.macro .card-icon {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .card.yield .card-icon {
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="header-section">
+        <h1>Financial Analysis Dashboard</h1>
+        <p class="subtitle">A consolidated view of macroeconomic indicators, industry heatmaps, and company earnings
+            reviews.</p>
+    </section>
+
+    <!-- Section 1: Macro & Industry -->
+    <div class="section-header">
+        <h2>Macro & Industry Indicators</h2>
+    </div>
+
+    <div class="grid-container">
+        <!-- ISM Heatmap Card -->
+        <a href="industry_heatmap.html" class="card macro">
+            <div class="card-icon">M</div>
+            <div class="card-title">ISM Industry Heatmap</div>
+            <div class="card-desc">
+                Interactive heatmap visualizing ISM Manufacturing PMI data across industries. Tracks New Orders,
+                Production, and Employment trends.
+            </div>
+            <div class="card-meta">
+                <span>Macro Indicator • Dec 20, 2025</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
+
+        <!-- Yield Curve Card -->
+        <a href="yield_curve.html" class="card yield">
+            <div class="card-icon">Y</div>
+            <div class="card-title">Treasury Yield Curve</div>
+            <div class="card-desc">
+                Visualization of the US Treasury Yield Curve, highlighting spreads and potential recession indicators
+                via 2s10s inversion.
+            </div>
+            <div class="card-meta">
+                <span>Macro Indicator • Dec 19, 2025</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
+    </div>
+
+    <!-- Section 2: Company Earnings -->
+    <div class="section-header">
+        <h2>Company Earnings Reviews</h2>
+    </div>
+
+    <div class="grid-container">
+        <!-- Roblox Card -->
+        <a href="rblx_earnings.html" class="card rblx">
+            <div class="card-icon">R</div>
+            <div class="card-title">Roblox (RBLX)</div>
+            <div class="card-desc">
+                Deep dive into Roblox's quarterly earnings, featuring trend analysis on Bookings, DAUs, Hours Engaged,
+                and comparative peer valuation.
+            </div>
+            <div class="card-meta">
+                <span>Earnings Review • Dec 20, 2025</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
+
+        <!-- Casella Card -->
+        <a href="cwst_earnings.html" class="card cwst">
+            <div class="card-icon">C</div>
+            <div class="card-title">Casella Waste (CWST)</div>
+            <div class="card-desc">
+                Analysis of Casella's financial performance, focusing on solid waste pricing power, adjusted EBITDA
+                growth, and strategic consolidation.
+            </div>
+            <div class="card-meta">
+                <span>Earnings Review • Dec 20, 2025</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
+    </div>
+
+</body>
+
+</html>

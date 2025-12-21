@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISM Industry Comments</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 20px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        .industry-section {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .industry-header {
+            font-size: 1.5em;
+            color: #4CAF50;
+            border-bottom: 1px solid #404040;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .industry-header:hover {
+            color: #66bb6a;
+        }
+
+        .comment-list {
+            list-style-type: none;
+            padding: 0;
+            display: block;
+            /* Default to open */
+        }
+
+        .comment-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #404040;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-date {
+            font-weight: bold;
+            color: #569cd6;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .comment-text {
+            line-height: 1.6;
+            color: #cccccc;
+        }
+
+        .toggle-icon {
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="industry_heatmap.html" class="nav-link">&larr; Back to Heatmap</a>
+        <h1>ISM Manufacturing Respondent Comments (Nov 2024 - Nov 2025)</h1>
+        <div id="comments-container"></div>
+    </div>
+
+    <script>
+        const rawComments = `
+## Nov 2025
+- **Machinery**: "New order entries are within the forecast. We have increased requests from customers to get their orders sooner. Transit time on imports seems to be longer."
+- **Transportation Equipment**: "We are starting to institute more permanent changes due to the tariff environment. This includes reduction of staff, new guidance to shareholders, and development of additional offshore manufacturing that would have otherwise been for U.S. export."
+- **Chemical Products**: "Tariffs and economic uncertainty continue to weigh on demand for adhesives and sealants, which are primarily used in building construction."
+- **Petroleum & Coal Products**: "No major changes at this time, but going into 2026, we expect to see big changes with cash flow and employee head count. The company has sold off a big part of the business that generated free cash while offering voluntary severance packages to anyone."
+- **Miscellaneous Manufacturing**: "Business conditions remain soft as a result of higher costs from tariffs, the government shutdown, and increased global uncertainty."
+- **Fabricated Metal Products**: "The unstable market has made pricing fluctuate in a very volatile way; I have had to reduce suppliers for raw materials to maintain a better direct cost structure. Reducing my suppliers has reduced the availability of some items and created longer lead times."
+- **Computer & Electronic Products**: "Business continues to be a struggle regarding long-term sourcing decisions based on tariffs and landing costs. External (or international) sourcing remains the lowest-cost solution compared to U.S. production/manufacturing. The delta is smaller now, reducing margins."
+- **Food, Beverage & Tobacco Products**: "The government shutdown has impacted our access to agricultural data, impacting agricultural markets and, as a result, decisions we make. Optimism for a tariff exemption on palm oil percolated but hasn’t come to fruition at this time."
+- **Electrical Equipment, Appliances & Components**: "Trade confusion. At any given point, trade with our international partners is clouded and difficult. Suppliers are finding more and more errors when attempting to export to the U.S. — before I even have the opportunity to import. Freight organizations are also having difficulties overseas, contending with changing regulations and uncertainty. Conditions are more trying than during the coronavirus pandemic in terms of supply chain uncertainty."
+- **Wood Products**: "Domestic and export business have been lackluster. Our customers are taking prompt orders only and still don’t have confidence to build inventory, much less make expansion plans. In fact, most of any kind of ‘planning’ has been undermined by unpredictability due to inconsistent messaging from Washington. Artificial intelligence is in its infancy stages, producing confusing and most often inaccurate information. This also causes apprehensive consumer buying patterns, contributing to the challenge of forecasting demand."
+
+## Oct 2025
+- **Chemical Products**: "Business continues to remain difficult, as customers are cancelling and reducing orders due to uncertainty in the global economic environment and regarding the ever-changing tariff landscape."
+- **Petroleum & Coal Products**: "Decrease in domestic demand for finished products has resulted in slower manufacturing and an increase of raw material in inventory."
+- **Miscellaneous Manufacturing**: "In general, business is really strained. Money is sitting tighter, and geopolitical changes add to the uncertainty/risk factor. Even medical fields are feeling the pressure."
+- **Fabricated Metal Products**: "Sales continue to underperform in our automotive OEM and industrial divisions. Our aerospace and automotive aftermarket are the only areas performing slightly above budget. This is the third month of lower-than-expected sales, and the remainder of the year outlook is not looking better. Sales are expected to be slightly less than in 2024."
+- **Machinery**: "Tariffs continue to be a large impact to our business. The products we import are not readily manufactured in the U.S., so attempts to reshore have been unsuccessful. Overall, prices on all products have gone up, some significantly. We are trying to keep up with the wild fluctuations and pass along what costs we can to our customers."
+- **Transportation Equipment**: "The commercial vehicle (CV) market remains depressed as customers continue to delay vehicle purchases. Uncertainty in price and transportation demand remains the center of attention. U.S. trade policy and reciprocal actions by China in the form of export controls on rare earths and semiconductors, as well as ocean freight carrier restrictions, have once again caused a lot of stress in supply lines. The CV industry is now bracing for the next round of tariffs focused on commercials vehicles, scheduled to begin on November 1."
+- **Machinery**: "The tariff trade war has negatively impacted agricultural export markets, driving down demand and price. This negatively impacts farmer revenue and the likelihood of farmers investing in new equipment."
+- **Computer & Electronic Products**: "The unpredictability of the tariff situation continues to cause havoc and uncertainty on future pricing/cost. But even with the tariffs, the cost to import in many cases is still more attractive than sourcing within the U.S. Challenges with tariffs on production equipment necessary for internal production makes it difficult to justify expansion of capacity."
+- **Food, Beverage & Tobacco Products**: "Volatility in some of our highly exposed commodity markets has tempered a bit, thanks to improved weather conditions and overall downward pressure on pricing. Tariffs continue to remain difficult to quantify, manage and deal with in general, since they continue to impact us day-to-day and our bottom line."
+- **Chemical Products**: "Wonder has turned to concern regarding how the tariff threats are affecting our business. Orders are down across most divisions, and we’ve lowered our financial expectations for 2025."
+
+## Sep 2025
+- **Transportation Equipment**: "Business continues to be severely depressed. Profits are down and extreme taxes (tariffs) are being shouldered by all companies in our space. We have increased price pressures both to our inputs and customer outputs as companies are starting to pass on tariffs via surcharges, raising prices up to 20 percent. The addition of the derivative steel and aluminum tariffs in the middle of the month — with no announcement — was devastating. Interest-rate lowering or the 'One Big Beautiful Bill' will not impact our business, as all capital projects are on hold until there is some level of certainty and customers start to place orders for new equipment again. We believe we are in a stagflation period where prices are up but orders are down due to tariff policy, and again, customers are not willing to pay the higher prices, so they are just not buying. Continuing to find ways to reduce overhead, which means letting go of experienced workers."
+- **Chemical Products**: "The tariffs are still causing issues with imported goods into the U.S. In addition to the cost concerns, product is being held up at borders due to documentation issues. The inflation issues continue; low volumes are a constant concern. The European region is not improving as we had expected, causing further concern for long-term business viability."
+- **Machinery**: "Ongoing macroeconomic conditions highlighted by interest-rate management and tariffs continue to impact customer purchasing decisions, resulting in subdued production rates and growing cost concerns on direct material and operations."
+- **Petroleum & Coal Products**: "Lead times have slightly normalized, but tariffs continue to drive additional spend."
+- **Electrical Equipment, Appliances & Components**: "Customer orders are depressed for heavy machinery because tariffs are so impactful to high-end capital equipment. Revenue expectations are flat for the rest of 2025, with no outlook to improve in 2026."
+- **Food, Beverage & Tobacco Products**: "Current business conditions remain volatile, with geopolitical tensions, weather disruptions and shifting trade policies driving uncertainty in agricultural commodities. Oils remain sensitive to biofuel demand and global production. Inflation and evolving consumer trends add further complexity. To manage this, we are emphasizing supplier diversification, long-term contracts and formula-based pricing to balance cost stability with flexibility."
+- **Computer & Electronic Products**: "The semiconductor industry is being impacted by high tariff prices on parts from Korea, China and Europe. Our industry is at a low point right now as we race to get new nanotechnology in the U.S."
+- **Plastics & Rubber Products**: "Business is slowing down. Order books are softening as customers push orders out. Seems to be stemming from concerns about the direction of the U.S. economy."
+- **Fabricated Metal Products**: "Tariffs still affecting vast amounts of increases in hardware, Al (artificial intelligence) and stainless steel. MRO (maintenance, repair and operating) products have continually increased, and the slowdown in agriculture has had stark impacts on bottom lines for raw materials."
+- **Miscellaneous Manufacturing**: "Steel tariffs are killing us."
+
+## Aug 2025
+- **Chemical Products:** "Chemical sales are continuing to weaken as clients struggle to move inventory and are hesitant to start new projects given the uncertainty of basic materials costs (due to tariffs). We have some major new product launches on hold internally as well."
+- **Computer & Electronic Products:** "Backlogs for our industry are still high, but overall bookings have dropped significantly for several electronic component commodities. Pricing has increased for almost all our raw materials as result of tariffs."
+- **Food, Beverage & Tobacco Products:** "Recent tariffs on imported flavorings and on sugar and related products have pushed material costs up, and we are working our way through those impacts."
+- **Apparel, Leather & Allied Products:** "Tariffs have had an immediate impact on our production costs, but sales were already extremely low, and we are now having to evaluate which product lines will survive."
+- **Machinery:** "The construction industry, especially home building, is still at a lower level. With new construction at a low level, our new sales are impacted. We are mainly now relying on replacement business. Cost of goods sold is higher due to tariff-impacted goods."
+- **Fabricated Metal Products:** "Domestic sales remain flat but are down four percent from plan by unit volume [tariff pricing]. Export demand is falling as customers do not accept tariff impacts, which likely will require some production transfers out of the U.S. Supplier deliveries remain consistent with ocean shipping costs dropping significantly. Tariff costs have biggest financial impact but also costs of copper and of steel products."
+- **Transportation Equipment:** "The trucking industry continues to contract. Our backlog continues to shrink as customers continue to hold off on buying new equipment. This current environment is much worse than the Great Recession of 2008-09. There is absolutely no activity in the transportation equipment industry. This is 100 percent attributable to current tariff policy and the uncertainty it has created. We are also in stagflation: Prices are up due to material tariffs, but volume is way off."
+- **Wood Products:** "Very tentative domestic market, with home building and remodeling not very active at all. Inflation, among other factors, is starting to impact consumer buying power, leading to negative signs for our order files. International markets are upended due to the unpredictability of on-again, off-again tariff activity."
+- **Electrical Equipment, Appliances & Components:** "We've implemented our second price increase. 'Made in the USA' has become even more difficult due to tariffs on many components. Total price increases so far: 24 percent; that will only offset tariffs. No influence on margin percentage, which will actually drop. In two rounds of layoffs, we have let go of about 15 percent of our U.S. workforce. These are high-paying and high-skilled roles: engineers, marketing, design teams, finance, IT and operations. The administration wants manufacturing jobs in the U.S., but we are losing higher-skilled and higher-paying roles. With no stability in trade and economics, capital expenditures spending and hiring are frozen. It's survival."
+- **Nonmetallic Mineral Products:** "There is still uncertainty in the construction market. Large expansions or investment are hampered by the unknown of costing and the economy. The markets we operate in can be strong short term, but there is an underlying feeling that has you questioning for how long."
+
+## Jul 2025
+- **Computer & Electronic Products:** "Fairly flat quarter over quarter, but with us being in the safety and security sector (and with U.S. Customs and Border Protection as a customer), the recent bill that passed should result in an increase in business in the coming months."
+- **Chemical Products:** "Sales continue at unprecedented growth, driven by data-center construction. Customers and the sales team continue to demand lower pricing, which drives down gross margins in face of input price increases, primarily from aluminum imports."
+- **Apparel, Leather & Allied Products:** "These tariff wars are beginning to wear us out. It's been very difficult to forecast what we will pay in duties and calculate any cost savings we've had this year. Also, tariffs have disrupted our customs import bond. There is zero clarity about the future, and it's been a difficult few months trying to figure out where everything is going to land and the impact on our business. So far, tremendous and unexpected costs have been incurred."
+- **Machinery:** "Currently, higher interest rates still depress the construction industry for new construction projects. Tariff policies are uncertain, which slows down (1) our investment in new projects, (2) component sourcing for new products, (3) blanket orders and (4) replenishment of large inventory quantities. Instead, we're working to shift suppliers to lower political risk countries or develop domestic sources. We are impacted by the higher tariffs on costs of raw materials and components both sourced domestically and from overseas, and we expect expenses will be higher in the third and fourth quarters as we consume the inventory received with new and higher tariffs or update costs from domestic sources in the second quarter."
+- **Fabricated Metal Products:** "Sales softening more than usual during the summer. Negotiations with non-U.S. manufacturers are strained as we are reluctant to issue POs for deliveries three or more months into the future with prices that include current tariffs."
+- **Miscellaneous Manufacturing:** "In the health-care world we continue with 'business as normal,' but we are increasingly searching and assessing geopolitical risk mitigation options."
+- **Electrical Equipment, Appliances & Components:** "Tariffs are causing complete uncertainty around sourcing strategies. A sit-and-wait game for now."
+- **Nonmetallic Mineral Products:** "Sales are about on par with 2024, but nowhere near budget forecast. Tariff concerns seem to be growing as the year progresses."
+- **Furniture & Related Products:** "Business is steady, with solid bookings and backlog. Still uncertainty about tariffs and associated inflation."
+
+## Jun 2025
+- **Fabricated Metal Products**: "Business has notably slowed in last four to six weeks. Customers do not want to make commitments in the wake of massive tariff uncertainty."
+- **Wood Products**: "Middle East unrest as well as unstable long-term tariff positions continue to impact second- and third-tier sources, which is applying pressure to material costs. Costs are up 6 percent to 10 percent over budgeted inflation — and the forecast accounted for the volatility expected with the current administration."
+- **Chemical Products**: "The biopharmaceutical space is starting to see more pronounced headwinds: Stock prices have significantly eroded, companies are facing hiring freezes, and so on."
+- **Machinery**: "The tariff mess has utterly stopped sales globally and domestically. Everyone is on pause. Orders have collapsed."
+- **Food, Beverage & Tobacco Products**: "Tariff volatility has impacted machinery, steel and specialized components. Also, potential shortages of skilled labor for construction, maintenance and installation."
+- **Computer & Electronic Products**: "Tariffs continue to cause confusion and uncertainty for long-term procurement decisions. The situation remains too volatile to firmly put such plans into place."
+
+## May 2025
+- **Transportation Equipment**: "There is continued softening of demand in the commercial vehicle market, primarily related to higher prices and economic uncertainty. The impact of ever-changing trade policies of the current administration has wreaked havoc on suppliers' ability to react and remain profitable. Vehicle manufacturers have already rolled price increases into their products to protect their bottom lines but have not been as cooperative with their supply bases. This has resulted in a high occurrence of suppliers falling into financial distress."
+- **Food, Beverage & Tobacco Products**: "Tariffs, avian influenza and broader commodity markets continue to impact business conditions. The volatility of all three makes business planning and overall conditions challenging."
+- **Computer & Electronic Products**: "Government spending cuts or delays, as well as tariffs, are raising hell with businesses. No one is willing to take on inventory risk."
+- **Chemical Products**: "Most suppliers are passing through tariffs at full value to us. The position being communicated is that the supplier considers it a tax, and taxes always get passed through to the customer. Very few are absorbing any portion of the tariffs."
+- **Fabricated Metal Products**: "Tariff uncertainty is impacting new international orders. Tariffs are also the main reason our Asia customers are requesting delayed shipments."
+- **Machinery**: "There is continued uncertainty regarding market reaction to the recently imposed tariffs and resulting actions by other countries. The rare earth restrictions being imposed are of high concern in the near term."
+- **Electrical Equipment, Appliances & Components**: "The administration's tariffs alone have created supply chain disruptions rivaling that of COVID-19."
+- **Primary Metals**: "We have entered the waiting portion of the wait and see, it seems. Business activity is slower and smaller this month. Chaos does not bode well for anyone, especially when it impacts pricing."
+
+## Apr 2025
+- **Chemical Products**: "Uncertainty over tariffs is providing a big challenge from both Tier-1 suppliers we will have to pay tariffs on directly and Tier-2 suppliers that will try to pass tariffs through to us in the form of price increases and tariff surcharges."
+- **Transportation Equipment**: "Tariffs impacting operations — specifically, delayed border crossings and duties calculations that are complex and not completely understood. As a result, we are potentially overpaying duties. Unsure of potential drawbacks. Implementation of tariffs and their application is sudden and abrupt. The business is taking countermeasures."
+- **Computer & Electronic Products**: "Business climate is apprehensive, and with tariff costs implemented, all inbound Chinese shipments are on hold. It is not feasible for our business or customers to sustain the pricing required to provide an acceptable margin."
+- **Food, Beverage & Tobacco Products**: "The most important topic is tariffs. Risks include margin erosion due to rising operational costs and freight delays disrupting delivery timelines. Supplier relationships are strained by pain-share negotiations, and competitors are gaining share by importing from lower-tariff regions."
+- **Machinery**: "Tariff whiplash is causing us major issues with customers. The two issues we are seeing: (1) customers are holding back orders to understand what is happening with tariffs on their products or (2) they are forcing us to accept the tariffs, which causes us to 'no quote' the job as we cannot take on that type of risk for an order."
+- **Fabricated Metal Products**: "There is a lot of concern about the inflationary impacts from tariffs in our industry. Domestic producers are charging more for everything because they can."
+- **Apparel, Leather & Allied Products**: "Tariff trade wars are incredibly volatile, quickly changing, and disrupting a ton of our current work. We are 90 percent sourced out of China, and the cost models keep changing every week. We are flying to visit suppliers in a few weeks to negotiate current terms and pricing, as well as develop more long-term, strategic plans to reduce risk in the region."
+- **Electrical Equipment, Appliances & Components**: "Demand is slightly lower than plan, but it has been steady amid tariff concerns. Significant time has been spent quantifying the impact of changing tariff rates. Our costs will increase, and we are discussing how to share that impact across suppliers and customers."
+
+## Mar 2025
+- **Chemical Products**: "Complex markets saw a surge in volume buying in anticipation of 2025 being slightly better than 2024. In March, however, all markets saw a slowdown, with fear and inventory stocking to hold through a potential crisis."
+- **Transportation Equipment**: "Acute shortages continue to impact supply chain continuity. Chinese restrictions on critical minerals such as germanium have caused major shortages, resulting in all supply needed in 2025 already assumed — and, not surprisingly, significant price increases as a result. Tariffs are causing minor ripples at the moment in securing supply, with purchase order terms narrowing due to uncertainties. A&D (aerospace and defense), which has been very resilient, is starting to see questionable medium- to long-term demand due to governmental policy, including retaliatory actions taken by foreign countries with foreign military sales."
+- **Computer & Electronic Products**: "Customers are pulling in orders due to anxiety about continued tariffs and pricing pressures."
+- **Food, Beverage & Tobacco Products**: "Starting to see slower-than-normal sales in Canada, and concerns of Canadians boycotting U.S. products could become a reality."
+- **Machinery**: "Business condition is deteriorating at a fast pace. Tariffs and economic uncertainty are making the current business environment challenging."
+- **Fabricated Metal Products**: "New order levels have increased and are better than expected. We suspect that our customers are trying to build inventory at current prices to get ahead of expected tariff and related cost increases. We expect this surge in demand to be short-lived."
+- **Electrical Equipment, Appliances & Components**: "Demand has been stable, consistent with last year. No evidence of growing demand. Tariff impacts and mitigation strategies are a daily conversation."
+- **Miscellaneous Manufacturing**: "Newly implemented tariffs are significantly impacting gross profits. Canada's new tariffs on U.S. goods are significantly impacting orders from that country. Quotes and sales are lower from Europe due to the threat of retaliatory tariffs."
+- **Petroleum & Coal Products**: "Worldwide economic instability has really begun to impact our oil and gas business. Aside from the change in the U.S. administration, the economies of China, India and Europe are drivers in what we believe is the next cyclical trough."
+- **Primary Metals**: "Bearish market sentiment and tariff applications and costs have dominated discussions over the past month and should continue to dominate markets until a clear path forward is determined. Overall concern is whether or not demand destruction will occur with higher pricing."
+
+## Feb 2025
+- **Chemical Products:** "The tariff environment regarding products from Mexico and Canada has created uncertainty and volatility among our customers and increased our exposure to retaliatory measures from these countries."
+- **Transportation Equipment:** "Customers are pausing on new orders as a result of uncertainty regarding tariffs. There is no clear direction from the administration on how they will be implemented, so it's harder to project how they will affect business."
+- **Computer & Electronic Products:** "Tariff impact has been minimal to overall manufacturing and raw material supply. Limits on U.S. government spending in key organizations like the Food and Drug Administration, Environmental Protection Agency and National Institutes of Health are delaying some orders."
+- **Food, Beverage & Tobacco Products:** "Inflation and pricing pressure continue to drive uncertainty in our 2025 outlook. We are seeing volume impacts due to pricing, with customers buying less and looking for substitution options."
+- **Machinery:** "The incoming tariffs are causing our products to increase in price. Sweeping price increases are incoming from suppliers. Most are noting increases in labor costs. Vendors are indicating open capacity. Inflationary pressures are a concern. Our company is working diligently to see how the new tariffs will affect our business."
+- **Fabricated Metal Products:** "Business is still slow, but some indications of improved demand are six to nine months out. Steel and scrap costs are increasing, and it's too early to tell how high they will go."
+- **Electrical Equipment, Appliances & Components:** "New orders continue to be strong after picking up in December. The uncertainty about tariffs keeps us cautious on spending, despite the strong sales right now."
+- **Nonmetallic Mineral Products:** "Management now has us running scenarios to project tariff impacts to our business. They want numbers in 24 hours on variables that equate to a wild guess. Interesting times we live in."
+- **Plastics & Rubber Products:** "Internal analysis ongoing about impact of tariffs, but nothing concrete yet. General business conditions remain tepid; outlook on the durables side growing more pessimistic with growing domestic inventories of automobiles."
+- **Primary Metals:** "Customer volumes seem to be better than 2024. However, customers are still very hesitant to commit to long-term volumes due to the market uncertainty caused by proposed tariffs on steel/aluminum imports."
+
+## Jan 2025
+- **Chemical Products:** "Customer orders slightly stronger than expected. Seeing more general price increases for chemicals/raw materials. No International Longshoremen's Association strike is a tremendous help."
+- **Transportation Equipment:** "Alleviating supply chain conditions are noticeably pivoting back into acute shortage situations, with headwinds following. For aerospace and defense companies, critical minerals supply chains are tightening dramatically due to Chinese restrictions. Concerns are growing of an environment of more supply chain shortages."
+- **Computer & Electronic Products:** "As the U.S. administration transfers, we will continue to monitor impact of tariffs on materials used for manufacturing. China stimulus is helping us win orders and increase use of services and consumables. Cost pressures remain for all materials and parts but are starting to stabilize."
+- **Food, Beverage & Tobacco Products:** "Volume in 2025 is targeting 2-percent growth. The organization is mindful of potential tariffs and what to do with re-routing or cost increases in supply chains that are impacted."
+- **Machinery:** "Although we are in our busy season, our demand for the first two weeks of 2025 has outpaced normal levels for this period of time."
+- **Electrical Equipment, Appliances & Components:** "Business is slowly improving."
+- **Fabricated Metal Products:** "Capital equipment sales are starting 2025 off strong. Normally, we see a soft start to the year, so this strong start is unusual."
+- **Miscellaneous Manufacturing:** "New orders are still good but decreasing compared to previous quarters. Working through current backlog."
+- **Primary Metals:** "Automotive order demand continues to be consistent and on a steady pace. Beginning to look at hiring additional team members once again. Pricing is holding firm. Having to work overtime to cover plant inefficiency to date."
+- **Textile Mills:** "Looking forward to a year of strong customer demand and higher sales than 2024."
+`;
+
+        function parseComments(markdown) {
+            const industryData = {};
+            // Updated regex to catch month headers with double hashes
+            const dateRegex = /^##\s+([A-Za-z]{3}\s+\d{4})$/;
+            const commentRegex = /^-\s+\*\*([^*]+)\*\*:\s+"([^"]+)"/;
+            // Alternate regex in case of slight formatting diffs (e.g. no quotes or different colon)
+            const commentRegexAlt = /^-\s+\*\*([^*]+)\*\*:\s+(.+)$/;
+
+            const lines = markdown.split('\n');
+            let currentDate = '';
+
+            lines.forEach(line => {
+                line = line.trim();
+                const dateMatch = line.match(dateRegex);
+                if (dateMatch) {
+                    currentDate = dateMatch[1];
+                    return;
+                }
+
+                if (!currentDate) return;
+
+                let industry = '';
+                let text = '';
+
+                const commentMatch = line.match(commentRegex);
+                if (commentMatch) {
+                    industry = commentMatch[1];
+                    text = commentMatch[2];
+                } else {
+                    const commentMatchAlt = line.match(commentRegexAlt);
+                    if (commentMatchAlt) {
+                        industry = commentMatchAlt[1];
+                        text = commentMatchAlt[2].replace(/^"|"$/g, ''); // Remove quotes if matched in catch-all
+                    }
+                }
+
+                if (industry && text) {
+                    // Normalize industry name (remove potential trailing chars or case diffs)
+                    const normIndustry = industry.trim();
+                    if (!industryData[normIndustry]) {
+                        industryData[normIndustry] = [];
+                    }
+                    industryData[normIndustry].push({
+                        date: currentDate,
+                        text: text
+                    });
+                }
+            });
+            return industryData;
+        }
+
+        function parseDate(dateStr) {
+            const parts = dateStr.split(' ');
+            const months = {
+                "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
+                "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+            };
+            return new Date(parseInt(parts[1]), months[parts[0]], 1);
+        }
+
+        function toggleAll(show) {
+            const display = show ? 'block' : 'none';
+            const icon = show ? '▼' : '▶';
+
+            document.querySelectorAll('.comment-list').forEach(el => el.style.display = display);
+            document.querySelectorAll('.toggle-icon').forEach(el => el.textContent = icon);
+        }
+
+        function displayComments(data) {
+            const container = document.getElementById('comments-container');
+
+            // Add Controls
+            const controls = document.createElement('div');
+            controls.style.textAlign = 'right';
+            controls.style.marginBottom = '15px';
+
+            const expandBtn = document.createElement('button');
+            expandBtn.textContent = "Expand All";
+            expandBtn.style.marginRight = "10px";
+            expandBtn.style.padding = "8px 12px";
+            expandBtn.style.cursor = "pointer";
+            expandBtn.style.backgroundColor = "#4CAF50";
+            expandBtn.style.color = "white";
+            expandBtn.style.border = "none";
+            expandBtn.style.borderRadius = "4px";
+            expandBtn.onclick = () => toggleAll(true);
+
+            const collapseBtn = document.createElement('button');
+            collapseBtn.textContent = "Collapse All";
+            collapseBtn.style.padding = "8px 12px";
+            collapseBtn.style.cursor = "pointer";
+            collapseBtn.style.backgroundColor = "#555";
+            collapseBtn.style.color = "white";
+            collapseBtn.style.border = "none";
+            collapseBtn.style.borderRadius = "4px";
+            collapseBtn.onclick = () => toggleAll(false);
+
+            controls.appendChild(expandBtn);
+            controls.appendChild(collapseBtn);
+            container.appendChild(controls);
+
+            const industries = Object.keys(data).sort();
+
+            industries.forEach(industry => {
+                // Sort comments by date descending
+                data[industry].sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+                const section = document.createElement('div');
+                section.className = 'industry-section';
+
+                const header = document.createElement('div');
+                header.className = 'industry-header';
+                header.innerHTML = `<span>${industry}</span> <span class="toggle-icon">▼</span>`;
+
+                const list = document.createElement('ul');
+                list.className = 'comment-list';
+
+                data[industry].forEach(comment => {
+                    const item = document.createElement('li');
+                    item.className = 'comment-item';
+                    item.innerHTML = `
+                        <span class="comment-date">${comment.date}</span>
+                        <span class="comment-text">"${comment.text}"</span>
+                    `;
+                    list.appendChild(item);
+                });
+
+                header.addEventListener('click', () => {
+                    if (list.style.display === 'none') {
+                        list.style.display = 'block';
+                        header.querySelector('.toggle-icon').textContent = '▼';
+                    } else {
+                        list.style.display = 'none';
+                        header.querySelector('.toggle-icon').textContent = '▶';
+                    }
+                });
+
+                section.appendChild(header);
+                section.appendChild(list);
+                container.appendChild(section);
+            });
+        }
+
+        const parsedData = parseComments(rawComments);
+        displayComments(parsedData);
+    </script>
+</body>
+
+</html>
