@@ -212,9 +212,13 @@ def update_heatmap(month_str, growth, contraction, no_growth, no_decline, pmi_da
     print(f"Updating Heatmap for {month_str}")
     short_month = month_str[:3] + " " + month_str[-4:] # "Nov 2025"
 
+    # Check if month already exists to avoid duplication
+    if short_month in content:
+        print(f"Month {short_month} already in heatmap. Skipping update.")
+        return
+
     # 1. Update Months
-    if short_month not in content:
-        content = re.sub(r'(const months = \[\s*[\s\S]*?)(\s*\];)', f'\\1, "{short_month}"\\2', content)
+    content = re.sub(r'(const months = \[\s*[\s\S]*?)(\s*\];)', f'\\1, "{short_month}"\\2', content)
 
     # 2. Update Main Scores
     rank_map = {} 
