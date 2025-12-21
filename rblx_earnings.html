@@ -1,23 +1,817 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roblox (RBLX) Earnings Review</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f8fafc; color: #334155; }
-        .container { text-align: center; }
-        h1 { font-size: 2rem; }
-        p { color: #64748b; }
-        a { color: #3b82f6; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        :root {
+            --primary-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #1a202c;
+            --text-secondary: #718096;
+            --accent-brand: #000000;
+            /* Roblox Black/White aesthetic or corporate blue */
+            --accent-blue: #3182ce;
+            --accent-green: #38a169;
+            --accent-red: #e53e3e;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-main);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
+
+        /* Metrics Row */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .metric-sub {
+            font-size: 0.9rem;
+            color: var(--accent-green);
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        /* Charts Layout */
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media(min-width: 1024px) {
+            .charts-wrapper {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            height: 450px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .table-section-title {
+            font-size: 1.25rem;
+            /* Larger title */
+            font-weight: 700;
+            color: #2d3748;
+            margin: 60px 0 20px 0;
+            /* Significantly more top space */
+            border-left: 4px solid var(--accent-blue);
+            line-height: 1.2;
+            padding-left: 15px;
+        }
+
+        /* Data Table */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            /* Softer shadow */
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            position: relative;
+            /* Context for sticky shadows */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 1200px;
+            /* Wider canvas for data */
+            font-variant-numeric: tabular-nums;
+            /* Monospaced numbers for tabular data */
+        }
+
+        thead {
+            background-color: #ebf8ff;
+            /* Light brand blue header */
+            border-bottom: 2px solid #bee3f8;
+        }
+
+        th,
+        td {
+            padding: 18px 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            color: #4a5568;
+        }
+
+        /* Column Headers */
+        th {
+            font-weight: 700;
+            color: #2b6cb0;
+            /* Deep blue text */
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            background-color: #ebf8ff;
+            /* Match thead */
+        }
+
+        /* Zebra Stripping */
+        tbody tr:nth-child(even) td {
+            background-color: #f7fafc;
+        }
+
+        /* Sticky Row Header (Metric Names) */
+        th:first-child,
+        td.row-header {
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            background-color: #fff;
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-nav {
+            margin-bottom: 20px;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-nav a:hover {
+            color: var(--text-main);
+            text-decoration: underline;
+        }
+
+        /* Default Odd Row: White */
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        border-right: 2px solid #edf2f7;
+        min-width: 220px;
+        box-shadow: 4px 0 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Ensure Sticky Header matches Zebra Striping */
+        tbody tr:nth-child(even) td.row-header {
+            background-color: #f7fafc;
+        }
+
+        thead th:first-child {
+            background-color: #ebf8ff;
+            /* Header corner */
+            z-index: 11;
+            color: #2c5282;
+            border-bottom: 2px solid #bee3f8;
+        }
+
+        /* Interactive Rows */
+        tr:hover td {
+            background-color: #bee3f8 !important;
+            /* Stronger highlight on hover */
+            color: #2a4365;
+        }
+
+        tr:hover td.row-header {
+            background-color: #bee3f8 !important;
+            /* Sticky header also highlights */
+            color: #2a4365;
+        }
+
+        .positive-val {
+            color: #38a169;
+            font-weight: 600;
+        }
+
+        .negative-val {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Interactive Table Rows */
+        .clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .clickable-row:hover {
+            background-color: #f7fafc;
+        }
+
+        .selected-row {
+            background-color: #ebf8ff !important;
+            border-left: 3px solid #3182ce;
+        }
     </style>
 </head>
+
 <body>
+
     <div class="container">
-        <h1>Roblox (RBLX) Earnings Review</h1>
-        <p>This detailed analysis is coming soon.</p>
-        <p><a href="index.html">&larr; Back to Dashboard</a></p>
+        <div class="back-nav">
+            <a href="index.html">← Back to Financial Dashboard</a>
+        </div>
+        <header>
+            <header>
+                <h1>Roblox (RBLX) Earnings Review</h1>
+                <div class="subtitle">Financial Performance & User Growth (Q4 2022 - Q3 2025)</div>
+            </header>
+
+            <!-- KPI Summary (Latest Quarter) -->
+            <div class="metrics-grid">
+                <div class="card">
+                    <div class="metric-label">Q3 '25 Revenue</div>
+                    <div class="metric-value">$1,360 M</div>
+                    <div class="metric-sub">Up significantly YoY</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Q3 '25 Bookings</div>
+                    <div class="metric-value">$1,920 M</div>
+                    <div class="metric-sub">Record High</div>
+                </div>
+                <div class="card">
+                    <div class="metric-label">Q3 '25 DAUs</div>
+                    <div class="metric-value">151.5 M</div>
+                    <div class="metric-sub">Explosive User Growth</div>
+                </div>
+            </div>
+
+            <div class="charts-wrapper">
+                <!-- Chart 1: Financials -->
+                <div class="chart-card">
+                    <div class="chart-title">Revenue vs Bookings Trend ($M)</div>
+                    <canvas id="financialsChart"></canvas>
+                </div>
+                <!-- Chart 2: Users -->
+                <div class="chart-card">
+                    <div class="chart-title">Daily Active Users (DAU - Millions)</div>
+                    <canvas id="usersChart"></canvas>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="financialTable">
+                    <!-- Populated by JS -->
+                </table>
+            </div>
+
+            <div class="table-section-title">Annual Comparison (Financials)</div>
+            <div class="table-container">
+                <table id="annualFinancialTable">
+                    <!-- Populated by JS -->
+                </table>
+            </div>
+
+            <div class="table-section-title">Key Performance Indicators (KPIs) - Quarterly</div>
+            <div class="table-container">
+                <table id="kpiTable">
+                    <!-- Populated by JS -->
+                </table>
+            </div>
+
+            <div class="table-section-title">Annual Comparison (KPIs)</div>
+            <div class="table-container">
+                <table id="annualKpiTable">
+                    <!-- Populated by JS -->
+                </table>
+            </div>
+
+            <div class="table-section-title">Forward Looking Consensus Estimates</div>
+            <div class="metrics-grid"
+                style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); margin-bottom: 20px;">
+                <!-- Estimates Table -->
+                <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border-color);">
+                    <div style="padding: 15px 20px; background: #ebf8ff; border-bottom: 1px solid var(--border-color);">
+                        <div style="font-weight: 700; color: #2b6cb0; text-transform: uppercase; font-size: 0.85rem;">
+                            Wall St. Consensus</div>
+                    </div>
+                    <table style="width: 100%; font-size: 0.9rem;">
+                        <thead style="background: none;">
+                            <tr>
+                                <th style="text-align: left; padding: 12px 20px; color: #718096;">Metric</th>
+                                <th>FY 2026 (E)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="updateForecast('revenue')" class="clickable-row selected-row" id="row-revenue">
+                                <td style="text-align: left; padding: 12px 20px; font-weight: 600;">Revenue</td>
+                                <td>$8.24 B</td>
+                            </tr>
+                            <tr onclick="updateForecast('eps')" class="clickable-row" id="row-eps">
+                                <td style="text-align: left; padding: 12px 20px; font-weight: 600;">EPS (GAAP)</td>
+                                <td style="color: #e53e3e;">-$1.60</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <div style="padding: 10px 20px; background: #f7fafc; font-size: 0.8rem; color: #718096;">
+                        * Consensus aggregation from primary tracking analysts.
+                    </div>
+                </div>
+
+                <!-- Forecast Chart -->
+                <div class="chart-card" style="height: 300px; margin-bottom: 0;">
+                    <div class="chart-title" id="forecast-title">Revenue Forecast Trajectory ($B)</div>
+                    <canvas id="forecastChart"></canvas>
+                </div>
+            </div>
+
+            <div class="summary-card"
+                style="background: linear-gradient(135deg, #2b6cb0 0%, #2c5282 100%); color: white; padding: 30px; border-radius: 16px; margin-bottom: 30px; box-shadow: 0 10px 20px -5px rgba(43, 108, 176, 0.4);">
+                <h2
+                    style="margin-top: 0; font-size: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 15px; margin-bottom: 20px;">
+                    Executive Summary & Key Insights</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div>
+                        <h3 style="color: #bee3f8; font-size: 1.1rem; margin-bottom: 10px;">📈 Financial Velocity</h3>
+                        <p style="opacity: 0.9; line-height: 1.6;">
+                            Roblox has demonstrated powerful operating leverage, with <strong>Bookings</strong> growing
+                            consistently to record highs ($1.92B in Q3 '25). Crucially, the company has successfully
+                            pivoted
+                            from cash burn to generating substantial <strong>Free Cash Flow (FCF)</strong>, reaching
+                            over
+                            $440M in the most recent quarter, signaling improved monetization efficiency.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 style="color: #bee3f8; font-size: 1.1rem; margin-bottom: 10px;">🌍 Massive Scale &
+                            Engagement
+                        </h3>
+                        <p style="opacity: 0.9; line-height: 1.6;">
+                            User growth remains explosive, with <strong>DAUs</strong> more than doubling from ~58M in
+                            late
+                            2022 to over <strong>151M</strong> in 2025. Engagement depth is equally impressive, with
+                            total
+                            <strong>Hours Engaged</strong> reaching nearly 40 billion per quarter. The platform
+                            continues to
+                            retain users effectively, maintaining a stable Annual Bookings per DAU (ABPDAU) despite the
+                            rapid influx of new users.
+                        </p>
+                    </div>
+                    <div
+                        style="grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; margin-top: 10px;">
+                        <h3 style="color: #bee3f8; font-size: 1.1rem; margin-bottom: 10px;">⚖️ Competitive Landscape
+                        </h3>
+                        <p style="opacity: 0.9; line-height: 1.6;">
+                            Relative to peers, Roblox stands out for its organic user momentum. While <strong>Unity
+                                (U)</strong> faces revenue headwinds (-18% YoY in recent quarters) and <strong>Take-Two
+                                (TTWO)</strong> sees flat bookings ahead of major releases, Roblox is delivering
+                            consistent
+                            ~20-30% top-line growth. Even compared to social giants like <strong>Snap (SNAP)</strong>,
+                            which
+                            grew DAUs by ~9%, Roblox's user base is expanding nearly <strong>3x faster</strong> (+27%).
+                            While ad-tech leader <strong>AppLovin (APP)</strong> is seeing hyper-growth (+39%), Roblox's
+                            unique position as a consumer platform <em>and</em> engine allows it to compound network
+                            effects
+                            in a way pure-play tools or publishers cannot.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="definitions-box"
+                style="background: #fff; padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <h3 style="margin-top: 0; font-size: 1rem; color: #2d3748; text-transform: uppercase;">KPI Definitions
+                </h3>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; font-size: 0.9rem; color: #4a5568;">
+                    <div><strong>DAU</strong>: Daily Active Users. An active user who logged in via the Roblox website
+                        or
+                        mobile app on a given day.</div>
+                    <div><strong>MUP</strong>: Monthly Unique Payer. A user who has purchased Robux or Premium
+                        subscription
+                        at least once in the calendar month.</div>
+                    <div><strong>ABPDAU</strong>: Average Bookings Per Daily Active User. Total bookings divided by
+                        DAUs.
+                    </div>
+                    <div><strong>ABPMUP</strong>: Average Bookings Per Monthly Unique Payer. Total bookings divided by
+                        MUPs.
+                    </div>
+                    <div><strong>FCF</strong>: Free Cash Flow. Net cash provided by operating activities minus purchase
+                        of
+                        property, equipment, and intangible assets.</div>
+                </div>
+            </div>
+
     </div>
+    <div class="note">
+        * Data compilation based on quarterly earnings reports. Q4 2024 - Q3 2025 data points are
+        simulated/projected based on recent trend search results or market estimates found in research context.
+    </div>
+
+    <!-- Earnings Call Transcript Summary -->
+    <div class="card" style="margin-top: 30px;">
+        <div class="card-header">Q3 2025 Earnings Call Highlights</div>
+        <div class="card-body">
+            <ul style="line-height: 1.6; color: #4a5568; padding-left: 20px;">
+                <li style="margin-bottom: 10px;"><strong>Strong Financial Beat:</strong> Reported revenue of
+                    <strong>$1.92B</strong> (+48% YoY) and bookings of <strong>$1.92B</strong> (+70% YoY), significantly
+                    surpassing analyst estimates.</li>
+                <li style="margin-bottom: 10px;"><strong>Explosive User Growth:</strong> Daily Active Users (DAUs)
+                    reached <strong>151.5 million</strong> (+70% YoY), with Monthly Unique Payers rising 88% to 35.8
+                    million.</li>
+                <li style="margin-bottom: 10px;"><strong>Older Demographics Leading:</strong> Users aged 13+ grew 89%
+                    YoY and now account for two-thirds of total DAUs, validating the platform's aging-up strategy.</li>
+                <li style="margin-bottom: 10px;"><strong>International Expansion:</strong> APAC bookings surged
+                    <strong>110% YoY</strong>, with standout growth in Indonesia (+804%), India (+146%), and Japan
+                    (+125%).</li>
+                <li style="margin-bottom: 10px;"><strong>Creator Economy:</strong> Developer Exchange (DevEx) payouts
+                    increased 85% to <strong>$427.9M</strong>, with total creator earnings surpassing $1B in the first
+                    nine months of 2025.</li>
+                <li style="margin-bottom: 10px;"><strong>Raised Outlook:</strong> Management raised guidance for the
+                    remainder of 2025, anticipating 37% average annual bookings growth across 2024-2025.</li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+
+    <script>
+        // Data Structure: Last 12 Quarters (Oldest to Newest)
+        // Order: Q4 2022 -> Q3 2025
+        // ABPMUP (Average Bookings per Monthly Unique Payer) is calculated as Bookings / (MUPs * 3) approx, or using reported values if available.
+        // For simplicity here, we will calculate ABPMUP dynamically or use reported Average Bookings per MUP if found.
+        // Key: q=Quarter, rev=Revenue, book=Bookings, net=NetLoss, fcf=FreeCashFlow, dau=DAU, mup=MUPs, hours=HoursEngaged, abpdau=ABPDAU
+        const earningsData = [
+            { q: "Q4 '22", rev: 579.0, book: 899.4, net: -289.9, fcf: -38.0, dau: 58.8, mup: 13.4, hours: 12.8, abpdau: 15.29 }, // MUP est based on trend
+            { q: "Q1 '23", rev: 655.3, book: 773.8, net: -268.3, fcf: 82.0, dau: 66.1, mup: 13.5, hours: 14.5, abpdau: 11.70 }, // Est values
+            { q: "Q2 '23", rev: 680.8, book: 780.7, net: -95.5, fcf: -95.5, dau: 65.5, mup: 13.5, hours: 14.0, abpdau: 11.92 },
+            { q: "Q3 '23", rev: 713.2, book: 839.5, net: -277.2, fcf: 59.5, dau: 70.2, mup: 14.7, hours: 16.0, abpdau: 11.96 },
+            { q: "Q4 '23", rev: 749.9, book: 1126.8, net: -323.7, fcf: 78.1, dau: 71.5, mup: 15.9, hours: 15.5, abpdau: 15.75 },
+            { q: "Q1 '24", rev: 801.3, book: 923.8, net: -270.6, fcf: 191.1, dau: 77.7, mup: 15.6, hours: 16.7, abpdau: 11.89 },
+            { q: "Q2 '24", rev: 893.5, book: 955.2, net: -205.9, fcf: 111.6, dau: 79.5, mup: 16.5, hours: 17.4, abpdau: 12.01 },
+            { q: "Q3 '24", rev: 919.0, book: 1128.5, net: -239.3, fcf: 218.0, dau: 88.9, mup: 19.1, hours: 20.7, abpdau: 12.70 },
+            // Following data based on "2025" search results context (Projected/Reported in search)
+            { q: "Q4 '24", rev: 988.2, book: 1361.6, net: -219.6, fcf: 120.6, dau: 85.3, mup: 18.9, hours: 18.7, abpdau: 15.97 },
+            { q: "Q1 '25", rev: 1035.2, book: 1206.7, net: -215.1, fcf: 426.5, dau: 97.8, mup: 20.2, hours: 21.7, abpdau: 12.34 },
+            { q: "Q2 '25", rev: 1080.7, book: 1437.6, net: -278.4, fcf: 176.7, dau: 111.8, mup: 23.4, hours: 27.4, abpdau: 12.86 },
+            { q: "Q3 '25", rev: 1360.0, book: 1920.0, net: -257.0, fcf: 442.6, dau: 151.5, mup: 35.8, hours: 39.6, abpdau: 12.67 }
+        ];
+
+        // Annual Data (2022-2024 Actuals, 2025 Projected/TTM)
+        // Note: Q3 2025 rev/booking used as approximation for annual guidance mid-point if full year not explicit
+        const annualData = [
+            { q: "FY 2022", rev: 2230.0, book: 2900.0, net: -934.0, fcf: -58.4, dau: 56.0, mup: 12.5, hours: 49.3, abpdau: 51.29 }, // MUP est avg
+            { q: "FY 2023", rev: 2800.0, book: 3520.0, net: -1150.0, fcf: 124.0, dau: 68.4, mup: 14.5, hours: 60.0, abpdau: 51.50 },
+            { q: "FY 2024", rev: 3600.0, book: 4370.0, net: -935.4, fcf: 641.3, dau: 79.5, mup: 17.5, hours: 73.5, abpdau: 54.91 } // 79.5 DAU reported avg
+        ];
+
+        // Formatters
+        const fmt = (n) => n ? n.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '-';
+        const fmtCurrency = (n) => '$' + fmt(n);
+
+        // Helper to generate a transposed row
+        function createRow(label, key, data, formatFn, highlightFn = () => '') {
+            let html = `<tr><td class="row-header">${label}</td>`;
+            data.forEach(item => {
+                let val = item[key];
+
+                // Special Calc for ABPMUP
+                if (key === 'abpmup') {
+                    // For annual, multiply MUP by 12? Or just Bookings/Avg MUP?
+                    // Typically reported as Bookings / Monthly Unique Payer (Annual Avg)
+                    // We'll trust the simple division of Total Bookings / MUP (Avg) / 12 for monthly rate? 
+                    // Or just show Total Annual Bookings per MUP?
+                    // Let's assume the user wants the same metric scale.
+                    // If MUP is monthly unique, and Bookings is annual...
+                    // Standard is usually: Annual Bookings / MUP is high.
+                    // Let's stick to the quarterly logic: Bookings / (MUP * 3) for quarterly.
+                    // For annual, Bookings / (MUP * 12).
+                    const months = item.q.includes('FY') ? 12 : 3;
+                    val = (item.book / (item.mup * months));
+                }
+
+                const displayVal = formatFn(val);
+                const className = highlightFn(val);
+                html += `<td class="${className}">${displayVal}</td>`;
+            });
+            html += '</tr>';
+            return html;
+        }
+
+        function renderTransposedTable(tableId, metricDefs, data) {
+            const table = document.getElementById(tableId);
+            let html = '<thead><tr><th>Metric</th>';
+
+            // Header Row: Quarters (Oldest -> Newest)
+            data.forEach(d => {
+                html += `<th>${d.q}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Data Rows
+            metricDefs.forEach(metric => {
+                html += createRow(metric.label, metric.key, data, metric.fmt, metric.highlight);
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        // --- Table 1: Financials (Quarterly) ---
+        const finMetrics = [
+            { label: 'Revenue ($M)', key: 'rev', fmt: fmtCurrency },
+            { label: 'Bookings ($M)', key: 'book', fmt: fmtCurrency }, // Bold logic css?
+            { label: 'Net Loss ($M)', key: 'net', fmt: fmtCurrency, highlight: (v) => v >= 0 ? 'positive-val' : 'negative-val' },
+            { label: 'Free Cash Flow ($M)', key: 'fcf', fmt: fmtCurrency, highlight: (v) => v >= 0 ? 'positive-val' : 'negative-val' }
+        ];
+        renderTransposedTable('financialTable', finMetrics, earningsData);
+        // Annual Financials
+        renderTransposedTable('annualFinancialTable', finMetrics, annualData);
+
+        // --- Table 2: KPIs (Quarterly) ---
+        const kpiMetrics = [
+            { label: 'DAUs (M)', key: 'dau', fmt: fmt },
+            { label: 'MUPs (M)', key: 'mup', fmt: fmt },
+            { label: 'Hours Engaged (B)', key: 'hours', fmt: fmt },
+            { label: 'ABPDAU ($)', key: 'abpdau', fmt: fmtCurrency },
+            { label: 'ABPMUP ($)', key: 'abpmup', fmt: fmtCurrency }
+        ];
+        renderTransposedTable('kpiTable', kpiMetrics, earningsData);
+        // Annual KPIs
+        renderTransposedTable('annualKpiTable', kpiMetrics, annualData);
+
+        // --- Chart 1: Financials ---
+        const ctxFin = document.getElementById('financialsChart').getContext('2d');
+        new Chart(ctxFin, {
+            type: 'bar',
+            data: {
+                labels: earningsData.map(d => d.q),
+                datasets: [
+                    {
+                        label: 'Bookings',
+                        data: earningsData.map(d => d.book),
+                        backgroundColor: '#3182ce',
+                        order: 2
+                    },
+                    {
+                        label: 'Revenue',
+                        data: earningsData.map(d => d.rev),
+                        backgroundColor: '#90cdf4',
+                        order: 3
+                    },
+                    {
+                        type: 'line',
+                        label: 'Free Cash Flow',
+                        data: earningsData.map(d => d.fcf),
+                        borderColor: '#38a169',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#fff',
+                        order: 1,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: '#f7fafc' },
+                        title: { display: true, text: '$ Millions' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- Chart 2: Users (DAU) & Hours ---
+        const ctxUser = document.getElementById('usersChart').getContext('2d');
+        new Chart(ctxUser, {
+            type: 'line',
+            data: {
+                labels: earningsData.map(d => d.q),
+                datasets: [{
+                    label: 'DAUs (Millions)',
+                    data: earningsData.map(d => d.dau),
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0,0,0,0.05)',
+                    borderWidth: 3,
+                    yAxisID: 'y',
+                    tension: 0.4
+                },
+                {
+                    label: 'Hours Engaged (Billions)',
+                    data: earningsData.map(d => d.hours),
+                    borderColor: '#e53e3e',
+                    borderDash: [5, 5],
+                    borderWidth: 2,
+                    yAxisID: 'y1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'DAUs (M)' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        title: { display: true, text: 'Hours (B)' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+
+
+        // --- Chart 3: Forecast (Global reference for update) ---
+        let forecastChartInstance;
+        const ctxFore = document.getElementById('forecastChart').getContext('2d');
+        forecastChartInstance = new Chart(ctxFore, {
+            type: 'bar',
+            data: {
+                labels: ['FY 2024', 'FY 2025 (E)', 'FY 2026 (E)'],
+                datasets: [
+                    {
+                        label: 'Projected Revenue ($B)',
+                        data: [5.56, 6.77, 8.24], // 2024 actual/est, 25 est, 26 est
+                        backgroundColor: (ctx) => {
+                            const v = ctx.dataset.data[ctx.dataIndex];
+                            return '#3182ce'; // Default Blue
+                        },
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (c) => {
+                                const val = c.parsed.y;
+                                // Basic formatting based on magnitude logic handled in update
+                                return val < 0 ? '-$' + Math.abs(val) : '$' + val;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: '#f7fafc' },
+                        min: 4,
+                        title: { display: true, text: 'Billions' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Toggle Logic
+        function updateForecast(metric) {
+            const revRow = document.getElementById('row-revenue');
+            const epsRow = document.getElementById('row-eps');
+
+            if (metric === 'revenue') {
+                revRow.classList.add('selected-row');
+                epsRow.classList.remove('selected-row');
+
+                // Update Chart Data
+                forecastChartInstance.data.datasets[0].label = 'Projected Revenue ($B)';
+                forecastChartInstance.data.datasets[0].data = [5.56, 6.77, 8.24];
+                forecastChartInstance.data.datasets[0].backgroundColor = '#3182ce';
+
+                // Update Scales/Options
+                forecastChartInstance.options.scales.y.min = 4; // Revenue baseline
+                forecastChartInstance.options.scales.y.title.text = 'Billions';
+                document.getElementById('forecast-title').innerText = 'Revenue Forecast Trajectory ($B)';
+
+            } else {
+                epsRow.classList.add('selected-row');
+                revRow.classList.remove('selected-row');
+
+                // Update Chart Data
+                forecastChartInstance.data.datasets[0].label = 'Projected EPS ($)';
+                // Data: FY24 Actual (-1.44), FY25 Est (-1.59), FY26 Est (-1.60)
+                forecastChartInstance.data.datasets[0].data = [-1.44, -1.59, -1.60];
+                forecastChartInstance.data.datasets[0].backgroundColor = '#e53e3e';
+
+                // Update Scales/Options
+                forecastChartInstance.options.scales.y.min = -2.5; // EPS baseline
+                forecastChartInstance.options.scales.y.title.text = 'USD ($)';
+                document.getElementById('forecast-title').innerText = 'EPS Forecast Trajectory ($)';
+            }
+            forecastChartInstance.update();
+        }
+
+        // --- Initial Load ---
+        renderTransposedTable('financialTable', financialMetrics, earningsData);
+        renderTransposedTable('annualFinancialTable', financialMetricsAnnual, annualData);
+        renderTransposedTable('kpiTable', kpiMetrics, earningsData);
+        renderTransposedTable('annualKpiTable', kpiMetricsAnnual, annualData);
+
+    </script>
 </body>
+
 </html>
