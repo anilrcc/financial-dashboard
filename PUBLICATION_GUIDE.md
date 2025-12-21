@@ -39,18 +39,22 @@ Wix is strictly a website builder and does not support uploading a folder of raw
 
 **Conclusion**: For this project, **GitHub Pages** is the superior choice.
 
-## Keeping Data Fresh
+## Your Daily Workflow Guide
 
-I've created two separate scripts for your different schedules:
+### Step 1: Locate the Folder
+Since these files are in a hidden folder, the easiest way to find them is:
+1.  Open **Finder**.
+2.  Press `Cmd + Shift + G` (or go to **Go > Go to Folder** in the menu bar).
+3.  Paste this exact path and press Enter:
+    `/Users/anilgungadeen/.gemini/antigravity/scratch/financial_dashboard_dist`
+4.  **Tip**: Drag this folder to your Finder Sidebar ("Favorites") so you can click it easily tomorrow!
 
-### 1. Daily: Refresh Yields
--   **File**: `refresh_daily_yields.command`
--   **Run this**: Every day.
--   **What it does**: Updates the Treasury Yield Curve and pushes changes to the site.
+### Step 2: Refresh the Website
+Once you are in the folder:
 
-### 2. Monthly: Refresh ISM
--   **File**: `refresh_monthly_ism.command`
--   **Run this**: Once a month (when new ISM data is released).
--   **What it does**: Scrapes the latest ISM report, updates the Heatmap and Comments, and pushes changes.
+*   **Every Morning**: Double-click `refresh_daily_yields.command`.
+    *   A terminal window will pop up, run some text, and close itself after saying "SUCCESS".
+    *   Your live website will verify the new 10Y/2Y yields in about 1 minute.
 
-**How to run**: Just double-click the file. It handles the Git upload automatically.
+*   **Once a Month**: Double-click `refresh_monthly_ism.command`.
+    *   Run this only when new ISM data is released (usually the 1st business day of the month).
