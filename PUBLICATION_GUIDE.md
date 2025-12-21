@@ -39,14 +39,18 @@ Wix is strictly a website builder and does not support uploading a folder of raw
 
 **Conclusion**: For this project, **GitHub Pages** is the superior choice.
 
-## Automated Daily Updates
-I have included a text-based script called `daily_update.command` in this folder to make updating easy.
+## Keeping Data Fresh
 
-1.  **Double-click** the `daily_update.command` file.
-2.  It will:
-    - Run the Python scripts to fetch new data.
-    - Commit the changes.
-    - Push them to GitHub automatically.
-3.  Wait ~1 minute, and your live site will update.
+I've created two separate scripts for your different schedules:
 
-*Note: Since this is the first time you run it, your Mac might warn you about an "unidentified developer". If so, right-click the file and select Open, then click Open in the dialog.*
+### 1. Daily: Refresh Yields
+-   **File**: `refresh_daily_yields.command`
+-   **Run this**: Every day.
+-   **What it does**: Updates the Treasury Yield Curve and pushes changes to the site.
+
+### 2. Monthly: Refresh ISM
+-   **File**: `refresh_monthly_ism.command`
+-   **Run this**: Once a month (when new ISM data is released).
+-   **What it does**: Scrapes the latest ISM report, updates the Heatmap and Comments, and pushes changes.
+
+**How to run**: Just double-click the file. It handles the Git upload automatically.
