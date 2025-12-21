@@ -39,19 +39,14 @@ Wix is strictly a website builder and does not support uploading a folder of raw
 
 **Conclusion**: For this project, **GitHub Pages** is the superior choice.
 
-## Updating Data automatically
-Since your dashboard uses Python scripts (`update_yields.py`, `update_ism.py`) to fetch data:
+## Automated Daily Updates
+I have included a text-based script called `daily_update.command` in this folder to make updating easy.
 
-1.  **Run Locally**:
-    ```bash
-    cd /Users/anilgungadeen/.gemini/antigravity/scratch/financial_dashboard_dist
-    python3 update_yields.py
-    python3 update_ism.py
-    ```
-2.  **Commit & Push**:
-    ```bash
-    git add .
-    git commit -m "Daily data update"
-    git push
-    ```
-    Your site will automatically update within minutes.
+1.  **Double-click** the `daily_update.command` file.
+2.  It will:
+    - Run the Python scripts to fetch new data.
+    - Commit the changes.
+    - Push them to GitHub automatically.
+3.  Wait ~1 minute, and your live site will update.
+
+*Note: Since this is the first time you run it, your Mac might warn you about an "unidentified developer". If so, right-click the file and select Open, then click Open in the dialog.*
