@@ -336,27 +336,23 @@ def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, p
     # Assuming the first one is the main summary.
     
     # 5. Update Key Insights (Main)
+    # 5. Update Key Insights (Main)
     if summary:
         new_main_html = f'''
-        <span class="summary-title"
-            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
-            Insights ({short_month})</span><br>
-        {summary}
-        ''' # indent matching
-        # Regex for ID targeted box
-        # <div class="summary-box" id="main-summary-box"> ... </div>
-        pattern_main = re.compile(r'(<div class="summary-box" id="main-summary-box">)(.*?)(</div>)', re.DOTALL)
+        <h3>Key Insights ({short_month})</h3>
+        <p>{summary}</p>
+        ''' 
+        # Regex for ID targeted box, robust to attribute order
+        pattern_main = re.compile(r'(<div[^>]*id="main-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
         content = pattern_main.sub(f'\\1{new_main_html}\\3', content)
 
     # 5b. Update Key Insights (New Orders)
     if new_orders_summary:
         new_no_html = f'''
-        <span class="summary-title"
-            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
-            Insights ({short_month})</span><br>
-        {new_orders_summary}
+        <h3>New Orders Key Insights ({short_month})</h3>
+        <p>{new_orders_summary}</p>
         '''
-        pattern_no = re.compile(r'(<div class="summary-box" id="new-orders-summary-box">)(.*?)(</div>)', re.DOTALL)
+        pattern_no = re.compile(r'(<div[^>]*id="new-orders-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
         content = pattern_no.sub(f'\\1{new_no_html}\\3', content)
 
     # 6. Update Meta Version
