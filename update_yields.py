@@ -109,9 +109,20 @@ def update_html(date_str, data):
     sign = "+" if spread >= 0 else ""
     content = re.sub(r'(id="kpi-spread">).*?( bps</div>)', f'\\g<1>{sign}{spread:.0f}\\g<2>', content)
 
+    # 5. Update Deployment Version Meta Tag (Cache Busting)
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
+    if 'name="deployment-version"' in content:
+        content = re.sub(r'<meta name="deployment-version" content=".*?">', 
+                         f'<meta name="deployment-version" content="auto-updated-{timestamp}">', 
+                         content)
+    else:
+        # Insert if missing (after title)
+        content = content.replace('</title>', f'</title>\n    <meta name="deployment-version" content="auto-updated-{timestamp}">')
+
     # Write back
     with open(TARGET_FILE, 'w') as f:
         f.write(content)
+
     
     print(f"Successfully updated {TARGET_FILE}")
     print(f"Date: {formatted_date}")
