@@ -410,6 +410,33 @@ def update_index_page(month_str):
     else:
         print("Could not find Services PMI timestamp in index.html")
 
+def update_page_titles(month_str):
+    if not os.path.exists(HEATMAP_FILE) or not os.path.exists(COMMENTS_FILE): return
+
+    # month_str like "November 2025"
+    try:
+        dt = datetime.datetime.strptime(month_str, "%B %Y")
+        short_ver = dt.strftime("%b '%y") # Nov '25
+        full_ver = dt.strftime("%b %Y")   # Nov 2025
+    except:
+        print(f"Error parsing date: {month_str}")
+        return
+
+    # 1. Update Heatmap Title
+    # <h1>ISM Services Industry Trends (Nov '24 - Nov '25)</h1>
+    with open(HEATMAP_FILE, 'r') as f: content = f.read()
+    # Capture start date, replace end date
+    content = re.sub(r'(<h1>ISM Services Industry Trends \()(.*?)( - .*?\))', f'\\1\\2 - {short_ver})', content)
+    with open(HEATMAP_FILE, 'w') as f: f.write(content)
+    
+    # 2. Update Comments Title
+    # <h1>ISM Services Respondent Comments (Nov 2025)</h1>
+    with open(COMMENTS_FILE, 'r') as f: content = f.read()
+    content = re.sub(r'(<h1>ISM Services Respondent Comments \()(.*?)(\))', f'\\1{full_ver}\\3', content)
+    with open(COMMENTS_FILE, 'w') as f: f.write(content)
+    
+    print("Updated Page Titles.")
+
 if __name__ == "__main__":
     # Fetch data
     res = fetch_report_data()
@@ -423,6 +450,7 @@ if __name__ == "__main__":
         update_heatmap_file(m, g, c, ng, nd, pmi, summ)
         update_comments_file(m, comms)
         update_index_page(m)
+        update_page_titles(m)
     else:
         print("Failed to fetch report data.")
         sys.exit(1)

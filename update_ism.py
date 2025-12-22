@@ -317,13 +317,40 @@ def update_comments(month_str, comments):
     content = content.replace("const rawComments = `", "const rawComments = `" + new_block)
 
     with open(COMMENTS_FILE, 'w') as f: f.write(content)
+
     print("Updated Comments HTML.")
+
+def update_page_titles(month_str):
+    if not os.path.exists(HEATMAP_FILE) or not os.path.exists(COMMENTS_FILE): return
+
+    try:
+        dt = datetime.datetime.strptime(month_str, "%B %Y")
+        short_ver = dt.strftime("%b '%y") # Nov '25
+        full_ver = dt.strftime("%b %Y")   # Nov 2025
+    except:
+        print(f"Error parsing date: {month_str}")
+        return
+
+    # 1. Update Heatmap Title
+    # <h1>ISM Manufacturing Industry Trends (Nov '24 - Nov '25)</h1>
+    with open(HEATMAP_FILE, 'r') as f: content = f.read()
+    content = re.sub(r'(<h1>ISM Manufacturing Industry Trends \()(.*?)( - .*?\))', f'\\1\\2 - {short_ver})', content)
+    with open(HEATMAP_FILE, 'w') as f: f.write(content)
+    
+    # 2. Update Comments Title
+    # <h1>ISM Manufacturing Respondent Comments (Nov 2024 - Nov 2025)</h1>
+    with open(COMMENTS_FILE, 'r') as f: content = f.read()
+    content = re.sub(r'(<h1>ISM Manufacturing Respondent Comments \()(.*?)( - .*?\))', f'\\1\\2 - {full_ver})', content)
+    with open(COMMENTS_FILE, 'w') as f: f.write(content)
+    
+    print("Updated Page Titles.")
 
 if __name__ == "__main__":
     m, g, c, ng, nd, pmi, summ, comms = fetch_report_data()
     if m:
         update_heatmap(m, g, c, ng, nd, pmi, summ)
         update_comments(m, comms)
+        update_page_titles(m)
         print("Done.")
     else:
         print("Script finished without update.")
