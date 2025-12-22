@@ -9,8 +9,8 @@ echo "------------------------------------------------"
 echo "  Updating Consumer Sentiment Data"
 echo "------------------------------------------------"
 
-# Pass all arguments to the python script
-python3 update_consumer_sentiment.py "$@"
+# Run the python script (fetches data automatically from UMich)
+python3 update_consumer_sentiment.py
 
 # Check if script ran successfully
 if [ $? -eq 0 ]; then
@@ -30,3 +30,4 @@ if [ $? -eq 0 ]; then
 else
     echo "Python script encountered an error."
 fi
+

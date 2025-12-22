@@ -2,12 +2,47 @@ import os
 import datetime
 import re
 import sys
+import requests
+import csv
+from io import StringIO
 
 # Configuration
 SENTIMENT_FILE = os.path.join(os.getcwd(), 'consumer_sentiment.html')
 INDEX_FILE = os.path.join(os.getcwd(), 'index.html')
+DATA_URL = 'https://www.sca.isr.umich.edu/files/tbmics.csv'
 
-def update_sentiment_file(month_str, index_val, summary_text=None):
+def fetch_sentiment_data():
+    """Fetch the latest consumer sentiment data from UMich"""
+    try:
+        response = requests.get(DATA_URL, timeout=10)
+        response.raise_for_status()
+        
+        # Parse CSV
+        csv_data = csv.DictReader(StringIO(response.text))
+        data_points = []
+        
+        for row in csv_data:
+            month = row['Month']
+            year = row['YYYY']
+            value = float(row['ICS_ALL'])
+            
+            # Format as "Mon YYYY"
+            month_abbr = month[:3]
+            formatted_date = f"{month_abbr} {year}"
+            
+            data_points.append({
+                'month': formatted_date,
+                'index': value
+            })
+        
+        print(f"Fetched {len(data_points)} data points from UMich")
+        return data_points
+    
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+        return None
+
+def update_sentiment_file(data_points, summary_text=None):
     if not os.path.exists(SENTIMENT_FILE):
         print(f"Error: {SENTIMENT_FILE} not found.")
         return
@@ -15,41 +50,35 @@ def update_sentiment_file(month_str, index_val, summary_text=None):
     with open(SENTIMENT_FILE, 'r') as f: content = f.read()
     
     # 1. Update Data Array
-    # const sentimentData = [ ... ];
-    # We want to check if month exists, if not append it.
-    
-    # Regex to find the array content
-    array_match = re.search(r'(const sentimentData = \[)(.*?)(\];)', content, re.DOTALL)
-    if array_match:
-        data_block = array_match.group(2)
-        if month_str in data_block:
-            print(f"Data for {month_str} already exists.")
-        else:
-            print(f"Adding data for {month_str}: {index_val}")
-            # Append new object
-            new_entry = f', {{ month: "{month_str}", index: {index_val} }}'
-            # Insert before the last brace or ] ? 
-            # The regex captured the inside. We just append to it.
-            # But the inside might end with whitespace or newline.
-            # Let's clean it up.
-            
-            # Simple append approach: replace the closing bracket
-            content = content.replace(data_block + "];", data_block.rstrip() + new_entry + "\n        ];")
+    # Replace the entire sentimentData array
+    if data_points:
+        # Get last 24 months for the chart
+        recent_data = data_points[-24:] if len(data_points) > 24 else data_points
+        
+        # Build JavaScript array
+        js_array_items = []
+        for item in recent_data:
+            js_array_items.append(f'{{ month: "{item["month"]}", index: {item["index"]} }}')
+        
+        js_array = ',\n            '.join(js_array_items)
+        
+        # Replace the array content
+        pattern = re.compile(r'(const sentimentData = \[)(.*?)(\];)', re.DOTALL)
+        replacement = f'\\1\n            {js_array}\n        \\3'
+        content = pattern.sub(replacement, content)
+        
+        print(f"Updated data array with {len(recent_data)} months")
     
     # 2. Update Summary Box
-    if summary_text:
-        # <div id="sentiment-summary-box" class="summary-box">
-        #    <h3>Current Reading: ...</h3>
-        #    <p>...</p>
-        # </div>
-        
+    if summary_text and data_points:
+        latest = data_points[-1]
         new_summary_html = f'''
-        <h3>Current Reading: {month_str}</h3>
+        <h3>Current Reading: {latest["month"]}</h3>
         <p>{summary_text}</p>
         '''
-        pattern = re.compile(r'(<div id="sentiment-summary-box" class="summary-box">)(.*?)(</div>)', re.DOTALL)
+        pattern = re.compile(r'(<div[^>]*id="sentiment-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
         content = pattern.sub(f'\\1{new_summary_html}\\3', content)
-
+    
     # 3. Update Last Updated Date
     today_str = datetime.date.today().strftime("%b %d, %Y")
     if 'id="last-updated-date">' in content:
@@ -64,8 +93,6 @@ def update_index_timestamp():
     with open(INDEX_FILE, 'r') as f: content = f.read()
 
     # Find the Consumer Sentiment card's timestamp
-    # <a href="consumer_sentiment.html" ... <span>Macro Indicator • Dec 22, 2025</span>
-    
     pattern = re.compile(r'(href="consumer_sentiment.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
     
     if pattern.search(content):
@@ -77,13 +104,25 @@ def update_index_timestamp():
         print("Could not find Consumer Sentiment timestamp in index.html")
 
 if __name__ == "__main__":
-    # Example usage: python update_consumer_sentiment.py "Jan 2026" 53.5 "Consumer sentiment rose..."
-    if len(sys.argv) >= 3:
-        month = sys.argv[1]
-        val = float(sys.argv[2])
-        summary = sys.argv[3] if len(sys.argv) > 3 else None
+    # Fetch latest data
+    data = fetch_sentiment_data()
+    
+    if data:
+        # Get latest value for summary
+        latest = data[-1]
         
-        update_sentiment_file(month, val, summary)
+        # Check if there's a custom summary provided
+        if len(sys.argv) > 1:
+            summary = sys.argv[1]
+        else:
+            # Generate default summary
+            prev_month = data[-2] if len(data) > 1 else None
+            change = latest['index'] - prev_month['index'] if prev_month else 0
+            direction = "up" if change > 0 else "down" if change < 0 else "unchanged"
+            
+            summary = f"The University of Michigan Consumer Sentiment Index registered <strong>{latest['index']}</strong> in {latest['month']}, {direction} from the previous month."
+        
+        update_sentiment_file(data, summary)
         update_index_timestamp()
     else:
-        print("Usage: python update_consumer_sentiment.py <Month Year> <Index Value> [Summary Text]")
+        print("Failed to fetch data. No updates made.")
