@@ -258,15 +258,15 @@ def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, p
     print(f"Updating Services Heatmap for {month_str}")
     short_month = month_str[:3] + " " + month_str[-4:] # "Nov 2025" for display
 
-    if short_month in content:
-        print(f"Month {short_month} already present in data. Updating existing values if strictly necessary, or skipping.")
-        # Proceeding to update in case values changed or were placeholders?
-        # For safety, let's just warn and skip appends.
-        # But we might want to update the Summary box even if data exists.
+    # Check if month is already explicitly in the months array (quoted)
+    month_exists = f'"{short_month}"' in content
+
+    if month_exists:
+        print(f"Month {short_month} already present in data. Skipping heatmap updates.")
     
     # 1. Update Months Array
     # const months = [ ... ];
-    if f'"{short_month}"' not in content:
+    if not month_exists:
         content = re.sub(r'(const months = \[\s*[\s\S]*?)(\s*\];)', f'\\1, "{short_month}"\\2', content)
 
     # 2. Update Main Heatmap Scores
@@ -283,29 +283,25 @@ def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, p
         rank_map[our_key] = -(num_cont - i)
 
     # Regex update: "Industry": [ ..., new_val ]
-    for key in set(INDUSTRY_MAP.values()):
-        if f'"{key}"' not in content: continue
-        
-        new_val = rank_map.get(key, 0)
-        # Avoid double adding if we just ran this
-        # This regex is tricky. It appends to the array.
-        # We really should parse the JSON, but regex is faster for this specific format.
-        # We rely on the "Month" check above to prevent infinite appendage.
-        if f'"{short_month}"' not in content: # Only append if we just added the month column
-             esc_key = re.escape(key)
-             pattern = f'("{esc_key}":\\s*\\[.*?)(\\])'
-             # This regex grabs everything until the closing bracket.
-             content = re.sub(pattern, f'\\1, {new_val}\\2', content)
+    # ONLY append if the month didn't exist before this run
+    if not month_exists:
+        for key in set(INDUSTRY_MAP.values()):
+            if f'"{key}"' not in content: continue
+            
+            new_val = rank_map.get(key, 0)
+            esc_key = re.escape(key)
+            pattern = f'("{esc_key}":\\s*\\[.*?)(\\])'
+            # This regex grabs everything until the closing bracket.
+            content = re.sub(pattern, f'\\1, {new_val}\\2', content)
 
     # 3. Update New Orders Ranklists
     # const ranklists = { ... }
     # Add new month key
-    if f'"{short_month}":' not in content:
+    if not month_exists:
         js_growth = "[" + ", ".join([f'"{clean_name(x)}"' for x in no_growth]) + "]"
         js_decline = "[" + ", ".join([f'"{clean_name(x)}"' for x in no_decline]) + "]"
         
         # Insert at top of ranklists object? or bottom? 
-        # The ranklists object keys order doesn't strictly matter for lookup, but for readability.
         # Insert after `const ranklists = {`
         new_entry = f'\n            "{short_month}": {{\n                growth: {js_growth},\n                decline: {js_decline}\n            }},'
         content = content.replace("const ranklists = {", "const ranklists = {" + new_entry)
