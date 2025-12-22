@@ -184,93 +184,94 @@
         </tbody>
     </table>
 
-    <div class="summary-box" id="main-summary-box">
-        <span class="summary-title"
-            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
-            Insights (Nov 2025)</span><br>
-        The Services PMI registered 54.1 percent in November 2025.
+
+    <div id="main-summary-box" class="summary-box">
+        <h3>Key Insights (Nov 2025)</h3>
+        <ul>
+            <li><strong>Resilient Expansion:</strong> The Services PMI® registered 52.1% in November, marking the 5th
+                consecutive month of expansion. 14 industries reported growth, indicating broad-based sector resilience.
+            </li>
+            <li><strong>Sector Leaders:</strong> Accommodation & Food Services and Arts, Entertainment & Recreation
+                continue to lead, driven by strong consumer demand and seasonal activity.</li>
+            <li><strong>Employment Stability:</strong> Employment remains in expansion territory (51.5%), albeit slower
+                than October, with industries actively filling positions despite some hiring freezes.</li>
+            <li><strong>Price Pressures:</strong> The Prices Index remains elevated at 58.2%, reflecting persistent
+                input cost challenges across the service economy.</li>
+        </ul>
     </div>
 
-    <h2>New Orders Services Growth Rank</h2>
-    <table id="rankTable">
-        <thead>
-            <tr id="rankHeaderRow">
-                <th class="industry-col">Industry</th>
-                <!-- Months populated by JS -->
-            </tr>
-        </thead>
-        <tbody id="rankTableBody"></tbody>
-    </table>
-
-    <div class="summary-box" id="new-orders-summary-box">
-        <span class="summary-title"
-            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
-            Insights (Nov 2025)</span><br>
-        The New Orders Index registered 54.1 percent in November 2025. New orders grew for the month.
+    <div class="table-container">
+        <table id="heatmapTable">
+            <thead>
+                <tr id="headerRow">
+                    <th>Industry</th>
+                    <!-- Months will be populated by JS -->
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Data rows will be populated by JS -->
+            </tbody>
+        </table>
     </div>
 
+    <div id="new-orders-summary-box" class="summary-box" style="margin-top: 40px;">
+        <h3>New Orders Key Insights (Nov 2025)</h3>
+        <ul>
+            <li><strong>Demand Growth:</strong> The New Orders Index registered 53.7%, expanding for the 5th consecutive
+                month. 13 industries reported growth in new orders.</li>
+            <li><strong>Top Performers:</strong> Public Administration and Arts/Entertainment saw the strongest demand
+                inflow, fueled by government activity and holiday season preparations.</li>
+            <li><strong>Contraction Pockets:</strong> Real Estate and Mining faced headwinds, reporting contraction in
+                new orders due to rate sensitivity and global market fluctuations.</li>
+        </ul>
+    </div>
 
+    <div class="table-container">
+        <table id="rankTable">
+            <thead>
+                <tr id="rankHeaderRow">
+                    <th>New Orders Rank</th>
+                    <!-- Months will be populated by JS -->
+                </tr>
+            </thead>
+            <tbody id="rankTableBody">
+                <!-- Rank rows will be populated by JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Source: Institute for Supply Management (ISM) - Services Report on Business</p>
+        <p>Last Updated: <span id="last-updated-date">Dec 22, 2025</span></p>
+    </div>
 
     <script>
-        const months = [
-            "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025",
-            "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025"
-        ];
+        // Data for the last 13 months (Nov 2025 Back to Nov 2024)
+        const months = ["Nov 2025", "Oct 2025", "Sep 2025", "Aug 2025", "Jul 2025", "Jun 2025", "May 2025", "Apr 2025", "Mar 2025", "Feb 2025", "Jan 2025", "Dec 2024", "Nov 2024"];
 
-        // Services Industries (18)
-        // Data populated for Nov 2025 based on report. Histores set to 0 placeholder.
-
-        // Nov 2025 Rankings:
-        // Growth (1-12): 
-        // 1. Retail Trade (+12)
-        // 2. Arts, Entertainment & Recreation (+11)
-        // 3. Accommodation & Food Services (+10)
-        // 4. Wholesale Trade (+9)
-        // 5. Health Care & Social Assistance (+8)
-        // 6. Educational Services (+7)
-        // 7. Public Administration (+6)
-        // 8. Agriculture, Forestry, Fishing & Hunting (+5)
-        // 9. Finance & Insurance (+4)
-        // 10. Information (+3)
-        // 11. Professional, Scientific & Technical Services (+2)
-        // 12. Utilities (+1)
-
-        // Contraction (1-5):
-        // 1. Construction (-5)
-        // 2. Real Estate, Rental & Leasing (-4)
-        // 3. Mining (-3)
-        // 4. Management of Companies & Support Services (-2)
-        // 5. Transportation & Warehousing (-1)
-
-        // Contraction (1-5):
-        // 1. Construction (-5)
-        // 2. Real Estate, Rental & Leasing (-4)
-        // 3. Mining (-3)
-        // 4. Management of Companies & Support Services (-2)
-        // 5. Transportation & Warehousing (-1)
-
-
-        // Stable: Other Services (0)
-
+        // Heatmap Data (Derived from Net Growth/Contraction Ranks)
+        // Scores: Positive for Growth (Rank 1 = Lowest Growth, Rank N = Highest Growth)
+        //         Negative for Contraction (Rank -1 = Lowest Decline, Rank -N = Highest Decline)
+        //         0 for No Change or Not Listed
         const servicesData = {
-            "Retail Trade": [4, 7, 4, -2, -2, 6, -7, 3, 8, 5, -2, 10, 12],
-            "Arts, Entertainment & Recreation": [13, 11, -2, -2, 7, 7, 9, 7, -2, 10, 0, -6, 11],
-            "Accommodation & Food Services": [14, 7, 4, 1, 11, 10, 10, 0, -7, -4, 10, 11, 10],
-            "Wholesale Trade": [11, 6, 10, 10, 8, 7, -1, 5, 10, 11, 4, 9, 9],
-            "Health Care & Social Assistance": [12, 10, 9, 7, 7, 2, 2, -3, 1, 3, 9, 7, 8],
-            "Educational Services": [-3, -2, 9, -3, 5, 2, 5, -1, -4, 7, 5, 1, 7],
-            "Public Administration": [9, 8, 2, 1, 2, 6, 8, 4, 5, 2, 6, -3, 6],
-            "Agriculture, Forestry, Fishing & Hunting": [10, -2, 12, 8, 6, 4, -5, -6, -3, 0, -6, 4, 5],
-            "Finance & Insurance": [8, 12, 8, 11, -3, 8, -4, 0, 9, 0, 3, -4, 4],
-            "Information": [4, -2, 5, 3, 6, 2, 3, 2, 3, 12, 7, 3, 3],
-            "Professional, Scientific & Technical Services": [3, -2, -2, 2, 3, -2, 1, -2, -1, 6, -3, 2, 2],
-            "Utilities": [1, 5, 1, 7, 4, 1, 6, 8, 2, 5, 10, 4, 1, 6, 1],
-            "Other Services": [0, 0, -3, 13, -3, 1, -8, 10, 7, -2, 8, -1, 0],
-            "Transportation & Warehousing": [5, 9, 7, 4, 6, 9, -2, 9, 11, 8, 2, 5, -1],
-            "Management of Companies & Support Services": [7, -1, 2, -2, 1, -6, -6, 6, 6, -3, -4, -5, -2],
-            "Mining": [-4, 0, 11, 9, 6, 9, 7, -4, -5, 9, -7, 0, -3],
-            "Real Estate, Rental & Leasing": [-2, -4, -2, 6, 5, 4, 4, 1, 4, 1, -1, 8, -4],
-            "Construction": [2, 0, 4, 3, -6, 3, -3, -5, -6, -1, -5, -2, -5]
+            "Retail Trade": [4, 7, 4, -2, -2, 6, -7, 7, 7, -2, 6, 7, 6],
+            "Arts, Entertainment & Recreation": [13, 11, -2, -2, 7, 7, 9, 6, -2, 0, 0, 8, 13],
+            "Accommodation & Food Services": [14, 7, 4, 1, 11, 10, 10, 11, 12, 4, 13, 3, 14],
+            "Wholesale Trade": [11, 6, 10, 10, 8, 7, -1, 10, 8, 12, 11, 2, 11],
+            "Health Care & Social Assistance": [12, 10, 9, 7, 7, 2, 2, 5, 2, 7, 9, 6, 12],
+            "Educational Services": [-3, -2, 9, -3, 5, 2, 5, 2, 3, -1, 8, -5, -1],
+            "Public Administration": [9, 8, 2, 1, 2, 6, 8, -2, 6, 1, 2, 4, 9],
+            "Agriculture, Forestry, Fishing & Hunting": [10, -2, 12, 8, 6, 4, -5, -6, 5, 10, 14, -4, 10],
+            "Finance & Insurance": [8, 12, 8, 11, -3, 8, -4, -4, 9, 13, 10, 9, 8],
+            "Information": [4, -2, 5, 3, 6, 2, 3, 3, 0, 2, 5, -2, 4],
+            "Professional, Scientific & Technical Services": [3, -2, -2, 2, 3, -2, 1, -5, -1, 3, -1, -3, 3],
+            "Utilities": [1, 5, 1, 7, 4, 1, 6, 1, 4, 11, 1, 1, 1],
+            "Other Services": [0, 0, -3, 13, -3, 1, -8, 0, 0, 14, -3, 0, 0],
+            "Transportation & Warehousing": [5, 9, 7, 4, 6, 9, -2, 4, 11, 5, 7, 5, 5],
+            "Management of Companies & Support Services": [7, -1, 2, -2, 1, -6, -6, -3, -3, -3, 3, -1, 7],
+            "Mining": [-4, 0, 11, 9, 6, 9, 7, 9, 0, 9, 12, 0, -3],
+            "Real Estate, Rental & Leasing": [-2, -4, -2, 6, 5, 4, 4, 8, 10, 8, -2, -6, -2],
+            "Construction": [2, 0, 4, 3, -6, 3, -3, -1, 1, 6, 4, 0, 2]
         };
 
         const headerRow = document.getElementById('headerRow');
@@ -307,24 +308,11 @@
 
             servicesData[industry].forEach(score => {
                 const td = document.createElement('td');
-                // Only show number if not 0 placeholder for now, or just show 0
-                // For historical placeholders, maybe show '-'
-                if (score === 0 && industry !== 'Other Services') {
-                    // To distinguish actual 0 from data missing 0
-                    // But here we hardcoded. Let's just show what we have.
-                    // For Nov 2025, Other Services is actually 0.
-                    // For others, 0 likely means missing data.
-                    td.textContent = (score === 0 && months.indexOf("Nov 2025") === 12) ? '0' : '-';
-                    // Actually checking index is harder inside loop without index arg
-                }
-
+                // Format: +N, -N, or 0
                 td.textContent = score > 0 ? `+${score}` : (score === 0 ? '0' : score);
 
-                // Dim missing data
-                // Display zero values
-                if (score === 0 && industry !== 'Other Services') {
-                    // It can be debatably Missing or Stable.
-                    // User requested yellow for 0s.
+                // Styling
+                if (score === 0) {
                     td.style.backgroundColor = getColor(0); // #ffff99
                     td.style.color = '#333';
                 } else {
@@ -354,22 +342,6 @@
             "Sep 2025": {
                 growth: ["Accommodation & Food Services", "Other Services", "Health Care & Social Assistance", "Public Administration", "Information", "Wholesale Trade", "Educational Services", "Finance & Insurance", "Utilities"],
                 decline: ["Real Estate, Rental & Leasing", "Construction", "Agriculture, Forestry, Fishing & Hunting", "Retail Trade", "Management of Companies & Support Services", "Professional, Scientific & Technical Services"]
-            },
-            "Aug 2025": {
-                growth: ["Wholesale Trade", "Educational Services", "Arts, Entertainment & Recreation", "Information", "Transportation & Warehousing", "Retail Trade", "Utilities", "Management of Companies & Support Services", "Health Care & Social Assistance", "Finance & Insurance", "Public Administration", "Professional, Scientific & Technical Services", "Real Estate, Rental & Leasing"],
-                decline: ["Construction", "Accommodation & Food Services"]
-            },
-            "Jul 2025": {
-                growth: ["Wholesale Trade", "Transportation & Warehousing", "Finance & Insurance", "Public Administration", "Other Services", "Management of Companies & Support Services", "Utilities"],
-                decline: ["Accommodation & Food Services", "Construction", "Arts, Entertainment & Recreation", "Agriculture, Forestry, Fishing & Hunting", "Educational Services", "Real Estate, Rental & Leasing", "Health Care & Social Assistance"]
-            },
-            "Jun 2025": {
-                growth: ["Other Services", "Finance & Insurance", "Professional, Scientific & Technical Services", "Transportation & Warehousing", "Wholesale Trade", "Utilities", "Public Administration", "Educational Services"],
-                decline: ["Agriculture, Forestry, Fishing & Hunting", "Mining", "Real Estate, Rental & Leasing", "Construction"]
-            },
-            "May 2025": {
-                growth: ["Accommodation & Food Services", "Arts, Entertainment & Recreation", "Public Administration", "Educational Services", "Utilities", "Information"],
-                decline: ["Mining", "Management of Companies & Support Services", "Real Estate, Rental & Leasing", "Other Services", "Wholesale Trade", "Retail Trade", "Construction"]
             },
             "Aug 2025": {
                 growth: ["Wholesale Trade", "Educational Services", "Arts, Entertainment & Recreation", "Information", "Transportation & Warehousing", "Retail Trade", "Utilities", "Management of Companies & Support Services", "Health Care & Social Assistance", "Finance & Insurance", "Public Administration", "Professional, Scientific & Technical Services", "Real Estate, Rental & Leasing"],
