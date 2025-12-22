@@ -150,10 +150,15 @@
 
     <div class="back-nav">
         <a href="index.html">← Back to Financial Dashboard</a>
-        <a href="services_comments.html" style="margin-left: 20px;">View Respondent Comments →</a>
     </div>
 
     <h1>ISM Services Industry Trends (Nov '24 - Nov '25)</h1>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <a href="services_comments.html"
+            style="color: #d35400; text-decoration: none; font-size: 1.1em; font-weight: bold;">View Respondent Comments
+            &rarr;</a>
+    </div>
 
     <div class="legend">
         <div class="legend-item">
@@ -188,6 +193,27 @@
         <strong>Employment</strong> contracted for the sixth consecutive month (48.9%), indicating labor market softness
         despite strong demand. <strong>Prices</strong> remain elevated (65.4%), although this is the lowest reading
         since April.
+    </div>
+
+    <h2>New Orders Services Growth Rank</h2>
+    <table id="rankTable">
+        <thead>
+            <tr id="rankHeaderRow">
+                <th class="industry-col">Industry</th>
+                <!-- Months populated by JS -->
+            </tr>
+        </thead>
+        <tbody id="rankTableBody"></tbody>
+    </table>
+
+    <div class="summary-box">
+        <span class="summary-title"
+            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
+            Insights</span>
+        The <strong>New Orders</strong> index continues to show expansion, though the pace has varied. In November,
+        public sector and consumer-facing services like <strong>Retail Trade</strong> led growth, while
+        <strong>Construction</strong> and <strong>Real Estate</strong> faced contraction, likely due to interest rate
+        sensitivity.
     </div>
 
     <div class="summary-box">
@@ -321,6 +347,102 @@
 
 
     </script>
-</body>
+    <script>
+        // --- New Orders Rank Data ---
+        const ranklists = {
+            "Nov 2025": {
+                growth: ["Public Administration", "Arts, Entertainment & Recreation", "Retail Trade", "Other Services", "Wholesale Trade", "Health Care & Social Assistance", "Educational Services", "Transportation & Warehousing", "Finance & Insurance", "Professional, Scientific & Technical Services", "Utilities", "Information"],
+                decline: ["Real Estate, Rental & Leasing", "Management of Companies & Support Services", "Construction", "Accommodation & Food Services"]
+            },
+            "Oct 2025": {
+                growth: ["Accommodation & Food Services", "Retail Trade", "Wholesale Trade", "Real Estate, Rental & Leasing", "Agriculture, Forestry, Fishing & Hunting", "Other Services", "Transportation & Warehousing", "Health Care & Social Assistance", "Professional, Scientific & Technical Services", "Information", "Utilities", "Educational Services"],
+                decline: ["Arts, Entertainment & Recreation", "Construction", "Management of Companies & Support Services", "Finance & Insurance", "Public Administration"]
+            },
+            "Sep 2025": {
+                growth: ["Accommodation & Food Services", "Other Services", "Health Care & Social Assistance", "Public Administration", "Information", "Wholesale Trade", "Educational Services", "Finance & Insurance", "Utilities"],
+                decline: ["Real Estate, Rental & Leasing", "Construction", "Agriculture, Forestry, Fishing & Hunting", "Retail Trade", "Management of Companies & Support Services", "Professional, Scientific & Technical Services"]
+            }
+        };
 
-</html>
+        // Normalize Name Function (Map variations to standard keys if needed)
+        function normalizeName(name) {
+            const map = {
+                "Nonmetallic Minerals": "Nonmetallic Mineral Products",
+                "Power & Energy": "Utilities"
+            };
+            return map[name] || name;
+        }
+
+        // Build Rank Data Table
+        const rankTableBody = document.getElementById('rankTableBody');
+        const rankHeaderRow = document.getElementById('rankHeaderRow');
+
+        // 1. Populate Headers (Months) - reusing `months` array logic
+        // We currently only have 3 months of data for this table.
+        // Let's filter `months` to only show those we have data for, OR show all with placeholders.
+        // For consistency with heatmap, let's show all but leave empty for missing data.
+
+        months.forEach(month => {
+            const th = document.createElement('th');
+            th.textContent = month;
+            rankHeaderRow.appendChild(th);
+        });
+
+        // 2. Iterate Industries and Months to Calculate Scores
+        const industries = Object.keys(servicesData).sort();
+
+        industries.forEach(industry => {
+            const tr = document.createElement('tr');
+
+            // Industry Name
+            const nameTd = document.createElement('td');
+            nameTd.className = 'industry-col';
+            nameTd.textContent = industry;
+            tr.appendChild(nameTd);
+
+            // Loop through months
+            months.forEach(month => {
+                const list = ranklists[month];
+                let score = 0;
+
+                if (list) {
+                    // Check Growth
+                    const growthIdx = list.growth.findIndex(n => normalizeName(n) === industry);
+                    if (growthIdx !== -1) {
+                        score = list.growth.length - growthIdx;
+                    }
+
+                    // Check Decline
+                    if (score === 0) { // Only check decline if not in growth
+                        const declineIdx = list.decline.findIndex(n => normalizeName(n) === industry);
+                        if (declineIdx !== -1) {
+                            score = -(list.decline.length - declineIdx);
+                        }
+                    }
+                }
+
+                const td = document.createElement('td');
+                // Only show number if score is non-zero (i.e., we have data)
+                // For missing months, show '-'
+                if (!list) {
+                    td.textContent = '-';
+                    td.style.backgroundColor = 'white';
+                } else {
+                    td.textContent = score > 0 ? `+${score}` : (score === 0 ? '0' : score);
+                    td.style.backgroundColor = getColor(score); // Reusing heatmap color scale
+                    if (Math.abs(score) > 8) td.style.color = 'white';
+                    // Dim zeros if present (meaning 'No Change' or omitted)
+                    if (score === 0) {
+                        td.style.backgroundColor = '#f4f4f4';
+                        td.style.color = '#ccc';
+                        td.textContent = '0';
+                    }
+                }
+
+                tr.appendChild(td);
+            });
+            rankTableBody.appendChild(tr);
+        });
+</body >
+
+</html >
