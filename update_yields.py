@@ -72,7 +72,41 @@ def fetch_treasury_data():
         print(f"Error fetching data: {e}")
         return None
 
-def update_html(date_str, data):
+# --- New Configuration for FRED ---
+FRED_CSV_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=REAINTRATREARAT10Y"
+
+def fetch_real_rate():
+    print(f"Fetching Real Rate from: {FRED_CSV_URL}")
+    try:
+        response = requests.get(FRED_CSV_URL)
+        response.raise_for_status()
+        
+        # CSV Format:
+        # DATE,REAINTRATREARAT10Y
+        # 2025-11-01,1.5
+        # 2025-12-01,1.45392
+        
+        lines = response.text.strip().split('\n')
+        if len(lines) < 2:
+            return None
+            
+        # Get last line
+        last_line = lines[-1]
+        parts = last_line.split(',')
+        if len(parts) >= 2:
+            val_str = parts[1]
+            try:
+                val = float(val_str)
+                return val
+            except ValueError:
+                return None
+        return None
+
+    except Exception as e:
+        print(f"Error fetching real rate: {e}")
+        return None
+
+def update_html(date_str, data, real_rate=None):
     if not os.path.exists(TARGET_FILE):
         print(f"Error: {TARGET_FILE} not found.")
         return
@@ -109,6 +143,10 @@ def update_html(date_str, data):
     sign = "+" if spread >= 0 else ""
     content = re.sub(r'(id="kpi-spread">).*?( bps</div>)', f'\\g<1>{sign}{spread:.0f}\\g<2>', content)
 
+    # Update Real Rate (New)
+    if real_rate is not None:
+        content = re.sub(r'(id="kpi-real-rate">).*?(</div>)', f'\\g<1>{real_rate:.2f}%\\g<2>', content)
+
     # 5. Update Deployment Version Meta Tag (Cache Busting)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
     if 'name="deployment-version"' in content:
@@ -126,7 +164,7 @@ def update_html(date_str, data):
     
     print(f"Successfully updated {TARGET_FILE}")
     print(f"Date: {formatted_date}")
-    print(f"2Y: {yield_2y}% | 10Y: {yield_10y}% | Spread: {spread:.0f} bps")
+    print(f"2Y: {yield_2y}% | 10Y: {yield_10y}% | Spread: {spread:.0f} bps | Real Rate: {real_rate if real_rate else 'N/A'}%")
 
     # Update Index File
     INDEX_FILE = "index.html"
@@ -153,9 +191,14 @@ def update_html(date_str, data):
             print(f"Could not find Yield Curve card pattern in {INDEX_FILE}")
 
 if __name__ == "__main__":
-    result = fetch_treasury_data()
-    if result:
-        date_val, data_val = result
-        update_html(date_val, data_val)
+    # Fetch Treasury Data
+    treasury_result = fetch_treasury_data()
+    
+    # Fetch Real Rate Data
+    real_rate_val = fetch_real_rate()
+
+    if treasury_result:
+        date_val, data_val = treasury_result
+        update_html(date_val, data_val, real_rate_val)
     else:
-        print("Failed to get data.")
+        print("Failed to get Treasury data.")
