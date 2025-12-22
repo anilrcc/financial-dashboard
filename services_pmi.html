@@ -179,6 +179,29 @@
     </table>
 
     <div class="summary-box">
+        <span class="summary-title"
+            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
+            Insights</span><br>
+        The <strong>Services PMI</strong> expanded for the ninth time in 2025 (52.6%). <strong>Business
+            Activity</strong> and <strong>New Orders</strong> remain robust, driving growth. However,
+        <strong>Employment</strong> contracted for the sixth consecutive month (48.9%), indicating labor market softness
+        despite strong demand. <strong>Prices</strong> remain elevated (65.4%), although this is the lowest reading
+        since April.
+    </div>
+
+    <h2>Services PMI Overview (Nov 2025)</h2>
+    <table id="pmiTable" style="max-width: 800px;">
+        <thead>
+            <tr>
+                <th style="text-align: left;">Metric</th>
+                <th>Index Value</th>
+                <th>Trend</th>
+            </tr>
+        </thead>
+        <tbody id="pmiBody"></tbody>
+    </table>
+
+    <div class="summary-box">
         <strong>Note:</strong> Historical data for Services Industries (Nov 2024 - Oct 2025) is currently being
         aggregated. The table above reflects the most recent report (Nov 2025).
     </div>
@@ -213,6 +236,17 @@
         // 3. Mining (-3)
         // 4. Management of Companies & Support Services (-2)
         // 5. Transportation & Warehousing (-1)
+
+        // --- ISM Services PMI Data (Nov 2025) ---
+        const pmiData = [
+            { metric: "Services PMI", value: 52.6, trend: "Expansion" },
+            { metric: "Business Activity", value: 54.5, trend: "Expansion" },
+            { metric: "New Orders", value: 52.9, trend: "Expansion" },
+            { metric: "Employment", value: 48.9, trend: "Contraction" },
+            { metric: "Supplier Deliveries", value: 54.1, trend: "Slower" },
+            { metric: "Prices", value: 65.4, trend: "Increasing" },
+            // Inventories, etc. can be added if available
+        ];
 
         // Stable: Other Services (0)
 
@@ -296,6 +330,36 @@
                 tr.appendChild(td);
             });
             tableBody.appendChild(tr);
+        });
+
+        // Populate PMI Table
+        const pmiBody = document.getElementById('pmiBody');
+        pmiData.forEach(item => {
+            const tr = document.createElement('tr');
+
+            const nameTd = document.createElement('td');
+            nameTd.textContent = item.metric;
+            nameTd.style.textAlign = 'left';
+            nameTd.style.fontWeight = '600';
+            tr.appendChild(nameTd);
+
+            const valTd = document.createElement('td');
+            valTd.textContent = item.value + '%';
+
+            // Color coding for Index
+            if (item.value > 50) valTd.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
+            else if (item.value < 50) valTd.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
+
+            tr.appendChild(valTd);
+
+            const trendTd = document.createElement('td');
+            trendTd.textContent = item.trend;
+            if (item.trend === 'Expansion' || item.trend === 'Increasing') trendTd.style.color = '#27ae60';
+            else if (item.trend === 'Contraction' || item.trend === 'Decreasing') trendTd.style.color = '#c0392b';
+            trendTd.style.fontWeight = 'bold';
+            tr.appendChild(trendTd);
+
+            pmiBody.appendChild(tr);
         });
 
     </script>
