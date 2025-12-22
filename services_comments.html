@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISM Services Respondent Comments</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 20px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #e67e22;
+            /* Matches services orange theme */
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        .industry-section {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .industry-header {
+            font-size: 1.5em;
+            color: #e67e22;
+            /* Matches services orange theme */
+            border-bottom: 1px solid #404040;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .industry-header:hover {
+            color: #d35400;
+        }
+
+        .comment-list {
+            list-style-type: none;
+            padding: 0;
+            display: block;
+            /* Default to open */
+        }
+
+        .comment-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #404040;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-date {
+            font-weight: bold;
+            color: #569cd6;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .comment-text {
+            line-height: 1.6;
+            color: #cccccc;
+        }
+
+        .toggle-icon {
+            font-size: 0.8em;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="services_pmi.html" class="nav-link">&larr; Back to Services Heatmap</a>
+        <h1>ISM Services Respondent Comments (Nov 2025)</h1>
+        <div id="comments-container"></div>
+    </div>
+
+    <script>
+        const rawComments = `
+## Nov 2025
+- **Accommodation & Food Services**: "Suppliers are very inconsistent on how they are planning and executing pricing related to tariffs. Overall uncertainty on how to source and how much to source is as high as during the coronavirus pandemic era."
+- **Construction**: "Residential home sales continue to be hampered by mortgage rates. Most of the industry is describing their slowdown as an intentional pause, while suppliers and labor are looking at cutting margins. To maintain build volume, subcontractors are tightening their belts."
+- **Finance & Insurance**: "Increased activity due to year end project push."
+- **Health Care & Social Assistance**: "Patient volumes appear to be leveling off a bit, providing teams a chance to catch their breath. Supply chains are operating surprisingly well, as measured by notably higher back-order and fill-rate performance. Labor remains a strong performer as well; staffing levels remain high and there is less demand for travel labor altogether. Cost of goods remains higher but there are pockets of softening beginning to appear. Forecast remains optimistic."
+- **Information**: "Business still slow due to tariffs."
+- **Management of Companies & Support Services**: "With the end of the federal government shutdown, we have resumed normal operations. However, we are cautious that there may be another shutdown at the end of January."
+- **Real Estate, Rental & Leasing**: "Tariff uncertainty continues to add complexity to purchasing, and economic conditions remain mixed, with some indicators pointing to good prospects and others to worrying ones."
+- **Retail Trade**: "Business continues to be strong, driven by customer traffic. Pricing stable."
+- **Utilities**: "Business is ramping down for the end of the year — an overall great year."
+- **Wholesale Trade**: "We are anticipating demand to be consistent with what we have seen in 2025 thus far. Affordability continues to be a problem for an entire generation of buyers. We expect margins to erode as competitors fight for business. Lumber production is set to be reduced significantly, so prices should increase in 2026."
+`;
+
+        function parseComments(markdown) {
+            const industryData = {};
+            // Regex to catch month headers
+            const dateRegex = /^##\s+([A-Za-z]{3}\s+\d{4})$/;
+            const commentRegex = /^-\s+\*\*([^*]+)\*\*:\s+"([^"]+)"/;
+            const commentRegexAlt = /^-\s+\*\*([^*]+)\*\*:\s+(.+)$/;
+
+            const lines = markdown.split('\n');
+            let currentDate = '';
+
+            lines.forEach(line => {
+                line = line.trim();
+                const dateMatch = line.match(dateRegex);
+                if (dateMatch) {
+                    currentDate = dateMatch[1];
+                    return;
+                }
+
+                if (!currentDate) return;
+
+                let industry = '';
+                let text = '';
+
+                const commentMatch = line.match(commentRegex);
+                if (commentMatch) {
+                    industry = commentMatch[1];
+                    text = commentMatch[2];
+                } else {
+                    const commentMatchAlt = line.match(commentRegexAlt);
+                    if (commentMatchAlt) {
+                        industry = commentMatchAlt[1];
+                        text = commentMatchAlt[2].replace(/^"|"$/g, '');
+                    }
+                }
+
+                if (industry && text) {
+                    const normIndustry = industry.trim();
+                    if (!industryData[normIndustry]) {
+                        industryData[normIndustry] = [];
+                    }
+                    industryData[normIndustry].push({
+                        date: currentDate,
+                        text: text
+                    });
+                }
+            });
+            return industryData;
+        }
+
+        function parseDate(dateStr) {
+            const parts = dateStr.split(' ');
+            const months = {
+                "Jan": 0, "Feb": 1, "Mar": 2, "Apr": 3, "May": 4, "Jun": 5,
+                "Jul": 6, "Aug": 7, "Sep": 8, "Oct": 9, "Nov": 10, "Dec": 11
+            };
+            return new Date(parseInt(parts[1]), months[parts[0]], 1);
+        }
+
+        function toggleAll(show) {
+            const display = show ? 'block' : 'none';
+            const icon = show ? '▼' : '▶';
+
+            document.querySelectorAll('.comment-list').forEach(el => el.style.display = display);
+            document.querySelectorAll('.toggle-icon').forEach(el => el.textContent = icon);
+        }
+
+        function displayComments(data) {
+            const container = document.getElementById('comments-container');
+
+            // Add Controls
+            const controls = document.createElement('div');
+            controls.style.textAlign = 'right';
+            controls.style.marginBottom = '15px';
+
+            const expandBtn = document.createElement('button');
+            expandBtn.textContent = "Expand All";
+            expandBtn.style.marginRight = "10px";
+            expandBtn.style.padding = "8px 12px";
+            expandBtn.style.cursor = "pointer";
+            expandBtn.style.backgroundColor = "#e67e22";
+            expandBtn.style.color = "white";
+            expandBtn.style.border = "none";
+            expandBtn.style.borderRadius = "4px";
+            expandBtn.onclick = () => toggleAll(true);
+
+            const collapseBtn = document.createElement('button');
+            collapseBtn.textContent = "Collapse All";
+            collapseBtn.style.padding = "8px 12px";
+            collapseBtn.style.cursor = "pointer";
+            collapseBtn.style.backgroundColor = "#555";
+            collapseBtn.style.color = "white";
+            collapseBtn.style.border = "none";
+            collapseBtn.style.borderRadius = "4px";
+            collapseBtn.onclick = () => toggleAll(false);
+
+            controls.appendChild(expandBtn);
+            controls.appendChild(collapseBtn);
+            container.appendChild(controls);
+
+            const industries = Object.keys(data).sort();
+
+            industries.forEach(industry => {
+                // Sort by date desc
+                data[industry].sort((a, b) => parseDate(b.date) - parseDate(a.date));
+
+                const section = document.createElement('div');
+                section.className = 'industry-section';
+
+                const header = document.createElement('div');
+                header.className = 'industry-header';
+                header.innerHTML = `<span>${industry}</span> <span class="toggle-icon">▼</span>`;
+
+                const list = document.createElement('ul');
+                list.className = 'comment-list';
+
+                data[industry].forEach(comment => {
+                    const item = document.createElement('li');
+                    item.className = 'comment-item';
+                    item.innerHTML = `
+                        <span class="comment-date">${comment.date}</span>
+                        <span class="comment-text">"${comment.text}"</span>
+                    `;
+                    list.appendChild(item);
+                });
+
+                header.addEventListener('click', () => {
+                    if (list.style.display === 'none') {
+                        list.style.display = 'block';
+                        header.querySelector('.toggle-icon').textContent = '▼';
+                    } else {
+                        list.style.display = 'none';
+                        header.querySelector('.toggle-icon').textContent = '▶';
+                    }
+                });
+
+                section.appendChild(header);
+                section.appendChild(list);
+                container.appendChild(section);
+            });
+        }
+
+        const parsedData = parseComments(rawComments);
+        displayComments(parsedData);
+    </script>
+</body>
+
+</html>
