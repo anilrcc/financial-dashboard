@@ -52,8 +52,8 @@ def update_sentiment_file(data_points, summary_text=None):
     # 1. Update Data Array
     # Replace the entire sentimentData array
     if data_points:
-        # Get last 24 months for the chart
-        recent_data = data_points[-24:] if len(data_points) > 24 else data_points
+        # Get last 60 months (5 years) for the chart
+        recent_data = data_points[-60:] if len(data_points) > 60 else data_points
         
         # Build JavaScript array
         js_array_items = []

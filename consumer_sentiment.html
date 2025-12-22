@@ -147,6 +147,37 @@
             font-size: 0.9rem;
             text-align: center;
         }
+
+        .time-range-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .time-range-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .time-range-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .time-range-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
     </style>
 </head>
 
@@ -157,6 +188,15 @@
     </div>
 
     <h1>Consumer Sentiment Index</h1>
+
+    <!-- Time Range Controls -->
+    <div class="time-range-controls">
+        <button class="time-range-btn" data-range="3">3M</button>
+        <button class="time-range-btn" data-range="6">6M</button>
+        <button class="time-range-btn" data-range="12">1Y</button>
+        <button class="time-range-btn" data-range="36">3Y</button>
+        <button class="time-range-btn active" data-range="60">5Y</button>
+    </div>
 
     <!-- Chart -->
     <div class="chart-container">
@@ -195,6 +235,42 @@
         // Placeholder Data - Nov 2024 to Dec 2025
         // Ideally this would be populated by the python script or a JSON file
         const sentimentData = [
+            { month: "Jan 2021", index: 79.0 },
+            { month: "Feb 2021", index: 76.8 },
+            { month: "Mar 2021", index: 84.9 },
+            { month: "Apr 2021", index: 88.3 },
+            { month: "May 2021", index: 82.9 },
+            { month: "Jun 2021", index: 85.5 },
+            { month: "Jul 2021", index: 81.2 },
+            { month: "Aug 2021", index: 70.3 },
+            { month: "Sep 2021", index: 72.8 },
+            { month: "Oct 2021", index: 71.7 },
+            { month: "Nov 2021", index: 67.4 },
+            { month: "Dec 2021", index: 70.6 },
+            { month: "Jan 2022", index: 67.2 },
+            { month: "Feb 2022", index: 62.8 },
+            { month: "Mar 2022", index: 59.4 },
+            { month: "Apr 2022", index: 65.2 },
+            { month: "May 2022", index: 58.4 },
+            { month: "Jun 2022", index: 50.0 },
+            { month: "Jul 2022", index: 51.5 },
+            { month: "Aug 2022", index: 58.2 },
+            { month: "Sep 2022", index: 58.6 },
+            { month: "Oct 2022", index: 59.9 },
+            { month: "Nov 2022", index: 56.7 },
+            { month: "Dec 2022", index: 59.8 },
+            { month: "Jan 2023", index: 64.9 },
+            { month: "Feb 2023", index: 66.9 },
+            { month: "Mar 2023", index: 62.0 },
+            { month: "Apr 2023", index: 63.7 },
+            { month: "May 2023", index: 59.0 },
+            { month: "Jun 2023", index: 64.2 },
+            { month: "Jul 2023", index: 71.5 },
+            { month: "Aug 2023", index: 69.4 },
+            { month: "Sep 2023", index: 67.8 },
+            { month: "Oct 2023", index: 63.8 },
+            { month: "Nov 2023", index: 61.3 },
+            { month: "Dec 2023", index: 69.7 },
             { month: "Jan 2024", index: 79.0 },
             { month: "Feb 2024", index: 76.9 },
             { month: "Mar 2024", index: 79.4 },
@@ -221,110 +297,145 @@
             { month: "Dec 2025", index: 52.9 }
         ];
 
-        // 1. Chart Configuration
-        const ctx = document.getElementById('sentimentChart').getContext('2d');
-        const labels = sentimentData.map(d => d.month);
-        const dataPoints = sentimentData.map(d => d.index);
+        // Chart instance
+        let sentimentChart;
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Consumer Sentiment Index',
-                    data: dataPoints,
-                    borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#6366f1',
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                    }
+        // 1. Initialize Chart
+        function initChart(months = 60) {
+            const ctx = document.getElementById('sentimentChart').getContext('2d');
+
+            // Get data for the specified range
+            const rangeData = sentimentData.slice(-months);
+            const labels = rangeData.map(d => d.month);
+            const dataPoints = rangeData.map(d => d.index);
+
+            // Destroy existing chart if it exists
+            if (sentimentChart) {
+                sentimentChart.destroy();
+            }
+
+            sentimentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Consumer Sentiment Index',
+                        data: dataPoints,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#6366f1',
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        tension: 0.3,
+                        fill: true
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        grid: {
-                            color: '#e2e8f0'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        title: {
-                            display: true,
-                            text: 'Index Value'
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Index Value'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
         // 2. Populate Table
-        const tableBody = document.getElementById('sentimentTableBody');
-        // Reverse order for table (newest first)
-        const reversedData = [...sentimentData].reverse();
+        function populateTable() {
+            const tableBody = document.getElementById('sentimentTableBody');
+            tableBody.innerHTML = ''; // Clear existing
 
-        reversedData.forEach((item, index) => {
-            const tr = document.createElement('tr');
+            // Reverse order for table (newest first)
+            const reversedData = [...sentimentData].reverse();
 
-            // Month
-            const tdMonth = document.createElement('td');
-            tdMonth.textContent = item.month;
+            reversedData.forEach((item, index) => {
+                const tr = document.createElement('tr');
 
-            // Index
-            const tdIndex = document.createElement('td');
-            tdIndex.textContent = item.index.toFixed(1);
-            tdIndex.style.fontWeight = 'bold';
+                // Month
+                const tdMonth = document.createElement('td');
+                tdMonth.textContent = item.month;
 
-            // MoM Change
-            const tdMoM = document.createElement('td');
-            if (index < reversedData.length - 1) {
-                const prev = reversedData[index + 1].index;
-                const change = item.index - prev;
-                const changeStr = change > 0 ? `+${change.toFixed(1)}` : change.toFixed(1);
-                tdMoM.textContent = changeStr;
-                tdMoM.className = change >= 0 ? 'trend-up' : 'trend-down';
-            } else {
-                tdMoM.textContent = "-";
-            }
+                // Index
+                const tdIndex = document.createElement('td');
+                tdIndex.textContent = item.index.toFixed(1);
+                tdIndex.style.fontWeight = 'bold';
 
-            // YoY Change (12 months back)
-            const tdYoY = document.createElement('td');
-            if (index + 12 < reversedData.length) {
-                const yearAgo = reversedData[index + 12].index;
-                const change = item.index - yearAgo;
-                const changePct = ((change / yearAgo) * 100).toFixed(1);
-                const changeStr = change > 0 ? `+${changePct}%` : `${changePct}%`;
-                tdYoY.textContent = changeStr;
-                tdYoY.className = change >= 0 ? 'trend-up' : 'trend-down';
-            } else {
-                tdYoY.textContent = "-";
-            }
+                // MoM Change
+                const tdMoM = document.createElement('td');
+                if (index < reversedData.length - 1) {
+                    const prev = reversedData[index + 1].index;
+                    const change = item.index - prev;
+                    const changeStr = change > 0 ? `+${change.toFixed(1)}` : change.toFixed(1);
+                    tdMoM.textContent = changeStr;
+                    tdMoM.className = change >= 0 ? 'trend-up' : 'trend-down';
+                } else {
+                    tdMoM.textContent = "-";
+                }
 
+                // YoY Change (12 months back)
+                const tdYoY = document.createElement('td');
+                if (index + 12 < reversedData.length) {
+                    const yearAgo = reversedData[index + 12].index;
+                    const change = item.index - yearAgo;
+                    const changePct = ((change / yearAgo) * 100).toFixed(1);
+                    const changeStr = change > 0 ? `+${changePct}%` : `${changePct}%`;
+                    tdYoY.textContent = changeStr;
+                    tdYoY.className = change >= 0 ? 'trend-up' : 'trend-down';
+                } else {
+                    tdYoY.textContent = "-";
+                }
 
-            tr.appendChild(tdMonth);
-            tr.appendChild(tdIndex);
-            tr.appendChild(tdMoM);
-            tr.appendChild(tdYoY);
-            tableBody.appendChild(tr);
+                tr.appendChild(tdMonth);
+                tr.appendChild(tdIndex);
+                tr.appendChild(tdMoM);
+                tr.appendChild(tdYoY);
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // 3. Time Range Button Handlers
+        document.querySelectorAll('.time-range-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Remove active class from all buttons
+                document.querySelectorAll('.time-range-btn').forEach(b => b.classList.remove('active'));
+
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                // Get range and update chart
+                const range = parseInt(this.dataset.range);
+                initChart(range);
+            });
         });
+
+        // Initialize on page load
+        initChart(60); // Default to 5Y
+        populateTable();
 
     </script>
 </body>
