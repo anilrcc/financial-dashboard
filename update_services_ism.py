@@ -67,31 +67,36 @@ def fetch_report_data():
     target_month = get_target_month_name()
     print(f"Targeting Report: {target_month}")
     
-    # 1. Get Landing Page
-    landing_html = fetch_url(LANDING_URL)
-    if not landing_html: return None
-    
-    # 2. Find Link to Report
-    # Look for link containing the month slug, e.g., "december" for "December 2025"
+    # 1. Strategy A: Direct URL Construction (User Request)
     month_slug = target_month.split()[0].lower()
-    # Pattern: href=".../services/monthname/..." or similar
-    # The URL structure is typically: /supply-management-news-and-reports/reports/ism-pmi-reports/services/month-year/
-    link_pattern = re.compile(r'href="([^"]*?/services/' + month_slug + r'[^"]*?)"', re.IGNORECASE)
-    match = link_pattern.search(landing_html)
+    # Format: .../services/month/ (e.g. services/november/)
+    direct_url = f"{BASE_URL}/supply-management-news-and-reports/reports/ism-pmi-reports/services/{month_slug}/"
     
-    if not match:
-        print(f"Could not find link for {month_slug} report on ISM website.")
-        # Fallback: Try constructing it or assume PR Newswire scrape is needed (which is harder automation).
-        # For this script we assume ISM site is up to date.
-        return None
+    print(f"Attempting Direct URL: {direct_url}")
+    text = fetch_url(direct_url)
+    
+    # 2. Strategy B: Landing Page Scrape (Fallback)
+    if not text:
+        print("Direct URL failed. Falling back to Landing Page scrape.")
+        landing_html = fetch_url(LANDING_URL)
+        if landing_html:
+            # Pattern: href=".../services/monthname.../"
+            link_pattern = re.compile(r'href="([^"]*?/services/' + month_slug + r'[^"]*?)"', re.IGNORECASE)
+            match = link_pattern.search(landing_html)
+            
+            if match:
+                report_url = match.group(1)
+                if not report_url.startswith("http"):
+                    report_url = BASE_URL + report_url
+                text = fetch_url(report_url)
+            else:
+                 print(f"Could not find link for {month_slug} report on ISM Landing Page.")
 
-    report_url = match.group(1)
-    if not report_url.startswith("http"):
-        report_url = BASE_URL + report_url
+    if not text: 
+        return None
         
     # 3. Fetch Report
-    text = fetch_url(report_url)
-    if not text: return None
+
     
     # Clean text to remove HTML tags for easier regex? 
     # Or just use regex on HTML. Using simplified regex on HTML/Text mixed is usually fine for these patterns.
@@ -390,13 +395,18 @@ def update_index_page(month_str):
     # Or strict regex lookaround?
     # Let's try to match the specific card.
     
-    # Regex: (Services PMI.*?Last updated: )(.*?)(</small>)
-    # This assumes Services PMI comes before the date.
-    pattern = re.compile(r'(Services PMI.*?Last updated: )([^<]*?)(</small>)', re.DOTALL | re.IGNORECASE)
+    # Regex: Look for the Services card data
+    # <a href="services_pmi.html"                <span>Macro Indicator • Dec 22, 2025</span>
+    # We want to replace the text after the bullet.
+    
+    # Pattern to find the Services card block start, then the meta span
+    # We'll use a slightly broader match
+    # Match: (href="services_pmi.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)
+    pattern = re.compile(r'(href="services_pmi.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
     
     if pattern.search(content):
-        # Update to current date YYYY-MM-DD
-        today_str = datetime.date.today().strftime("%Y-%m-%d")
+        # Update to current date Month DD, YYYY
+        today_str = datetime.date.today().strftime("%b %d, %Y")
         content = pattern.sub(f"\\g<1>{today_str}\\g<3>", content)
         
         with open(INDEX_FILE, 'w') as f: f.write(content)
