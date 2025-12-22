@@ -335,7 +335,7 @@
             <canvas id="macroChart"></canvas>
         </div>
         <p style="text-align: center; font-size: 0.9em; color: #666; margin-top: 10px;">
-            *GDP Data source: B.E.A. (Real GDP % Change, Annual Rate). Quarterly data mapped to monthly periods.
+            *GDP Data source: FRED (Gross Domestic Product, Billions of Dollars). Quarterly data.
         </p>
     </div>
 
@@ -795,48 +795,50 @@
         // --- Macro Chart (GDP vs PMI) ---
         const ctxMacro = document.getElementById('macroChart').getContext('2d');
 
-        // Map available GDP Data (Quarterly) to Monthly timeline
-        // Timeline: Nov 2024 - Nov 2025
-        // Q4 2024: 1.9% (Est) -> Nov, Dec
-        // Q1 2025: -0.6% (Real) -> Jan, Feb, Mar
-        // Q2 2025: 3.8% (Real) -> Apr, May, Jun
-        // Q3 2025: null (Pending) -> Jul, Aug, Sep
-        // Q4 2025: null (Pending) -> Oct, Nov
+        // Map available GDP Data (Quarterly, Trillions of Dollars - FRED)
+        // Source: https://fred.stlouisfed.org/series/GDP
+        // Q3 2024: 29.51 (Sept/Oct release) -> Mapping to prior
+        // Q4 2024: 29.825
+        // Q1 2025: 30.042
+        // Q2 2025: 30.485
+        // Q3 2025: null (Next Release Dec 23)
 
-        // We use a helper to look up the value based on month string
         const gdpMap = {
-            "Nov 2024": 1.9, "Dec 2024": 1.9,
-            "Jan 2025": -0.6, "Feb 2025": -0.6, "Mar 2025": -0.6,
-            "Apr 2025": 3.8, "May 2025": 3.8, "Jun 2025": 3.8,
-            "Jul 2025": null, "Aug 2025": null, "Sep 2025": null,
+            "Nov 2024": 29.825, "Dec 2024": 29.825, // Q4
+            "Jan 2025": 30.042, "Feb 2025": 30.042, "Mar 2025": 30.042, // Q1
+            "Apr 2025": 30.485, "May 2025": 30.485, "Jun 2025": 30.485, // Q2
+            "Jul 2025": null, "Aug 2025": null, "Sep 2025": null, // Q3 Pending
             "Oct 2025": null, "Nov 2025": null
         };
 
         const gdpValues = dates.map(d => gdpMap[d] !== undefined ? gdpMap[d] : null);
 
         new Chart(ctxMacro, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: dates,
                 datasets: [
                     {
-                        label: 'US Real GDP (% Change Annualized)',
+                        label: 'US Nominal GDP ($ Trillions)',
                         data: gdpValues,
-                        backgroundColor: gdpValues.map(v => v >= 0 ? 'rgba(52, 152, 219, 0.5)' : 'rgba(231, 76, 60, 0.5)'),
-                        borderColor: gdpValues.map(v => v >= 0 ? 'rgba(52, 152, 219, 1)' : 'rgba(231, 76, 60, 1)'),
-                        borderWidth: 1,
+                        borderColor: '#2980b9', // Strong Blue
+                        backgroundColor: 'rgba(41, 128, 185, 0.1)',
+                        borderWidth: 3,
                         yAxisID: 'y1',
-                        order: 2,
-                        barPercentage: 1.0,
-                        categoryPercentage: 1.0
+                        fill: false,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#2980b9',
+                        order: 2
                     },
                     {
                         label: 'Manufacturing PMI',
                         data: pmiValues,
-                        borderColor: '#2c3e50',
+                        borderColor: '#2c3e50', // Dark Slate
                         backgroundColor: 'rgba(44, 62, 80, 0.1)',
                         borderWidth: 3,
-                        type: 'line',
+                        borderDash: [5, 5], // Dashed to differentiate index
+                        fill: false,
                         tension: 0.3,
                         yAxisID: 'y',
                         pointRadius: 4,
@@ -849,7 +851,7 @@
                 ...commonOptions,
                 plugins: {
                     ...commonOptions.plugins,
-                    title: { display: true, text: 'Macro Context: GDP Growth vs Manufacturing Activity' },
+                    title: { display: true, text: 'Macro Context: US GDP Level vs Manufacturing Activity' },
                     tooltip: {
                         mode: 'index',
                         intersect: false,
@@ -860,7 +862,8 @@
                                     label += ': ';
                                 }
                                 if (context.parsed.y !== null) {
-                                    label += context.parsed.y + (context.datasetIndex === 0 ? '%' : '');
+                                    if (context.datasetIndex === 0) return label + '$' + context.parsed.y + 'T';
+                                    return label + context.parsed.y;
                                 }
                                 return label;
                             }
@@ -883,10 +886,11 @@
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        title: { display: true, text: 'GDP Growth (%)' },
-                        grid: { display: false }, // only want grid lines for one axis
-                        min: -5,
-                        max: 5
+                        title: { display: true, text: 'GDP ($ Trillions)' },
+                        grid: { display: false },
+                        // Scale to fit data beautifully (29T - 31T range)
+                        min: 29,
+                        max: 31
                     }
                 }
             }
