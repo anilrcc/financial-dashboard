@@ -321,9 +321,12 @@
                 td.textContent = score > 0 ? `+${score}` : (score === 0 ? '0' : score);
 
                 // Dim missing data
+                // Display zero values
                 if (score === 0 && industry !== 'Other Services') {
-                    td.style.backgroundColor = '#f4f4f4';
-                    td.style.color = '#ccc';
+                    // It can be debatably Missing or Stable.
+                    // User requested yellow for 0s.
+                    td.style.backgroundColor = getColor(0); // #ffff99
+                    td.style.color = '#333';
                 } else {
                     td.style.backgroundColor = getColor(score);
                     if (Math.abs(score) > 8) td.style.color = 'white';
@@ -463,8 +466,8 @@
                     if (Math.abs(score) > 8) td.style.color = 'white';
                     // Dim zeros if present (meaning 'No Change' or omitted)
                     if (score === 0) {
-                        td.style.backgroundColor = '#f4f4f4';
-                        td.style.color = '#ccc';
+                        td.style.backgroundColor = getColor(0); // #ffff99
+                        td.style.color = '#333';
                         td.textContent = '0';
                     }
                 }
