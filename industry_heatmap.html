@@ -327,6 +327,18 @@
         </div>
     </div>
 
+    <!-- Macro Chart -->
+    <h2 style="margin-top: 40px;">Macro View: Manufacturing vs GDP</h2>
+    <div
+        style="max-width: 1000px; margin: 0 auto 50px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <div style="height: 400px; position: relative;">
+            <canvas id="macroChart"></canvas>
+        </div>
+        <p style="text-align: center; font-size: 0.9em; color: #666; margin-top: 10px;">
+            *GDP Data source: B.E.A. (Real GDP % Change, Annual Rate). Quarterly data mapped to monthly periods.
+        </p>
+    </div>
+
     <script>
         const months = [
             "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025",
@@ -779,6 +791,107 @@
                 }
             }
         });
+
+        // --- Macro Chart (GDP vs PMI) ---
+        const ctxMacro = document.getElementById('macroChart').getContext('2d');
+
+        // Map available GDP Data (Quarterly) to Monthly timeline
+        // Timeline: Nov 2024 - Nov 2025
+        // Q4 2024: 1.9% (Est) -> Nov, Dec
+        // Q1 2025: -0.6% (Real) -> Jan, Feb, Mar
+        // Q2 2025: 3.8% (Real) -> Apr, May, Jun
+        // Q3 2025: null (Pending) -> Jul, Aug, Sep
+        // Q4 2025: null (Pending) -> Oct, Nov
+
+        // We use a helper to look up the value based on month string
+        const gdpMap = {
+            "Nov 2024": 1.9, "Dec 2024": 1.9,
+            "Jan 2025": -0.6, "Feb 2025": -0.6, "Mar 2025": -0.6,
+            "Apr 2025": 3.8, "May 2025": 3.8, "Jun 2025": 3.8,
+            "Jul 2025": null, "Aug 2025": null, "Sep 2025": null,
+            "Oct 2025": null, "Nov 2025": null
+        };
+
+        const gdpValues = dates.map(d => gdpMap[d] !== undefined ? gdpMap[d] : null);
+
+        new Chart(ctxMacro, {
+            type: 'bar',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'US Real GDP (% Change Annualized)',
+                        data: gdpValues,
+                        backgroundColor: gdpValues.map(v => v >= 0 ? 'rgba(52, 152, 219, 0.5)' : 'rgba(231, 76, 60, 0.5)'),
+                        borderColor: gdpValues.map(v => v >= 0 ? 'rgba(52, 152, 219, 1)' : 'rgba(231, 76, 60, 1)'),
+                        borderWidth: 1,
+                        yAxisID: 'y1',
+                        order: 2,
+                        barPercentage: 1.0,
+                        categoryPercentage: 1.0
+                    },
+                    {
+                        label: 'Manufacturing PMI',
+                        data: pmiValues,
+                        borderColor: '#2c3e50',
+                        backgroundColor: 'rgba(44, 62, 80, 0.1)',
+                        borderWidth: 3,
+                        type: 'line',
+                        tension: 0.3,
+                        yAxisID: 'y',
+                        pointRadius: 4,
+                        pointBackgroundColor: '#2c3e50',
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: { display: true, text: 'Macro Context: GDP Growth vs Manufacturing Activity' },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + (context.datasetIndex === 0 ? '%' : '');
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'PMI Index' },
+                        min: 40,
+                        max: 60
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'GDP Growth (%)' },
+                        grid: { display: false }, // only want grid lines for one axis
+                        min: -5,
+                        max: 5
+                    }
+                }
+            }
+        });
+
 
     </script>
 </body>
