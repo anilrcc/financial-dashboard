@@ -263,24 +263,24 @@
         // Stable: Other Services (0)
 
         const servicesData = {
-            "Retail Trade": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 10, 12],
-            "Arts, Entertainment & Recreation": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 11],
-            "Accommodation & Food Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 10],
-            "Wholesale Trade": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 9, 9],
-            "Health Care & Social Assistance": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 7, 8],
-            "Educational Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 7],
-            "Public Administration": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, -3, 6],
-            "Agriculture, Forestry, Fishing & Hunting": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 4, 5],
-            "Finance & Insurance": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, -4, 4],
-            "Information": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3, 3],
-            "Professional, Scientific & Technical Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3, 2, 2],
-            "Utilities": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 1],
-            "Other Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, -1, 0],
-            "Transportation & Warehousing": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, -1],
-            "Management of Companies & Support Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4, -5, -2],
-            "Mining": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, -3],
-            "Real Estate, Rental & Leasing": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 8, -4],
-            "Construction": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5, -2, -5]
+            "Retail Trade": [4, 7, 4, -2, -2, 6, -6, 5, 5, 5, -2, 10, 12],
+            "Arts, Entertainment & Recreation": [13, 11, -2, -2, 7, 7, 9, 3, 11, 10, 0, -6, 11],
+            "Accommodation & Food Services": [14, 7, 4, 1, 11, 10, 4, -4, 12, 0, 10, 11, 10],
+            "Wholesale Trade": [11, 6, 10, 10, 8, 7, 5, -3, 6, 11, 4, 9, 9],
+            "Health Care & Social Assistance": [12, 10, 9, 7, 7, 2, 8, 3, 2, 4, 9, 7, 8],
+            "Educational Services": [-3, -2, 9, -3, 5, 2, 1, 5, -3, 7, 5, 1, 7],
+            "Public Administration": [9, 8, 2, 1, 2, 6, 4, -5, 4, 3, 6, -3, 6],
+            "Agriculture, Forestry, Fishing & Hunting": [10, -2, 12, 8, 6, 4, -1, -5, -4, 0, -6, 4, 5],
+            "Finance & Insurance": [8, 12, 8, 11, -3, 8, 3, -1, 9, -2, 3, -4, 4],
+            "Information": [4, -2, 5, 3, 6, 2, 3, 1, 3, 12, 7, 3, 3],
+            "Professional, Scientific & Technical Services": [3, -2, -2, 2, 3, -2, 2, -2, -2, 6, -3, 2, 2],
+            "Utilities": [1, 5, 1, 7, 4, 1, 8, 5, 10, 5, 1, 6, 1],
+            "Other Services": [0, 0, -3, 13, -3, 1, -1, 4, -1, -1, 8, -1, 0],
+            "Transportation & Warehousing": [5, 9, 7, 4, 6, 9, -2, 2, 10, 8, 2, 5, -1],
+            "Management of Companies & Support Services": [7, -1, 2, -2, 1, -6, -3, 6, 7, -2, -4, -5, -2],
+            "Mining": [-4, 0, 11, 9, 6, 9, -1, 5, -5, 9, -7, 0, -3],
+            "Real Estate, Rental & Leasing": [-2, -4, -2, 6, 5, 4, 5, 6, 4, 2, -1, 8, -4],
+            "Construction": [2, 0, 4, 3, -6, 3, -2, 2, -4, -3, -5, -2, -5]
         };
 
         const headerRow = document.getElementById('headerRow');
@@ -361,6 +361,46 @@
             "Sep 2025": {
                 growth: ["Accommodation & Food Services", "Other Services", "Health Care & Social Assistance", "Public Administration", "Information", "Wholesale Trade", "Educational Services", "Finance & Insurance", "Utilities"],
                 decline: ["Real Estate, Rental & Leasing", "Construction", "Agriculture, Forestry, Fishing & Hunting", "Retail Trade", "Management of Companies & Support Services", "Professional, Scientific & Technical Services"]
+            },
+            "Aug 2025": {
+                growth: ["Wholesale Trade", "Educational Services", "Arts, Entertainment & Recreation", "Information", "Transportation & Warehousing", "Retail Trade", "Utilities", "Management of Companies & Support Services", "Health Care & Social Assistance", "Finance & Insurance", "Public Administration", "Professional, Scientific & Technical Services", "Real Estate, Rental & Leasing"],
+                decline: ["Construction", "Accommodation & Food Services"]
+            },
+            "Jul 2025": {
+                growth: ["Wholesale Trade", "Transportation & Warehousing", "Finance & Insurance", "Public Administration", "Other Services", "Management of Companies & Support Services", "Utilities"],
+                decline: ["Accommodation & Food Services", "Construction", "Arts, Entertainment & Recreation", "Agriculture, Forestry, Fishing & Hunting", "Educational Services", "Real Estate, Rental & Leasing", "Health Care & Social Assistance"]
+            },
+            "Jun 2025": {
+                growth: ["Other Services", "Finance & Insurance", "Professional, Scientific & Technical Services", "Transportation & Warehousing", "Wholesale Trade", "Utilities", "Public Administration", "Educational Services"],
+                decline: ["Agriculture, Forestry, Fishing & Hunting", "Mining", "Real Estate, Rental & Leasing", "Construction"]
+            },
+            "May 2025": {
+                growth: ["Accommodation & Food Services", "Arts, Entertainment & Recreation", "Public Administration", "Educational Services", "Utilities", "Information"],
+                decline: ["Mining", "Management of Companies & Support Services", "Real Estate, Rental & Leasing", "Other Services", "Wholesale Trade", "Retail Trade", "Construction"]
+            },
+            "Apr 2025": {
+                growth: ["Accommodation & Food Services", "Wholesale Trade", "Transportation & Warehousing", "Educational Services", "Real Estate, Rental & Leasing", "Information", "Retail Trade", "Health Care & Social Assistance"],
+                decline: ["Professional, Scientific & Technical Services", "Management of Companies & Support Services", "Construction", "Finance & Insurance", "Public Administration"]
+            },
+            "Mar 2025": {
+                growth: ["Transportation & Warehousing", "Wholesale Trade", "Utilities", "Accommodation & Food Services", "Finance & Insurance", "Public Administration", "Retail Trade", "Information", "Health Care & Social Assistance"],
+                decline: ["Professional, Scientific & Technical Services", "Real Estate, Rental & Leasing", "Management of Companies & Support Services", "Educational Services"]
+            },
+            "Feb 2025": {
+                growth: ["Mining", "Construction", "Finance & Insurance", "Agriculture, Forestry, Fishing & Hunting", "Other Services", "Health Care & Social Assistance", "Wholesale Trade", "Utilities", "Public Administration", "Transportation & Warehousing", "Professional, Scientific & Technical Services"],
+                decline: ["Management of Companies & Support Services", "Accommodation & Food Services", "Retail Trade", "Educational Services"]
+            },
+            "Jan 2025": {
+                growth: ["Accommodation & Food Services", "Agriculture, Forestry, Fishing & Hunting", "Educational Services", "Finance & Insurance", "Wholesale Trade", "Transportation & Warehousing", "Health Care & Social Assistance", "Public Administration", "Construction", "Retail Trade"],
+                decline: ["Real Estate, Rental & Leasing", "Other Services", "Professional, Scientific & Technical Services", "Information", "Management of Companies & Support Services"]
+            },
+            "Dec 2024": {
+                growth: ["Arts, Entertainment & Recreation", "Finance & Insurance", "Transportation & Warehousing", "Retail Trade", "Public Administration", "Health Care & Social Assistance", "Utilities"],
+                decline: ["Real Estate, Rental & Leasing", "Educational Services", "Construction", "Information", "Professional, Scientific & Technical Services"]
+            },
+            "Nov 2024": {
+                growth: ["Arts, Entertainment & Recreation", "Accommodation & Food Services", "Management of Companies & Support Services", "Public Administration", "Information", "Wholesale Trade", "Retail Trade", "Agriculture, Forestry, Fishing & Hunting", "Health Care & Social Assistance", "Professional, Scientific & Technical Services", "Finance & Insurance", "Transportation & Warehousing", "Utilities"],
+                decline: ["Mining", "Real Estate, Rental & Leasing", "Educational Services"]
             }
         };
 
