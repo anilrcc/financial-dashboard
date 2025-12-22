@@ -270,7 +270,18 @@ def update_heatmap(month_str, growth, contraction, no_growth, no_decline, pmi_da
     }},'''
         content = content.replace("const rawPmiData = [", "const rawPmiData = [" + new_pmi_obj)
 
+    # 5. Update Deployment Version Meta Tag
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
+    if 'name="deployment-version"' in content:
+        content = re.sub(r'<meta name="deployment-version" content=".*?">', 
+                         f'<meta name="deployment-version" content="auto-updated-{timestamp}">', 
+                         content)
+    else:
+        # Insert if missing (after title)
+        content = content.replace('</title>', f'</title>\n    <meta name="deployment-version" content="auto-updated-{timestamp}">')
+
     with open(HEATMAP_FILE, 'w') as f: f.write(content)
+
     print("Updated Heatmap HTML.")
 
 def update_comments(month_str, comments):
