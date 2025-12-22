@@ -189,21 +189,9 @@
         since April.
     </div>
 
-    <h2>Services PMI Overview (Nov 2025)</h2>
-    <table id="pmiTable" style="max-width: 800px;">
-        <thead>
-            <tr>
-                <th style="text-align: left;">Metric</th>
-                <th>Index Value</th>
-                <th>Trend</th>
-            </tr>
-        </thead>
-        <tbody id="pmiBody"></tbody>
-    </table>
-
     <div class="summary-box">
-        <strong>Note:</strong> Historical data for Services Industries (Nov 2024 - Oct 2025) is currently being
-        aggregated. The table above reflects the most recent report (Nov 2025).
+        <strong>Note:</strong> Historical data for Services Industries (Nov 2024 - Aug 2025) is currently being
+        aggregated. The table above reflects the most recent reports (Sep-Nov 2025).
     </div>
 
     <script>
@@ -237,38 +225,35 @@
         // 4. Management of Companies & Support Services (-2)
         // 5. Transportation & Warehousing (-1)
 
-        // --- ISM Services PMI Data (Nov 2025) ---
-        const pmiData = [
-            { metric: "Services PMI", value: 52.6, trend: "Expansion" },
-            { metric: "Business Activity", value: 54.5, trend: "Expansion" },
-            { metric: "New Orders", value: 52.9, trend: "Expansion" },
-            { metric: "Employment", value: 48.9, trend: "Contraction" },
-            { metric: "Supplier Deliveries", value: 54.1, trend: "Slower" },
-            { metric: "Prices", value: 65.4, trend: "Increasing" },
-            // Inventories, etc. can be added if available
-        ];
+        // Contraction (1-5):
+        // 1. Construction (-5)
+        // 2. Real Estate, Rental & Leasing (-4)
+        // 3. Mining (-3)
+        // 4. Management of Companies & Support Services (-2)
+        // 5. Transportation & Warehousing (-1)
+
 
         // Stable: Other Services (0)
 
         const servicesData = {
-            "Retail Trade": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12],
-            "Arts, Entertainment & Recreation": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11],
-            "Accommodation & Food Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10],
-            "Wholesale Trade": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-            "Health Care & Social Assistance": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8],
-            "Educational Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7],
-            "Public Administration": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
-            "Agriculture, Forestry, Fishing & Hunting": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5],
-            "Finance & Insurance": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
-            "Information": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-            "Professional, Scientific & Technical Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-            "Utilities": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            "Other Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            "Transportation & Warehousing": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1],
-            "Management of Companies & Support Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2],
-            "Mining": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3],
-            "Real Estate, Rental & Leasing": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4],
-            "Construction": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5]
+            "Retail Trade": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 10, 12],
+            "Arts, Entertainment & Recreation": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 11],
+            "Accommodation & Food Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 10],
+            "Wholesale Trade": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 9, 9],
+            "Health Care & Social Assistance": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 7, 8],
+            "Educational Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 1, 7],
+            "Public Administration": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, -3, 6],
+            "Agriculture, Forestry, Fishing & Hunting": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 4, 5],
+            "Finance & Insurance": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, -4, 4],
+            "Information": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 3, 3],
+            "Professional, Scientific & Technical Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3, 2, 2],
+            "Utilities": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 1],
+            "Other Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, -1, 0],
+            "Transportation & Warehousing": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 5, -1],
+            "Management of Companies & Support Services": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4, -5, -2],
+            "Mining": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7, 0, -3],
+            "Real Estate, Rental & Leasing": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 8, -4],
+            "Construction": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5, -2, -5]
         };
 
         const headerRow = document.getElementById('headerRow');
@@ -332,35 +317,7 @@
             tableBody.appendChild(tr);
         });
 
-        // Populate PMI Table
-        const pmiBody = document.getElementById('pmiBody');
-        pmiData.forEach(item => {
-            const tr = document.createElement('tr');
 
-            const nameTd = document.createElement('td');
-            nameTd.textContent = item.metric;
-            nameTd.style.textAlign = 'left';
-            nameTd.style.fontWeight = '600';
-            tr.appendChild(nameTd);
-
-            const valTd = document.createElement('td');
-            valTd.textContent = item.value + '%';
-
-            // Color coding for Index
-            if (item.value > 50) valTd.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
-            else if (item.value < 50) valTd.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
-
-            tr.appendChild(valTd);
-
-            const trendTd = document.createElement('td');
-            trendTd.textContent = item.trend;
-            if (item.trend === 'Expansion' || item.trend === 'Increasing') trendTd.style.color = '#27ae60';
-            else if (item.trend === 'Contraction' || item.trend === 'Decreasing') trendTd.style.color = '#c0392b';
-            trendTd.style.fontWeight = 'bold';
-            tr.appendChild(trendTd);
-
-            pmiBody.appendChild(tr);
-        });
 
     </script>
 </body>
