@@ -48,6 +48,7 @@
             letter-spacing: -1.5px;
             margin: 0 0 15px 0;
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -179,6 +180,11 @@
             background: linear-gradient(135deg, #f97316, #ea580c);
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
         }
+
+        .card.sentiment .card-icon {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+        }
     </style>
 </head>
 
@@ -231,6 +237,20 @@
             <div class="card-desc">
                 Comprehensive tracking of the Service sector's performance, including Business Activity, Employment, and
                 Prices Paid indices.
+            </div>
+            <div class="card-meta">
+                <span>Macro Indicator • Dec 22, 2025</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
+
+        <!-- Consumer Sentiment Card -->
+        <a href="consumer_sentiment.html" class="card sentiment">
+            <div class="card-icon">C</div>
+            <div class="card-title">Consumer Sentiment</div>
+            <div class="card-desc">
+                University of Michigan Consumer Sentiment Index tracking consumer confidence, personal finances, and
+                economic outlook.
             </div>
             <div class="card-meta">
                 <span>Macro Indicator • Dec 22, 2025</span>
