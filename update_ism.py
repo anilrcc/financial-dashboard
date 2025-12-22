@@ -9,6 +9,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 # --- Configuration ---
 HEATMAP_FILE = "industry_heatmap.html"
 COMMENTS_FILE = "industry_comments.html"
+INDEX_FILE = "index.html"
 # ISM Base URLs
 BASE_URL = "https://www.ismworld.org"
 LANDING_URL = "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/"
@@ -345,12 +346,31 @@ def update_page_titles(month_str):
     
     print("Updated Page Titles.")
 
+def update_index_page(month_str):
+    if not os.path.exists(INDEX_FILE): return
+    
+    with open(INDEX_FILE, 'r') as f: content = f.read()
+    
+    # Match: (href="industry_heatmap.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)
+    pattern = re.compile(r'(href="industry_heatmap.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
+    
+    if pattern.search(content):
+        today_str = datetime.date.today().strftime("%b %d, %Y")
+        content = pattern.sub(f"\\g<1>{today_str}\\g<3>", content)
+        
+        with open(INDEX_FILE, 'w') as f: f.write(content)
+        print("Updated Index Page timestamp.")
+    else:
+        print("Could not find ISM Heatmap timestamp in index.html")
+
 if __name__ == "__main__":
     m, g, c, ng, nd, pmi, summ, comms = fetch_report_data()
     if m:
         update_heatmap(m, g, c, ng, nd, pmi, summ)
         update_comments(m, comms)
+
         update_page_titles(m)
+        update_index_page(m)
         print("Done.")
     else:
         print("Script finished without update.")
