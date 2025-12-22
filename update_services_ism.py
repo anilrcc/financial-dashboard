@@ -179,6 +179,20 @@ def fetch_report_data():
     else:
         summary_text = f"The Services PMI registered {data_mapped['pmi']} percent in {target_month}."
 
+    # --- Extract New Orders Summary ---
+    # Look for the introductory paragraph of the New Orders section.
+    # Usually starts with "ISM®’s New Orders Index registered..." or "New Orders grew..."
+    new_orders_summary = ""
+    # Try different patterns
+    # 1. "ISM®’s New Orders Index registered..." until next newline or break
+    no_summ_match = re.search(r"(ISM®[’']?s New Orders Index registered.*?)(?=\n|<br>|The New Orders Index)", text, re.IGNORECASE)
+    if no_summ_match:
+         new_orders_summary = no_summ_match.group(1).strip()
+    else:
+        # Fallback if specific paragraph not found
+        trend = "grew" if data_mapped['newOrders'] > 50 else "contracted"
+        new_orders_summary = f"The New Orders Index registered {data_mapped['newOrders']} percent in {target_month}. New orders {trend} for the month."
+
     # --- Extract New Orders Summary (Optional) ---
     # "New Orders grew in [Month]..."
     # Keep it simple for now.
@@ -223,7 +237,7 @@ def fetch_report_data():
                     quote = parts[1].strip().strip('"')
                     comments_list.append((ind, quote))
 
-    return target_month, growth_list, contraction_list, no_growth_list, no_decline_list, data_mapped, summary_text, comments_list
+    return target_month, growth_list, contraction_list, no_growth_list, no_decline_list, data_mapped, summary_text, comments_list, new_orders_summary
 
 def parse_ism_list(raw_text):
     text = raw_text.replace('\n', ' ').replace('&amp;', '&')
@@ -248,7 +262,7 @@ def clean_name(name):
     # Map to our standard keys
     return INDUSTRY_MAP.get(name, name) # specific overrides, else default
 
-def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, pmi_data, summary):
+def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, pmi_data, summary, new_orders_summary):
     if not os.path.exists(HEATMAP_FILE):
         print(f"Error: {HEATMAP_FILE} not found.")
         return
@@ -321,25 +335,29 @@ def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, p
     # Regex replacement for the content between summary-title and /div
     # Assuming the first one is the main summary.
     
+    # 5. Update Key Insights (Main)
     if summary:
-        # Construct new HTML for summary
-        new_summary_html = f'''
+        new_main_html = f'''
         <span class="summary-title"
             style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
             Insights ({short_month})</span><br>
         {summary}
+        ''' # indent matching
+        # Regex for ID targeted box
+        # <div class="summary-box" id="main-summary-box"> ... </div>
+        pattern_main = re.compile(r'(<div class="summary-box" id="main-summary-box">)(.*?)(</div>)', re.DOTALL)
+        content = pattern_main.sub(f'\\1{new_main_html}\\3', content)
+
+    # 5b. Update Key Insights (New Orders)
+    if new_orders_summary:
+        new_no_html = f'''
+        <span class="summary-title"
+            style="text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px; color: #d35400;">Key
+            Insights ({short_month})</span><br>
+        {new_orders_summary}
         '''
-        # Regex to replace the *first* summary box content
-        # Matches: <div class="summary-box"> (content) </div>
-        # Be careful not to replace all of them.
-        
-        # Find start of first summary box
-        start_idx = content.find('<div class="summary-box">')
-        if start_idx != -1:
-            end_idx = content.find('</div>', start_idx)
-            if end_idx != -1:
-                # Replace content
-                content = content[:start_idx] + '<div class="summary-box">' + new_summary_html + content[end_idx:]
+        pattern_no = re.compile(r'(<div class="summary-box" id="new-orders-summary-box">)(.*?)(</div>)', re.DOTALL)
+        content = pattern_no.sub(f'\\1{new_no_html}\\3', content)
 
     # 6. Update Meta Version
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
@@ -441,13 +459,13 @@ if __name__ == "__main__":
     # Fetch data
     res = fetch_report_data()
     if res:
-        m, g, c, ng, nd, pmi, summ, comms = res
+        m, g, c, ng, nd, pmi, summ, comms, no_summ = res
         print(f"Successfully fetched data for {m}")
         print(f"Growth: {len(g)}, Contraction: {len(c)}")
         print(f"New Orders Growth: {len(ng)}, Decline: {len(nd)}")
         print(f"Comments: {len(comms)}")
         
-        update_heatmap_file(m, g, c, ng, nd, pmi, summ)
+        update_heatmap_file(m, g, c, ng, nd, pmi, summ, no_summ)
         update_comments_file(m, comms)
         update_index_page(m)
         update_page_titles(m)
