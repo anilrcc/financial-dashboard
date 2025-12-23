@@ -854,31 +854,70 @@
         });
 
         // --- Macro Chart (GDP Growth Rate vs PMI) ---
+        // Extended to show 3 years of historical data
         const ctxMacro = document.getElementById('macroChart').getContext('2d');
 
-        // Map available GDP Growth Rate Data (Quarterly, % Change SAAR)
-        // Source: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
-        // Real GDP Percent Change from Preceding Period
-        // Will be auto-updated by update_gdp_data.py script
+        // Create 3-year date range (Nov 2022 - Nov 2025)
+        const macroDates = [
+            "Nov 2022", "Dec 2022",
+            "Jan 2023", "Feb 2023", "Mar 2023", "Apr 2023", "May 2023", "Jun 2023",
+            "Jul 2023", "Aug 2023", "Sep 2023", "Oct 2023", "Nov 2023", "Dec 2023",
+            "Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024", "Jun 2024",
+            "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024",
+            "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025",
+            "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025"
+        ];
 
-        const gdpMap = {
-            "Nov 2024": 3.1, "Dec 2024": 3.1, // Q4 2024
+        // Historical GDP Growth Rate Data (Quarterly, % Change SAAR)
+        // Source: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+        // Will be auto-updated by update_gdp_data.py script
+        const gdpMapExtended = {
+            // 2022
+            "Nov 2022": 3.2, "Dec 2022": 3.2, // Q4 2022
+            // 2023
+            "Jan 2023": 2.6, "Feb 2023": 2.6, "Mar 2023": 2.6, // Q1 2023
+            "Apr 2023": 2.2, "May 2023": 2.2, "Jun 2023": 2.2, // Q2 2023
+            "Jul 2023": 2.1, "Aug 2023": 2.1, "Sep 2023": 2.1, // Q3 2023
+            "Oct 2023": 4.9, "Nov 2023": 4.9, "Dec 2023": 4.9, // Q4 2023
+            // 2024
+            "Jan 2024": 1.4, "Feb 2024": 1.4, "Mar 2024": 1.4, // Q1 2024
+            "Apr 2024": 3.0, "May 2024": 3.0, "Jun 2024": 3.0, // Q2 2024
+            "Jul 2024": 2.8, "Aug 2024": 2.8, "Sep 2024": 2.8, // Q3 2024
+            "Oct 2024": 3.1, "Nov 2024": 3.1, "Dec 2024": 3.1, // Q4 2024
+            // 2025
             "Jan 2025": 2.3, "Feb 2025": 2.3, "Mar 2025": 2.3, // Q1 2025 (estimated)
             "Apr 2025": 2.8, "May 2025": 2.8, "Jun 2025": 2.8, // Q2 2025 (estimated)
             "Jul 2025": null, "Aug 2025": null, "Sep 2025": null, // Q3 2025 Pending
             "Oct 2025": null, "Nov 2025": null
         };
 
-        const gdpValues = dates.map(d => gdpMap[d] !== undefined ? gdpMap[d] : null);
+        // Historical PMI Data (monthly)
+        // Source: ISM Manufacturing PMI
+        const pmiMapExtended = {
+            // 2022
+            "Nov 2022": 49.0, "Dec 2022": 48.4,
+            // 2023
+            "Jan 2023": 47.4, "Feb 2023": 47.7, "Mar 2023": 46.3, "Apr 2023": 47.1, "May 2023": 46.9, "Jun 2023": 46.0,
+            "Jul 2023": 46.4, "Aug 2023": 47.6, "Sep 2023": 49.0, "Oct 2023": 46.7, "Nov 2023": 46.7, "Dec 2023": 47.4,
+            // 2024
+            "Jan 2024": 49.1, "Feb 2024": 47.8, "Mar 2024": 50.3, "Apr 2024": 49.2, "May 2024": 48.7, "Jun 2024": 48.5,
+            "Jul 2024": 46.8, "Aug 2024": 47.2, "Sep 2024": 47.2, "Oct 2024": 46.5, "Nov 2024": 48.4, "Dec 2024": 49.3,
+            // 2025
+            "Jan 2025": 50.9, "Feb 2025": 50.3, "Mar 2025": 49.0, "Apr 2025": 48.7, "May 2025": 48.5, "Jun 2025": 49.0,
+            "Jul 2025": 48.0, "Aug 2025": 48.7, "Sep 2025": 49.1, "Oct 2025": 48.7, "Nov 2025": 48.2
+        };
+
+        const gdpValuesExtended = macroDates.map(d => gdpMapExtended[d] !== undefined ? gdpMapExtended[d] : null);
+        const pmiValuesExtended = macroDates.map(d => pmiMapExtended[d] !== undefined ? pmiMapExtended[d] : null);
 
         new Chart(ctxMacro, {
             type: 'line',
             data: {
-                labels: dates,
+                labels: macroDates,
                 datasets: [
                     {
                         label: 'Real GDP Growth Rate (% SAAR)',
-                        data: gdpValues,
+                        data: gdpValuesExtended,
                         borderColor: '#2980b9', // Strong Blue
                         backgroundColor: 'rgba(41, 128, 185, 0.1)',
                         borderWidth: 3,
@@ -891,7 +930,7 @@
                     },
                     {
                         label: 'Manufacturing PMI',
-                        data: pmiValues,
+                        data: pmiValuesExtended,
                         borderColor: '#2c3e50', // Dark Slate
                         backgroundColor: 'rgba(44, 62, 80, 0.1)',
                         borderWidth: 3,
