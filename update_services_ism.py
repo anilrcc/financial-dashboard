@@ -320,14 +320,14 @@ def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, p
         new_entry = f'\n            "{short_month}": {{\n                growth: {js_growth},\n                decline: {js_decline}\n            }},'
         content = content.replace("const ranklists = {", "const ranklists = {" + new_entry)
 
-    # 4. Update PMI Data
-    # const sortedPmiData = [ ... ] or "rawPmiData"
-    # Note: In services_pmi.html, we might not have a full PMI table defined efficiently as a list of objects yet?
-    # I built it as: const servicesData = { ... } and separate `ranklists`.
-    # Wait, I did NOT add a PMI trend table to services_pmi.html in previous steps! I only added the heatmap and rank table.
-    # checking file... 
-    # Actually, I see `New Orders Services Growth Rank` but I don't see a `rawPmiData` array for a bottom table like Mfg has.
-    # If it's missing, I skip this step.
+    # 4. Update Services PMI Data Table (rawServicesPmiData)
+    # This is the new table showing Services PMI, Business Activity, New Orders, etc.
+    if not month_exists and f'date: "{short_month}"' not in content:
+        new_pmi_obj = f'''
+    {{ date: "{short_month}", servicesPmi: {pmi_data['pmi']}, businessActivity: {pmi_data['production']}, newOrders: {pmi_data['newOrders']}, employment: {pmi_data['employment']}, supplierDeliveries: {pmi_data['supplierDel']}, inventories: {pmi_data['inv']}, prices: {pmi_data['prices']}, backlogOrders: {pmi_data['backlog']}, newExportOrders: {pmi_data['export']}, imports: {pmi_data['imports']}, inventorySentiment: {pmi_data['custInv']} }},'''
+        
+        # Insert at the beginning of rawServicesPmiData array (newest first)
+        content = content.replace("const rawServicesPmiData = [", "const rawServicesPmiData = [" + new_pmi_obj)
     
     # 5. Update Key Insights
     # Search for the first summary box content
@@ -354,6 +354,28 @@ def update_heatmap_file(month_str, growth, contraction, no_growth, no_decline, p
         '''
         pattern_no = re.compile(r'(<div[^>]*id="new-orders-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
         content = pattern_no.sub(f'\\1{new_no_html}\\3', content)
+
+    # 5c. Update Services PMI Survey Results Key Insights
+    # This is the new insights section below the Services PMI table
+    if pmi_data:
+        # Generate insights based on PMI data
+        pmi_val = pmi_data['pmi']
+        ba_val = pmi_data['production']  # Business Activity
+        emp_val = pmi_data['employment']
+        prices_val = pmi_data['prices']
+        
+        pmi_trend = "expansion" if pmi_val >= 50 else "contraction"
+        ba_trend = "strong" if ba_val >= 54 else ("moderate" if ba_val >= 50 else "weak")
+        emp_trend = "expanded" if emp_val >= 50 else "contracted"
+        prices_trend = "elevated" if prices_val >= 60 else ("moderate" if prices_val >= 50 else "low")
+        
+        survey_insights_html = f'''
+        <span class="summary-title">Key Insights ({short_month})</span>
+        <p>The Services PMI® registered {pmi_val}% in {short_month.split()[0]}, marking continued {pmi_trend} in the services sector. Business Activity remained {ba_trend} at {ba_val}%, while Employment {emp_trend} at {emp_val}%. Prices remained {prices_trend} at {prices_val}%, indicating {"persistent cost pressures" if prices_val >= 60 else "moderate pricing conditions"} across the service economy.</p>
+        '''
+        
+        pattern_survey = re.compile(r'(<div[^>]*id="services-pmi-survey-insights"[^>]*>)(.*?)(</div>)', re.DOTALL)
+        content = pattern_survey.sub(f'\\1{survey_insights_html}\\3', content)
 
     # 6. Update Meta Version
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
