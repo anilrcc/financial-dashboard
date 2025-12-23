@@ -225,10 +225,10 @@ def update_gdp_in_html(month_gdp_map):
         content
     )
     
-    # Update y-axis scale to be appropriate for percentage values (-10 to 10 range typically)
+    # Update y-axis scale to be appropriate for percentage values (0 to 6 range for better visibility)
     content = re.sub(
         r'(y1: \{[^}]*min: )\d+,([^}]*max: )\d+',
-        r'\1-5,\2 10',
+        r'\10,\2 6',
         content
     )
     

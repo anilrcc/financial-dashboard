@@ -316,7 +316,8 @@
         <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Electrical Equipment,
                 Appliances & Comp</strong>, <strong>Computer & Electronic Products</strong>, <strong>Machinery</strong>,
             <strong>Miscellaneous Manufacturing</strong> have all shifted to positive new order growth, indicating
-            renewed demand.</p>
+            renewed demand.
+        </p>
         <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Transportation
                 Equipment</strong>, <strong>Fabricated Metal Products</strong> have reversed from growth to contraction.
         </p>
@@ -917,9 +918,9 @@
                         position: 'right',
                         title: { display: true, text: 'GDP Growth Rate (%)' },
                         grid: { display: false },
-                        // Scale to fit typical GDP growth rate range
-                        min: -5,
-                        max: 10
+                        // Tighter scale to show variations better
+                        min: 0,
+                        max: 6
                     }
                 }
             }
