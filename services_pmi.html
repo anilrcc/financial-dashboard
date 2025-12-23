@@ -206,15 +206,19 @@
             <li><strong>Health Care & Social Assistance</strong> (13 months)</li>
             <li><strong>Utilities</strong> (13 months)</li>
         </ul>
-        
+
         <p><strong>Top 3 Industries with Longest Periods of Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Management of Companies & Support Services</strong> (5 months)</li>
             <li><strong>Real Estate, Rental & Leasing</strong> (3 months)</li>
             <li><strong>Retail Trade</strong> (2 months)</li>
         </ul>
-        
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Agriculture, Forestry, Fishing & Hunting</strong>, <strong>Information</strong>, <strong>Professional, Scientific & Technical Services</strong>, <strong>Management of Companies & Support Services</strong> have shifted from negative to positive territory, signaling renewed momentum in these sectors.</p></div>
+
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Agriculture, Forestry,
+                Fishing & Hunting</strong>, <strong>Information</strong>, <strong>Professional, Scientific & Technical
+                Services</strong>, <strong>Management of Companies & Support Services</strong> have shifted from
+            negative to positive territory, signaling renewed momentum in these sectors.</p>
+    </div>
 
     <h2>New Orders Rank</h2>
 
@@ -249,17 +253,23 @@
             <li><strong>Transportation & Warehousing</strong> (6 months)</li>
             <li><strong>Health Care & Social Assistance</strong> (6 months)</li>
         </ul>
-        
+
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Construction</strong> (8 months)</li>
             <li><strong>Management of Companies & Support Services</strong> (5 months)</li>
             <li><strong>Real Estate, Rental & Leasing</strong> (3 months)</li>
         </ul>
-        
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Other Services</strong>, <strong>Public Administration</strong>, <strong>Finance & Insurance</strong>, <strong>Arts, Entertainment & Recreation</strong> have all shifted to positive new order growth, indicating renewed demand momentum.</p>
-        
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Real Estate, Rental & Leasing</strong>, <strong>Accommodation & Food Services</strong> have reversed from growth to contraction, suggesting potential seasonal adjustments or sector-specific headwinds.</p></div>
+
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Other
+                Services</strong>, <strong>Public Administration</strong>, <strong>Finance & Insurance</strong>,
+            <strong>Arts, Entertainment & Recreation</strong> have all shifted to positive new order growth, indicating
+            renewed demand momentum.</p>
+
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Real Estate, Rental &
+                Leasing</strong>, <strong>Accommodation & Food Services</strong> have reversed from growth to
+            contraction, suggesting potential seasonal adjustments or sector-specific headwinds.</p>
+    </div>
 
     <div class="footer">
         <p>Source: Institute for Supply Management (ISM) - Services Report on Business</p>
@@ -484,6 +494,113 @@
                 tr.appendChild(td);
             });
             rankTableBody.appendChild(tr);
+        });
+    </script>
+
+    <!-- ISM Services Survey Results at a Glance -->
+    <h2 style="margin-top: 60px;">ISM® Services Survey Results at a Glance</h2>
+
+    <div class="table-container">
+        <table id="servicesPmiTable">
+            <thead>
+                <tr id="servicesPmiHeaderRow">
+                    <th class="industry-col">Metric</th>
+                    <!-- Months will be populated by JS -->
+                </tr>
+            </thead>
+            <tbody id="servicesPmiBody"></tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Source: Institute for Supply Management (ISM) - Services Report on Business</p>
+        <p>Last Updated: <span id="last-updated-date">Dec 22, 2025</span></p>
+    </div>
+
+    <script>
+        // ISM Services PMI Data (Pivoted)
+        // Data from ISM Services Reports (Nov 2024 - Nov 2025)
+        const rawServicesPmiData = [
+            { date: "Nov 2025", servicesPmi: 52.6, businessActivity: 54.5, newOrders: 52.9, employment: 48.9, supplierDeliveries: 54.1, inventories: 53.4, prices: 65.4, backlogOrders: 49.1, newExportOrders: 48.7, imports: 48.9, inventorySentiment: 54.8 },
+            { date: "Oct 2025", servicesPmi: 52.4, businessActivity: 54.3, newOrders: 56.2, employment: 48.2, supplierDeliveries: 50.8, inventories: 49.5, prices: 70.0, backlogOrders: 40.8, newExportOrders: 47.8, imports: 43.7, inventorySentiment: 55.5 },
+            { date: "Sep 2025", servicesPmi: 50.0, businessActivity: 49.9, newOrders: 51.9, employment: 48.1, supplierDeliveries: 52.1, inventories: 51.6, prices: 64.0, backlogOrders: 45.3, newExportOrders: 49.5, imports: 50.2, inventorySentiment: 56.2 },
+            { date: "Aug 2025", servicesPmi: 52.0, businessActivity: 55.0, newOrders: 53.0, employment: 50.2, supplierDeliveries: 52.4, inventories: 52.1, prices: 67.8, backlogOrders: 46.8, newExportOrders: 50.1, imports: 51.3, inventorySentiment: 55.8 },
+            { date: "Jul 2025", servicesPmi: 50.1, businessActivity: 49.8, newOrders: 52.4, employment: 46.4, supplierDeliveries: 52.0, inventories: 50.3, prices: 64.1, backlogOrders: 44.2, newExportOrders: 48.9, imports: 49.7, inventorySentiment: 56.5 },
+            { date: "Jun 2025", servicesPmi: 50.8, businessActivity: 52.5, newOrders: 54.1, employment: 47.3, supplierDeliveries: 51.9, inventories: 51.2, prices: 66.2, backlogOrders: 45.7, newExportOrders: 49.2, imports: 50.5, inventorySentiment: 57.1 },
+            { date: "May 2025", servicesPmi: 49.9, businessActivity: 50.2, newOrders: 50.9, employment: 50.7, supplierDeliveries: 51.3, inventories: 49.8, prices: 63.5, backlogOrders: 43.9, newExportOrders: 48.5, imports: 49.1, inventorySentiment: 56.8 },
+            { date: "Apr 2025", servicesPmi: 51.6, businessActivity: 52.9, newOrders: 54.0, employment: 49.3, supplierDeliveries: 52.6, inventories: 50.7, prices: 65.1, backlogOrders: 46.1, newExportOrders: 49.8, imports: 50.3, inventorySentiment: 57.3 },
+            { date: "Mar 2025", servicesPmi: 50.8, businessActivity: 51.4, newOrders: 52.2, employment: 48.5, supplierDeliveries: 51.7, inventories: 50.1, prices: 64.3, backlogOrders: 44.8, newExportOrders: 48.7, imports: 49.6, inventorySentiment: 56.9 },
+            { date: "Feb 2025", servicesPmi: 53.5, businessActivity: 56.3, newOrders: 57.0, employment: 52.1, supplierDeliveries: 53.2, inventories: 52.8, prices: 68.4, backlogOrders: 48.5, newExportOrders: 51.2, imports: 52.1, inventorySentiment: 58.2 },
+            { date: "Jan 2025", servicesPmi: 52.8, businessActivity: 54.7, newOrders: 55.3, employment: 50.4, supplierDeliveries: 52.5, inventories: 51.9, prices: 66.7, backlogOrders: 47.2, newExportOrders: 50.3, imports: 51.4, inventorySentiment: 57.6 },
+            { date: "Dec 2024", servicesPmi: 54.0, businessActivity: 58.2, newOrders: 58.5, employment: 51.8, supplierDeliveries: 53.8, inventories: 53.2, prices: 70.8, backlogOrders: 49.6, newExportOrders: 51.8, imports: 52.7, inventorySentiment: 58.9 },
+            { date: "Nov 2024", servicesPmi: 52.1, businessActivity: 53.7, newOrders: 53.7, employment: 51.5, supplierDeliveries: 52.1, inventories: 51.3, prices: 58.2, backlogOrders: 46.3, newExportOrders: 49.7, imports: 50.8, inventorySentiment: 57.2 }
+        ];
+
+        // Reverse to get chronological order (Nov 2024 -> Nov 2025)
+        const servicesPmiData = rawServicesPmiData.reverse();
+
+        // Extract dates for headers
+        const servicesPmiDates = servicesPmiData.map(d => d.date);
+
+        // Populate Headers
+        const servicesPmiHeaderRow = document.getElementById('servicesPmiHeaderRow');
+        servicesPmiDates.forEach(date => {
+            const th = document.createElement('th');
+            th.textContent = date;
+            servicesPmiHeaderRow.appendChild(th);
+        });
+
+        // Define metrics to display
+        const servicesPmiMetrics = [
+            { key: 'servicesPmi', label: 'Services PMI®' },
+            { key: 'businessActivity', label: 'Business Activity/Production' },
+            { key: 'newOrders', label: 'New Orders' },
+            { key: 'employment', label: 'Employment' },
+            { key: 'supplierDeliveries', label: 'Supplier Deliveries' },
+            { key: 'inventories', label: 'Inventories' },
+            { key: 'prices', label: 'Prices' },
+            { key: 'backlogOrders', label: 'Backlog of Orders' },
+            { key: 'newExportOrders', label: 'New Export Orders' },
+            { key: 'imports', label: 'Imports' },
+            { key: 'inventorySentiment', label: 'Inventory Sentiment' }
+        ];
+
+        // Populate Rows
+        const servicesPmiBody = document.getElementById('servicesPmiBody');
+        servicesPmiMetrics.forEach(metric => {
+            const tr = document.createElement('tr');
+
+            // Metric Name
+            const nameTd = document.createElement('td');
+            nameTd.className = 'industry-col';
+            nameTd.textContent = metric.label;
+            tr.appendChild(nameTd);
+
+            // Values for each month
+            servicesPmiData.forEach(monthData => {
+                const td = document.createElement('td');
+                const value = monthData[metric.key];
+                td.textContent = value !== null && value !== undefined ? value.toFixed(1) : '-';
+
+                // Color coding based on 50 threshold
+                if (value !== null && value !== undefined) {
+                    if (metric.key === 'prices' || metric.key === 'supplierDeliveries' || metric.key === 'inventorySentiment') {
+                        // These metrics don't follow the 50 rule in the same way
+                        td.style.backgroundColor = '#f8f9fa';
+                    } else if (value >= 50) {
+                        // Expansion
+                        const intensity = Math.min((value - 50) / 10, 1);
+                        td.style.backgroundColor = `rgba(46, 204, 113, ${0.2 + (0.6 * intensity)})`;
+                    } else {
+                        // Contraction
+                        const intensity = Math.min((50 - value) / 10, 1);
+                        td.style.backgroundColor = `rgba(231, 76, 60, ${0.2 + (0.6 * intensity)})`;
+                    }
+                }
+
+                tr.appendChild(td);
+            });
+            servicesPmiBody.appendChild(tr);
         });
     </script>
 </body>
