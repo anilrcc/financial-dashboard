@@ -15,7 +15,11 @@ python3 update_ism.py
 echo ">> Regenerating Key Insights..."
 python3 generate_key_insights.py
 
-# 3. Git Commit and Push
+# 3. Update GDP Growth Rate Data
+echo ">> Updating GDP Growth Rate data..."
+python3 update_gdp_data.py
+
+# 4. Git Commit and Push
 echo ">> Pushing updates to GitHub..."
 git add .
 git commit -m "Monthly ISM update: $(date)"

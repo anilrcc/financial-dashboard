@@ -261,7 +261,7 @@
         </tbody>
     </table>
 
-        <div class="summary-box">
+    <div class="summary-box">
         <span class="summary-title">Key Insights</span>
         <p><strong>Top 3 Industries with Longest Periods of Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -269,16 +269,21 @@
             <li><strong>Nonmetallic Mineral Products</strong> (6 months)</li>
             <li><strong>Petroleum & Coal Products</strong> (6 months)</li>
         </ul>
-        
+
         <p><strong>Top 3 Industries with Longest Periods of Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Paper Products</strong> (9 months)</li>
             <li><strong>Wood Products</strong> (9 months)</li>
             <li><strong>Chemical Products</strong> (7 months)</li>
         </ul>
-        
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Computer & Electronic Products</strong>, <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have shifted from negative to positive territory, signaling renewed demand in these sectors.</p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Fabricated Metal Products</strong>, <strong>Nonmetallic Mineral Products</strong>, <strong>Plastics & Rubber Products</strong>, <strong>Transportation Equipment</strong> have reversed course, indicating emerging headwinds.</p>
+
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Computer & Electronic
+                Products</strong>, <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have shifted
+            from negative to positive territory, signaling renewed demand in these sectors.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Fabricated Metal
+                Products</strong>, <strong>Nonmetallic Mineral Products</strong>, <strong>Plastics & Rubber
+                Products</strong>, <strong>Transportation Equipment</strong> have reversed course, indicating emerging
+            headwinds.</p>
     </div>
 
     <h2>New Orders Industry Growth Rank</h2>
@@ -292,7 +297,7 @@
         <tbody id="rankTableBody"></tbody>
     </table>
 
-        <div class="summary-box">
+    <div class="summary-box">
         <span class="summary-title">Key Insights - New Orders</span>
         <p><strong>Top 3 Industries with Longest Periods of New Orders Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -300,16 +305,21 @@
             <li><strong>Primary Metals</strong> (5 months)</li>
             <li><strong>Electrical Equipment, Appliances & Comp</strong> (5 months)</li>
         </ul>
-        
+
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Paper Products</strong> (4 months)</li>
             <li><strong>Nonmetallic Mineral Products</strong> (4 months)</li>
             <li><strong>Furniture & Related Products</strong> (4 months)</li>
         </ul>
-        
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Electrical Equipment, Appliances & Comp</strong>, <strong>Computer & Electronic Products</strong>, <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have all shifted to positive new order growth, indicating renewed demand.</p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Transportation Equipment</strong>, <strong>Fabricated Metal Products</strong> have reversed from growth to contraction.</p>
+
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Electrical Equipment,
+                Appliances & Comp</strong>, <strong>Computer & Electronic Products</strong>, <strong>Machinery</strong>,
+            <strong>Miscellaneous Manufacturing</strong> have all shifted to positive new order growth, indicating
+            renewed demand.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Transportation
+                Equipment</strong>, <strong>Fabricated Metal Products</strong> have reversed from growth to contraction.
+        </p>
     </div>
 
     <h2 id="pmiHeader">ISM Manufacturing PMI Data</h2>
@@ -814,22 +824,19 @@
             }
         });
 
-        // --- Macro Chart (GDP vs PMI) ---
+        // --- Macro Chart (GDP Growth Rate vs PMI) ---
         const ctxMacro = document.getElementById('macroChart').getContext('2d');
 
-        // Map available GDP Data (Quarterly, Trillions of Dollars - FRED)
-        // Source: https://fred.stlouisfed.org/series/GDP
-        // Q3 2024: 29.51 (Sept/Oct release) -> Mapping to prior
-        // Q4 2024: 29.825
-        // Q1 2025: 30.042
-        // Q2 2025: 30.485
-        // Q3 2025: null (Next Release Dec 23)
+        // Map available GDP Growth Rate Data (Quarterly, % Change SAAR)
+        // Source: https://fred.stlouisfed.org/series/A191RL1Q225SBEA
+        // Real GDP Percent Change from Preceding Period
+        // Will be auto-updated by update_gdp_data.py script
 
         const gdpMap = {
-            "Nov 2024": 29.825, "Dec 2024": 29.825, // Q4
-            "Jan 2025": 30.042, "Feb 2025": 30.042, "Mar 2025": 30.042, // Q1
-            "Apr 2025": 30.485, "May 2025": 30.485, "Jun 2025": 30.485, // Q2
-            "Jul 2025": null, "Aug 2025": null, "Sep 2025": null, // Q3 Pending
+            "Nov 2024": 3.1, "Dec 2024": 3.1, // Q4 2024
+            "Jan 2025": 2.3, "Feb 2025": 2.3, "Mar 2025": 2.3, // Q1 2025 (estimated)
+            "Apr 2025": 2.8, "May 2025": 2.8, "Jun 2025": 2.8, // Q2 2025 (estimated)
+            "Jul 2025": null, "Aug 2025": null, "Sep 2025": null, // Q3 2025 Pending
             "Oct 2025": null, "Nov 2025": null
         };
 
@@ -841,7 +848,7 @@
                 labels: dates,
                 datasets: [
                     {
-                        label: 'US Nominal GDP ($ Trillions)',
+                        label: 'Real GDP Growth Rate (% SAAR)',
                         data: gdpValues,
                         borderColor: '#2980b9', // Strong Blue
                         backgroundColor: 'rgba(41, 128, 185, 0.1)',
@@ -873,7 +880,7 @@
                 ...commonOptions,
                 plugins: {
                     ...commonOptions.plugins,
-                    title: { display: true, text: 'Macro Context: US GDP Level vs Manufacturing Activity' },
+                    title: { display: true, text: 'Macro Context: GDP Growth Rate vs Manufacturing PMI' },
                     tooltip: {
                         mode: 'index',
                         intersect: false,
@@ -884,7 +891,7 @@
                                     label += ': ';
                                 }
                                 if (context.parsed.y !== null) {
-                                    if (context.datasetIndex === 0) return label + '$' + context.parsed.y + 'T';
+                                    if (context.datasetIndex === 0) return label + context.parsed.y + '%';
                                     return label + context.parsed.y;
                                 }
                                 return label;
@@ -908,11 +915,11 @@
                         type: 'linear',
                         display: true,
                         position: 'right',
-                        title: { display: true, text: 'GDP ($ Trillions)' },
+                        title: { display: true, text: 'GDP Growth Rate (%)' },
                         grid: { display: false },
-                        // Scale to fit data beautifully (29T - 31T range)
-                        min: 29,
-                        max: 31
+                        // Scale to fit typical GDP growth rate range
+                        min: -5,
+                        max: 10
                     }
                 }
             }
