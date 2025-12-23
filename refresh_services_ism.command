@@ -14,6 +14,10 @@ python3 update_services_ism.py
 if [ $? -eq 0 ]; then
     echo "Update script finished successfully."
     
+    # Regenerate Key Insights
+    echo "Regenerating Key Insights..."
+    python3 generate_services_key_insights.py
+    
     # Git operations
     echo "Staging changes..."
     git add services_pmi.html services_comments.html index.html
