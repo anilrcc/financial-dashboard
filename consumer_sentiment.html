@@ -198,6 +198,8 @@
         <button class="time-range-btn" data-range="12">1Y</button>
         <button class="time-range-btn" data-range="36">3Y</button>
         <button class="time-range-btn active" data-range="60">5Y</button>
+        <button class="time-range-btn" data-range="120">10Y</button>
+        <button class="time-range-btn" data-range="all">All</button>
     </div>
 
     <!-- Chart -->
@@ -823,7 +825,7 @@
             const ctx = document.getElementById('sentimentChart').getContext('2d');
 
             // Get data for the specified range
-            const rangeData = sentimentData.slice(-months);
+            const rangeData = months === 'all' ? sentimentData : sentimentData.slice(-months);
             const labels = rangeData.map(d => d.month);
             const dataPoints = rangeData.map(d => d.index);
 
@@ -1010,7 +1012,7 @@
                 this.classList.add('active');
 
                 // Get range and update chart
-                const range = parseInt(this.dataset.range);
+                const range = this.dataset.range === 'all' ? 'all' : parseInt(this.dataset.range);
                 initChart(range);
             });
         });
