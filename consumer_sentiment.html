@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <style>
         :root {
             --primary-bg: #f8fafc;
@@ -63,10 +64,11 @@
 
         .chart-container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
+            height: 600px;
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 20px;
+            padding: 30px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             margin-bottom: 40px;
             border: 1px solid var(--border-color);
@@ -206,8 +208,9 @@
     <!-- Summary Box -->
     <div id="sentiment-summary-box" class="summary-box">
         <h3>Current Reading: Dec 2025</h3>
-        <p>The University of Michigan Consumer Sentiment Index registered <strong>52.9</strong> in Dec 2025, up from the previous month.</p>
-        </div>
+        <p>The University of Michigan Consumer Sentiment Index registered <strong>52.9</strong> in Dec 2025, up from the
+            previous month.</p>
+    </div>
 
     <!-- Data Table -->
     <div class="table-container">
@@ -342,22 +345,86 @@
                         tooltip: {
                             mode: 'index',
                             intersect: false,
+                        },
+                        annotation: {
+                            annotations: {
+                                // Red zone: below 70
+                                redZone: {
+                                    type: 'box',
+                                    yMin: 0,
+                                    yMax: 70,
+                                    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                                    borderWidth: 0
+                                },
+                                // Yellow zone: 70-80
+                                yellowZone: {
+                                    type: 'box',
+                                    yMin: 70,
+                                    yMax: 80,
+                                    backgroundColor: 'rgba(251, 191, 36, 0.15)',
+                                    borderWidth: 0
+                                },
+                                // Green zone: 80+
+                                greenZone: {
+                                    type: 'box',
+                                    yMin: 80,
+                                    yMax: 120,
+                                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                                    borderWidth: 0
+                                },
+                                // Dividing lines
+                                line70: {
+                                    type: 'line',
+                                    yMin: 70,
+                                    yMax: 70,
+                                    borderColor: 'rgba(251, 191, 36, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5]
+                                },
+                                line80: {
+                                    type: 'line',
+                                    yMin: 80,
+                                    yMax: 80,
+                                    borderColor: 'rgba(16, 185, 129, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5]
+                                }
+                            }
                         }
                     },
                     scales: {
                         y: {
-                            beginAtZero: false,
+                            min: 40,
+                            max: 100,
                             grid: {
                                 color: '#e2e8f0'
                             },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                },
+                                stepSize: 10
+                            },
                             title: {
                                 display: true,
-                                text: 'Index Value'
+                                text: 'Index Value',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
                             }
                         },
                         x: {
                             grid: {
                                 display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                maxRotation: 45,
+                                minRotation: 45
                             }
                         }
                     }
