@@ -195,6 +195,8 @@ def generate_summary_html(data):
     
     full_desc = f"The economy shows {', while '.join(desc_parts)}. The yield curve is <strong>{curve_desc}</strong>, and consumer sentiment is <strong>{sent_desc}</strong> ({sent_val})."
 
+    current_date = datetime.datetime.now().strftime('%b %d, %Y')
+    
     html = f"""
     <!-- Executive Summary Section -->
     <div class="summary-section" style="max-width: 1200px; margin: 0 auto 40px auto; padding: 0 20px;">
@@ -203,7 +205,7 @@ def generate_summary_html(data):
                 
                 <!-- Main Status -->
                 <div style="flex: 2; min-width: 300px;">
-                    <div style="text-transform: uppercase; font-size: 0.85rem; font-weight: 700; color: {theme_color}; letter-spacing: 1px; margin-bottom: 8px;">Current Market Regime</div>
+                    <div style="text-transform: uppercase; font-size: 0.85rem; font-weight: 700; color: {theme_color}; letter-spacing: 1px; margin-bottom: 8px;">Current Market Regime <span style="float: right; font-size: 0.75rem; color: #94a3b8; font-weight: 500; text-transform: none; letter-spacing: normal;">Last Updated: {current_date}</span></div>
                     <div style="font-size: 2.5rem; font-weight: 800; color: #1e293b; margin-bottom: 15px; line-height: 1.1;">{regime}</div>
                     <p style="font-size: 1.1rem; color: #475569; line-height: 1.6; margin: 0;">{full_desc}</p>
                 </div>
