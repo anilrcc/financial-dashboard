@@ -197,9 +197,9 @@
         <button class="time-range-btn" data-range="6">6M</button>
         <button class="time-range-btn" data-range="12">1Y</button>
         <button class="time-range-btn" data-range="36">3Y</button>
-        <button class="time-range-btn active" data-range="60">5Y</button>
+        <button class="time-range-btn" data-range="60">5Y</button>
         <button class="time-range-btn" data-range="120">10Y</button>
-        <button class="time-range-btn" data-range="all">All</button>
+        <button class="time-range-btn active" data-range="all">All</button>
     </div>
 
     <!-- Chart -->
@@ -1018,7 +1018,7 @@
         });
 
         // Initialize on page load
-        initChart(60); // Default to 5Y
+        initChart('all'); // Default to All (complete historical data)
         populateTable();
 
     </script>
