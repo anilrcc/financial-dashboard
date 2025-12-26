@@ -102,9 +102,9 @@ def generate_html_update(total, single, multi):
     # Inject Data
     # JS Data Arrays
     # Use json.dumps but to save space we can strip spaces if needed, but standard is fine
-    content = re.sub(r'let totalPermitsData = .*?;', f'let totalPermitsData = {json.dumps(total)};', content)
-    content = re.sub(r'let singleFamilyData = .*?;', f'let singleFamilyData = {json.dumps(single)};', content)
-    content = re.sub(r'let multiFamilyData = .*?;', f'let multiFamilyData = {json.dumps(multi)};', content)
+    content = re.sub(r'let totalPermitsData = .*?;', f'let totalPermitsData = {json.dumps(total)};', content, flags=re.DOTALL)
+    content = re.sub(r'let singleFamilyData = .*?;', f'let singleFamilyData = {json.dumps(single)};', content, flags=re.DOTALL)
+    content = re.sub(r'let multiFamilyData = .*?;', f'let multiFamilyData = {json.dumps(multi)};', content, flags=re.DOTALL)
     
     # KPIs
     content = re.sub(r'id="kpi-total">.*?</div>', f'id="kpi-total">{int(latest_total["y"])}k</div>', content)
