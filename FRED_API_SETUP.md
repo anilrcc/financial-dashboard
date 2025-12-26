@@ -23,7 +23,7 @@
 
 ## What Gets Updated
 
-The `update_gdp_data.py` script will:
+The `update_gdp_data.py` and `update_building_permits.py` scripts will:
 - Fetch the latest **Real GDP Growth Rate** (% change, quarterly, SAAR)
 - Update the macro chart in `industry_heatmap.html`
 - Map quarterly data to monthly entries
