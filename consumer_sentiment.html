@@ -210,15 +210,10 @@
     <!-- Summary Box -->
     <div id="sentiment-summary-box" class="summary-box">
         <h3>Key Insights: Dec 2025</h3>
-        <p><strong>Current Sentiment: 52.9 (Bearish)</strong> - The index remains in the <strong
-                style="color: #ef4444;">red zone (below 70)</strong>, indicating weak consumer confidence. This reading
-            is up from 51.0 in November but still reflects pessimistic consumer outlook.</p>
-        <p><strong>Historical Context:</strong> Current sentiment is significantly below the long-term average of ~85
-            and well below the peak of 112.0 reached in January 2000. The index has been in bearish territory since
-            March 2022.</p>
-        <p><strong>Trend:</strong> Month-over-month improvement of +1.9 points suggests slight stabilization, but
-            year-over-year decline of -28.5% indicates sustained weakness in consumer confidence.</p>
-    </div>
+        <p><strong>Current Sentiment: 52.9 (Bearish)</strong> - The index remains in the <strong style="color: #ef4444;">red zone (below 70)</strong>, indicating weak consumer confidence. This reading is up from 51.0 in Nov 2025 but still reflects pessimistic consumer outlook.</p>
+        <p><strong>Historical Context:</strong> Current sentiment is significantly below the long-term average of ~85 and well below the peak of 112.0 reached in Jan 2000. The index has been in bearish territory since Feb 2025.</p>
+        <p><strong>Trend:</strong> Month-over-month improvement of +1.9 points suggests slight stabilization, but year-over-year decline of -28.5% indicates sustained weakness in consumer confidence.</p>
+        </div>
 
     <!-- Data Table -->
     <div class="table-container">
@@ -239,12 +234,104 @@
 
     <div class="footer">
         <p>Source: University of Michigan Surveys of Consumers</p>
-        <p>Last Updated: <span id="last-updated-date">Dec 22, 2025</span></p>
+        <p>Last Updated: <span id="last-updated-date">Dec 26, 2025</span></p>
     </div>
 
     <script>
         // Historical Data from FRED - Jan 1978 to Dec 2025 (576 data points)
         const sentimentData = [
+            { month: "Nov 1952", index: 86.2 },
+            { month: "Feb 1953", index: 90.7 },
+            { month: "Aug 1953", index: 80.8 },
+            { month: "Nov 1953", index: 80.7 },
+            { month: "Feb 1954", index: 82.0 },
+            { month: "May 1954", index: 82.9 },
+            { month: "Nov 1954", index: 87.0 },
+            { month: "Feb 1955", index: 95.9 },
+            { month: "May 1955", index: 99.1 },
+            { month: "Nov 1955", index: 99.7 },
+            { month: "May 1956", index: 98.2 },
+            { month: "Aug 1956", index: 99.9 },
+            { month: "Nov 1956", index: 100.2 },
+            { month: "May 1957", index: 92.9 },
+            { month: "Nov 1957", index: 83.7 },
+            { month: "Feb 1958", index: 78.5 },
+            { month: "May 1958", index: 80.9 },
+            { month: "Nov 1958", index: 90.8 },
+            { month: "May 1959", index: 95.3 },
+            { month: "Nov 1959", index: 93.8 },
+            { month: "Feb 1960", index: 100.0 },
+            { month: "May 1960", index: 93.3 },
+            { month: "Aug 1960", index: 97.2 },
+            { month: "Nov 1960", index: 90.1 },
+            { month: "Feb 1961", index: 91.6 },
+            { month: "May 1961", index: 92.5 },
+            { month: "Aug 1961", index: 99.2 },
+            { month: "Nov 1961", index: 93.0 },
+            { month: "Feb 1962", index: 99.9 },
+            { month: "May 1962", index: 95.4 },
+            { month: "Aug 1962", index: 91.6 },
+            { month: "Nov 1962", index: 95.0 },
+            { month: "Feb 1963", index: 98.4 },
+            { month: "May 1963", index: 91.7 },
+            { month: "Aug 1963", index: 96.4 },
+            { month: "Nov 1963", index: 94.4 },
+            { month: "Feb 1964", index: 99.5 },
+            { month: "May 1964", index: 98.5 },
+            { month: "Aug 1964", index: 100.6 },
+            { month: "Nov 1964", index: 99.9 },
+            { month: "Feb 1965", index: 102.0 },
+            { month: "May 1965", index: 105.4 },
+            { month: "Aug 1965", index: 103.4 },
+            { month: "Nov 1965", index: 102.9 },
+            { month: "Feb 1966", index: 100.0 },
+            { month: "May 1966", index: 95.7 },
+            { month: "Aug 1966", index: 91.2 },
+            { month: "Nov 1966", index: 88.3 },
+            { month: "Feb 1967", index: 94.1 },
+            { month: "May 1967", index: 95.9 },
+            { month: "Aug 1967", index: 97.0 },
+            { month: "Nov 1967", index: 92.9 },
+            { month: "Feb 1968", index: 97.2 },
+            { month: "May 1968", index: 92.4 },
+            { month: "Aug 1968", index: 92.4 },
+            { month: "Nov 1968", index: 91.7 },
+            { month: "Feb 1969", index: 98.2 },
+            { month: "May 1969", index: 91.5 },
+            { month: "Aug 1969", index: 86.4 },
+            { month: "Nov 1969", index: 79.7 },
+            { month: "Feb 1970", index: 78.1 },
+            { month: "May 1970", index: 75.4 },
+            { month: "Aug 1970", index: 77.6 },
+            { month: "Nov 1970", index: 72.4 },
+            { month: "Feb 1971", index: 78.1 },
+            { month: "May 1971", index: 80.2 },
+            { month: "Aug 1971", index: 82.1 },
+            { month: "Nov 1971", index: 82.0 },
+            { month: "Feb 1972", index: 92.8 },
+            { month: "May 1972", index: 88.6 },
+            { month: "Aug 1972", index: 95.2 },
+            { month: "Nov 1972", index: 90.7 },
+            { month: "Feb 1973", index: 81.9 },
+            { month: "May 1973", index: 77.0 },
+            { month: "Aug 1973", index: 72.0 },
+            { month: "Nov 1973", index: 76.5 },
+            { month: "Feb 1974", index: 61.8 },
+            { month: "May 1974", index: 72.1 },
+            { month: "Aug 1974", index: 64.4 },
+            { month: "Nov 1974", index: 59.5 },
+            { month: "Feb 1975", index: 57.6 },
+            { month: "May 1975", index: 72.8 },
+            { month: "Aug 1975", index: 75.7 },
+            { month: "Nov 1975", index: 75.6 },
+            { month: "Feb 1976", index: 84.6 },
+            { month: "May 1976", index: 83.3 },
+            { month: "Aug 1976", index: 89.7 },
+            { month: "Nov 1976", index: 87.0 },
+            { month: "Feb 1977", index: 87.1 },
+            { month: "May 1977", index: 90.2 },
+            { month: "Aug 1977", index: 89.0 },
+            { month: "Nov 1977", index: 84.4 },
             { month: "Jan 1978", index: 83.7 },
             { month: "Feb 1978", index: 84.3 },
             { month: "Mar 1978", index: 78.8 },

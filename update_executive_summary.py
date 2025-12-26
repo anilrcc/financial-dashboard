@@ -17,6 +17,7 @@ SVC_PMI_FILE = os.path.join(BASE_DIR, 'services_pmi.html')
 YIELDS_FILE = os.path.join(BASE_DIR, 'yield_curve.html')
 SENTIMENT_FILE = os.path.join(BASE_DIR, 'consumer_sentiment.html')
 BONDS_FILE = os.path.join(BASE_DIR, 'corporate_bonds.html')
+PERMITS_FILE = os.path.join(BASE_DIR, 'building_permits.html')
 
 def get_market_data():
     data = {
@@ -25,6 +26,7 @@ def get_market_data():
         'yield_spread_10y2y': None,
         'consumer_sentiment': None,
         'credit_spread_bbb_aaa': None,
+        'housing_permits': None,
         'regime': 'Unknown'
     }
 
@@ -95,6 +97,15 @@ def get_market_data():
                 except Exception as e:
                     print(f"Error parsing bond data: {e}")
 
+
+    # 6. Building Permits
+    if os.path.exists(PERMITS_FILE):
+        with open(PERMITS_FILE, 'r') as f:
+            content = f.read()
+            # Look for id="kpi-total">1330k</div>
+            match = re.search(r'id="kpi-total">\s*([\d.]+)k</div>', content)
+            if match:
+                data['housing_permits'] = float(match.group(1))
     return data
 
 def determine_regime(data):
@@ -172,6 +183,17 @@ def generate_summary_html(data):
              else:
                  color = "#ef4444" # Red
              
+
+        elif type_fmt == "housing":
+             # 1500+ Strong, 1300-1500 Neutral, <1300 Weak
+             display_val = f"{val:,.0f}k"
+             if val >= 1500:
+                 color = "#22c55e"
+             elif val >= 1300:
+                 color = "#eab308"
+             else:
+                 color = "#ef4444"
+             
         return display_val, color
 
     mfg_val, mfg_col = fmt(data['mfg_pmi'], "pmi")
@@ -179,6 +201,7 @@ def generate_summary_html(data):
     yield_val, yield_col = fmt(data['yield_spread_10y2y'], "spread")
     sent_val, sent_col = fmt(data['consumer_sentiment'], "sentiment")
     credit_val, credit_col = fmt(data['credit_spread_bbb_aaa'], "credit")
+    house_val, house_col = fmt(data['housing_permits'], "housing")
 
     # Generate Dynamic Description
     desc_parts = []
@@ -187,13 +210,18 @@ def generate_summary_html(data):
     if data['svc_pmi']:
         desc_parts.append(f"Services are <strong>{'expanding' if data['svc_pmi'] >= 50 else 'contracting'}</strong> ({svc_val})")
     
+    housing_desc = ""
+    if data['housing_permits']:
+        h_trends = "robust" if data['housing_permits'] >= 1500 else "soft"
+        housing_desc = f", and housing activity is <strong>{h_trends}</strong> ({house_val})"
+    
     curve_desc = "inverted" if data['yield_spread_10y2y'] and data['yield_spread_10y2y'] < 0 else "normal"
     sent_desc = "Bearish"
     if data['consumer_sentiment']:
         if data['consumer_sentiment'] >= 80: sent_desc = "Bullish"
         elif data['consumer_sentiment'] >= 70: sent_desc = "Neutral"
     
-    full_desc = f"The economy shows {', while '.join(desc_parts)}. The yield curve is <strong>{curve_desc}</strong>, and consumer sentiment is <strong>{sent_desc}</strong> ({sent_val})."
+    full_desc = f"The economy shows {', while '.join(desc_parts)}. The yield curve is <strong>{curve_desc}</strong>, consumer sentiment is <strong>{sent_desc}</strong> ({sent_val}){housing_desc}."
 
     current_date = datetime.datetime.now().strftime('%b %d, %Y')
     
@@ -235,6 +263,11 @@ def generate_summary_html(data):
                     <a href="corporate_bonds.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Credit Premium</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {credit_col};">{credit_val}</div>
+                    </a>
+
+                    <a href="building_permits.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Housing Permits</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: {house_col};">{house_val}</div>
                     </a>
 
                 </div>
