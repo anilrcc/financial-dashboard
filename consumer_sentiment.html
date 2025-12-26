@@ -885,7 +885,7 @@
                                 greenZone: {
                                     type: 'box',
                                     yMin: 80,
-                                    yMax: 120,
+                                    yMax: Math.ceil(Math.max(...dataPoints) / 10) * 10 + 10,
                                     backgroundColor: 'rgba(16, 185, 129, 0.15)',
                                     borderWidth: 0
                                 },
@@ -911,8 +911,8 @@
                     },
                     scales: {
                         y: {
-                            min: 40,
-                            max: 100,
+                            min: Math.floor(Math.min(...dataPoints) / 10) * 10 - 10,
+                            max: Math.ceil(Math.max(...dataPoints) / 10) * 10 + 10,
                             grid: {
                                 color: '#e2e8f0'
                             },

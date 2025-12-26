@@ -52,12 +52,12 @@ def update_sentiment_file(data_points, summary_text=None):
     # 1. Update Data Array
     # Replace the entire sentimentData array
     if data_points:
-        # Get last 60 months (5 years) for the chart
-        recent_data = data_points[-60:] if len(data_points) > 60 else data_points
+        # Use all available historical data (not just last 60 months)
+        # This ensures we maintain the complete historical dataset from 1978
         
         # Build JavaScript array
         js_array_items = []
-        for item in recent_data:
+        for item in data_points:
             js_array_items.append(f'{{ month: "{item["month"]}", index: {item["index"]} }}')
         
         js_array = ',\n            '.join(js_array_items)
@@ -67,7 +67,7 @@ def update_sentiment_file(data_points, summary_text=None):
         replacement = f'\\1\n            {js_array}\n        \\3'
         content = pattern.sub(replacement, content)
         
-        print(f"Updated data array with {len(recent_data)} months")
+        print(f"Updated data array with {len(data_points)} months (complete historical dataset)")
     
     # 2. Update Summary Box
     if summary_text and data_points:
