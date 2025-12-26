@@ -198,7 +198,6 @@ def generate_summary_html(data):
     current_date = datetime.datetime.now().strftime('%b %d, %Y')
     
     html = f"""
-    <!-- Executive Summary Section -->
     <div class="summary-section" style="max-width: 1200px; margin: 0 auto 40px auto; padding: 0 20px;">
         <div style="background: linear-gradient(to right, #ffffff, #f8fafc); border: 1px solid #e2e8f0; border-left: 6px solid {theme_color}; border-radius: 12px; padding: 30px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);">
             <div style="display: flex; gap: 40px; align-items: center; flex-wrap: wrap;">
@@ -213,30 +212,30 @@ def generate_summary_html(data):
                 <!-- Key Metrics Grid -->
                 <div style="flex: 3; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; min-width: 300px;">
                     
-                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center;">
+                    <a href="industry_heatmap.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Manufacturing PMI</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {mfg_col};">{mfg_val}</div>
-                    </div>
+                    </a>
 
-                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center;">
+                    <a href="services_pmi.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Services PMI</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {svc_col};">{svc_val}</div>
-                    </div>
+                    </a>
 
-                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center;">
+                    <a href="yield_curve.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">10Y-2Y Spread</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {yield_col};">{yield_val}</div>
-                    </div>
+                    </a>
 
-                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center;">
+                    <a href="consumer_sentiment.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Sentiment</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {sent_col};">{sent_val}</div>
-                    </div>
+                    </a>
 
-                    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center;">
+                    <a href="corporate_bonds.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Credit Premium</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {credit_col};">{credit_val}</div>
-                    </div>
+                    </a>
 
                 </div>
             </div>
@@ -253,21 +252,18 @@ def update_index_page(html_content):
     with open(INDEX_FILE, 'r') as f:
         content = f.read()
 
-    # 1. Remove existing summary if any
-    content = re.sub(r'<!-- Executive Summary Section -->.*?<!-- End Executive Summary -->', '', content, flags=re.DOTALL)
-    
-    # Also clean up potentially older version without the End tag
-    content = re.sub(r'<!-- Executive Summary Section -->.*?<div class="summary-section".*?</div>\s*</div>\s*</div>', '', content, flags=re.DOTALL)
+    full_html_block = f"<!-- Executive Summary Section -->\n{html_content}\n<!-- End Executive Summary -->"
 
-    # Wrap new content in ID comments
-    full_html_block = f"\n<!-- Executive Summary Section -->\n{html_content}\n<!-- End Executive Summary -->\n"
-
-    # 2. Insert new summary BELOW the grid container
-    # We look for the "Footer Link to Earnings" section or just before the closing body
-    if '<!-- Footer Link to Earnings -->' in content:
-        content = content.replace('<!-- Footer Link to Earnings -->', f'{full_html_block}\n    <!-- Section Divider -->\n    <div style="border-top: 1px solid #e2e8f0; margin: 40px auto; max-width: 1200px;"></div>\n    <!-- Footer Link to Earnings -->')
-    elif '</body>' in content:
-        content = content.replace('</body>', f'{full_html_block}\n</body>')
+    # Check if we can find the existing block to replace in-place
+    if '<!-- Executive Summary Section -->' in content and '<!-- End Executive Summary -->' in content:
+        content = re.sub(r'<!-- Executive Summary Section -->.*?<!-- End Executive Summary -->', full_html_block, content, flags=re.DOTALL)
+        print("Updated existing Executive Summary in place.")
+    else:
+        # Fallback: Insert after header section
+        if '</section>' in content and 'class="header-section"' in content:
+             content = content.replace('</section>', f'</section>\n\n    {full_html_block}\n    <!-- Section Divider -->\n    <div style="border-top: 1px solid #e2e8f0; margin: 40px auto; max-width: 1200px;"></div>')
+        elif '</body>' in content:
+             content = content.replace('</body>', f'{full_html_block}\n</body>')
 
     with open(INDEX_FILE, 'w') as f:
         f.write(content)
