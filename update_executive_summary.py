@@ -75,10 +75,25 @@ def get_market_data():
     if os.path.exists(BONDS_FILE):
         with open(BONDS_FILE, 'r') as f:
             content = f.read()
-            # id="kpi-risk-premium">0.33%</div>
-            match = re.search(r'id="kpi-risk-premium">\s*([0-9.]+)%</div>', content)
-            if match:
-                data['credit_spread_bbb_aaa'] = float(match.group(1))
+            # Parse the JSON data arrays directly to get the latest values
+            # const aaaFullData = [...];
+            aaa_match = re.search(r'const aaaFullData = (\[.*?\]);', content, re.DOTALL)
+            bbb_match = re.search(r'const bbbFullData = (\[.*?\]);', content, re.DOTALL)
+            
+            if aaa_match and bbb_match:
+                try:
+                    aaa_list = json.loads(aaa_match.group(1))
+                    bbb_list = json.loads(bbb_match.group(1))
+                    
+                    if aaa_list and bbb_list:
+                        # Ensure we get the latest non-null values
+                        latest_aaa = aaa_list[-1].get('value')
+                        latest_bbb = bbb_list[-1].get('value')
+                        
+                        if latest_aaa is not None and latest_bbb is not None:
+                            data['credit_spread_bbb_aaa'] = round(latest_bbb - latest_aaa, 2)
+                except Exception as e:
+                    print(f"Error parsing bond data: {e}")
 
     return data
 
@@ -145,9 +160,17 @@ def generate_summary_html(data):
             display_val = f"{val:.1f}"
             color = "#22c55e" if val >= 80 else "#ef4444" if val < 70 else "#eab308"
         elif type_fmt == "credit":
-             # Lower is better usually for risk premiums
+             # Credit Risk Premium (BBB - AAA) Zones
+             # < 0.75%: Tight (Green) - Strong market confidence
+             # 0.75% - 1.25%: Normal (Yellow) - Historical average
+             # > 1.25%: Elevated (Red) - Rising stress
              display_val = f"{val:.2f}%"
-             color = "#ef4444" if val > 1.0 else "#22c55e"
+             if val <= 0.75:
+                 color = "#22c55e" # Green
+             elif val <= 1.25:
+                 color = "#eab308" # Yellow
+             else:
+                 color = "#ef4444" # Red
              
         return display_val, color
 
