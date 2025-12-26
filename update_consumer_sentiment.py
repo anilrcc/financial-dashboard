@@ -73,7 +73,7 @@ def update_sentiment_file(data_points, summary_text=None):
     if summary_text and data_points:
         latest = data_points[-1]
         new_summary_html = f'''
-        <h3>Current Reading: {latest["month"]}</h3>
+        <h3>Key Insights: {latest["month"]}</h3>
         <p>{summary_text}</p>
         '''
         pattern = re.compile(r'(<div[^>]*id="sentiment-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
@@ -108,19 +108,58 @@ if __name__ == "__main__":
     data = fetch_sentiment_data()
     
     if data:
-        # Get latest value for summary
+        # Get latest value and calculate insights
         latest = data[-1]
+        latest_value = latest['index']
+        latest_month = latest['month']
         
-        # Check if there's a custom summary provided
-        if len(sys.argv) > 1:
-            summary = sys.argv[1]
+        # Calculate changes
+        prev_month = data[-2] if len(data) > 1 else None
+        year_ago = data[-13] if len(data) > 12 else None
+        
+        mom_change = latest_value - prev_month['index'] if prev_month else 0
+        yoy_change = latest_value - year_ago['index'] if year_ago else 0
+        yoy_pct = (yoy_change / year_ago['index'] * 100) if year_ago else 0
+        
+        # Calculate historical average (all available data)
+        avg_sentiment = sum(d['index'] for d in data) / len(data)
+        
+        # Find peak value
+        peak = max(data, key=lambda x: x['index'])
+        
+        # Determine sentiment zone and classification
+        if latest_value < 70:
+            zone = "red zone (below 70)"
+            zone_color = "#ef4444"
+            classification = "Bearish"
+        elif latest_value < 80:
+            zone = "yellow zone (70-80)"
+            zone_color = "#f59e0b"
+            classification = "Neutral"
         else:
-            # Generate default summary
-            prev_month = data[-2] if len(data) > 1 else None
-            change = latest['index'] - prev_month['index'] if prev_month else 0
-            direction = "up" if change > 0 else "down" if change < 0 else "unchanged"
-            
-            summary = f"The University of Michigan Consumer Sentiment Index registered <strong>{latest['index']}</strong> in {latest['month']}, {direction} from the previous month."
+            zone = "green zone (above 80)"
+            zone_color = "#10b981"
+            classification = "Bullish"
+        
+        # Determine when entered current zone
+        zone_entry = None
+        for i in range(len(data) - 1, -1, -1):
+            val = data[i]['index']
+            if (latest_value < 70 and val >= 70) or \
+               (70 <= latest_value < 80 and (val < 70 or val >= 80)) or \
+               (latest_value >= 80 and val < 80):
+                zone_entry = data[i + 1]['month'] if i + 1 < len(data) else None
+                break
+        
+        # Generate comprehensive insights
+        mom_direction = "up" if mom_change > 0 else "down" if mom_change < 0 else "unchanged"
+        mom_text = f"{mom_direction} from {prev_month['index']:.1f}" if prev_month else "no prior data"
+        
+        yoy_direction = "decline" if yoy_change < 0 else "improvement" if yoy_change > 0 else "no change"
+        
+        summary = f'''<strong>Current Sentiment: {latest_value:.1f} ({classification})</strong> - The index remains in the <strong style="color: {zone_color};">{zone}</strong>, indicating {"weak consumer confidence" if latest_value < 70 else "neutral consumer outlook" if latest_value < 80 else "strong consumer confidence"}. This reading is {mom_text} in {prev_month['month'] if prev_month else 'the previous period'} but still reflects {"pessimistic" if latest_value < 70 else "cautious" if latest_value < 80 else "optimistic"} consumer outlook.</p>
+        <p><strong>Historical Context:</strong> Current sentiment is {"significantly below" if latest_value < avg_sentiment - 10 else "below" if latest_value < avg_sentiment else "above"} the long-term average of ~{avg_sentiment:.0f} and well {"below" if latest_value < peak['index'] - 20 else "off"} the peak of {peak['index']:.1f} reached in {peak['month']}. The index has been in {classification.lower()} territory since {zone_entry if zone_entry else "recent months"}.</p>
+        <p><strong>Trend:</strong> Month-over-month {"improvement" if mom_change > 0 else "decline" if mom_change < 0 else "stability"} of {abs(mom_change):+.1f} points suggests {"slight stabilization" if abs(mom_change) < 2 else "notable movement" if abs(mom_change) < 5 else "significant shift"}, {"but" if (mom_change > 0 and yoy_change < 0) or (mom_change < 0 and yoy_change > 0) else "and"} year-over-year {yoy_direction} of {yoy_pct:+.1f}% indicates {"sustained weakness" if yoy_change < -5 else "gradual recovery" if yoy_change > 5 else "relative stability"} in consumer confidence.'''
         
         update_sentiment_file(data, summary)
         update_index_timestamp()
