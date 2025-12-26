@@ -12,6 +12,10 @@ echo "------------------------------------------------"
 # Run the python script (fetches data automatically from UMich)
 python3 update_consumer_sentiment.py
 
+# Update Executive Summary on Index Page
+echo "Updating Executive Summary..."
+python3 update_executive_summary.py
+
 # Check if script ran successfully
 if [ $? -eq 0 ]; then
     echo "Update script finished successfully."

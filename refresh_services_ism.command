@@ -18,6 +18,10 @@ if [ $? -eq 0 ]; then
     echo "Regenerating Key Insights..."
     python3 generate_services_key_insights.py
     
+    # Update Executive Summary
+    echo "Updating Executive Summary..."
+    python3 update_executive_summary.py
+
     # Git operations
     echo "Staging changes..."
     git add services_pmi.html services_comments.html index.html

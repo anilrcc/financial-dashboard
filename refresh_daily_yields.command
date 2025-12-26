@@ -11,6 +11,10 @@ echo "==========================================="
 echo ">> Running update_yields.py..."
 python3 update_yields.py
 
+# 1b. Update Executive Summary
+echo ">> Updating Executive Summary..."
+python3 update_executive_summary.py
+
 # 2. Git Commit and Push
 echo ">> Pushing updates to GitHub..."
 git add .

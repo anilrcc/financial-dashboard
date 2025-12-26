@@ -19,6 +19,10 @@ python3 generate_key_insights.py
 echo ">> Updating GDP Growth Rate data..."
 python3 update_gdp_data.py
 
+# 3b. Update Executive Summary
+echo ">> Updating Executive Summary..."
+python3 update_executive_summary.py
+
 # 4. Git Commit and Push
 echo ">> Pushing updates to GitHub..."
 git add .
