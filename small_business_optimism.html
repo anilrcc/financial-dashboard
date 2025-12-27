@@ -207,6 +207,13 @@
         <canvas id="optimismChart"></canvas>
     </div>
 
+    <!-- Leading Index Chart -->
+    <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #334155;">Leading Index (5-Component
+        Average)</h2>
+    <div class="chart-container" style="height: 400px;">
+        <canvas id="leadingIndexChart"></canvas>
+    </div>
+
     <!-- Sub-Indices Grid -->
     <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #334155;">Key Components</h2>
     <div
@@ -358,7 +365,21 @@
 
         // Chart instances
         let optimismChart;
+        let leadingIndexChart;
         let employmentChart, expandChart, inventoryChart, economyChart, salesChart;
+
+        // Calculate Leading Index (average of 5 components)
+        function calculateLeadingIndex(data) {
+            return data.map(d => {
+                const components = [d.employment, d.expand, d.inventory, d.economy, d.sales];
+                const validComponents = components.filter(c => c !== null && c !== undefined);
+
+                if (validComponents.length === 0) return null;
+
+                const average = validComponents.reduce((sum, val) => sum + val, 0) / validComponents.length;
+                return Math.round(average * 10) / 10; // Round to 1 decimal
+            });
+        }
 
         // Helper to create small charts
         function createSubChart(ctxId, label, labels, data, color) {
@@ -501,6 +522,100 @@
                             title: {
                                 display: true,
                                 text: 'Index Value',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize Leading Index Chart
+            const leadingIndexData = calculateLeadingIndex(rangeData);
+            const leadingCtx = document.getElementById('leadingIndexChart').getContext('2d');
+
+            if (leadingIndexChart) {
+                leadingIndexChart.destroy();
+            }
+
+            leadingIndexChart = new Chart(leadingCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Leading Index',
+                        data: leadingIndexData,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#8b5cf6',
+                        pointBorderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        annotation: {
+                            annotations: {
+                                zeroLine: {
+                                    type: 'line',
+                                    yMin: 0,
+                                    yMax: 0,
+                                    borderColor: 'rgba(100, 116, 139, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        content: 'Neutral (0)',
+                                        enabled: false,
+                                        position: 'end'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: -30,
+                            suggestedMax: 40,
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Net Percent',
                                 font: {
                                     size: 16,
                                     weight: 'bold'
