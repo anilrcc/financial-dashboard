@@ -43,7 +43,11 @@ echo "[8/9] Refreshing Money Supply (M2)..."
 python3 update_money_supply.py
 
 echo ""
-echo "[9/9] Regenerating Executive Summary & Index..."
+echo "[9/10] Refreshing Commodities and COT Reports..."
+python3 refresh_all_commodities.py
+
+echo ""
+echo "[10/10] Regenerating Executive Summary & Index..."
 python3 update_executive_summary.py
 
 echo ""
