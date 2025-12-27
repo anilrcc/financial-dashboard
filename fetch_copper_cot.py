@@ -8,54 +8,86 @@ import pandas as pd
 import requests
 from datetime import datetime
 import json
-
-# CFTC provides disaggregated COT data in TXT format
-# Copper futures code is 085692
-# We'll use the disaggregated futures and options combined report
+import io
+import zipfile
 
 def fetch_cot_data():
     """Fetch historical COT data from CFTC"""
     
-    # CFTC historical data URL (disaggregated futures and options combined)
-    # Data goes back to 2006 when disaggregated reports started
-    base_url = "https://www.cftc.gov/files/dea/history/fut_disagg_txt_{}.zip"
-    
     all_data = []
-    
-    # Fetch data from 2006 to current year
     current_year = datetime.now().year
     
-    for year in range(2006, current_year + 1):
-        url = base_url.format(year)
-        print(f"Fetching data for {year}...")
+    # Try different URL patterns for different year ranges
+    # Pattern 1: Annual files (2006-2016 use different format)
+    for year in range(2006, 2017):
+        # Try the disaggregated format
+        url = f"https://www.cftc.gov/files/dea/history/deacot{year}.zip"
+        print(f"Trying {year} (legacy format)...")
         
         try:
-            # Download and read the zip file
             response = requests.get(url, timeout=30)
             response.raise_for_status()
             
-            # The zip contains a txt file
-            import zipfile
-            import io
+            with zipfile.ZipFile(io.BytesIO(response.content)) as z:
+                # Look for the disaggregated file
+                txt_files = [f for f in z.namelist() if 'disagg' in f.lower() and f.endswith('.txt')]
+                
+                if txt_files:
+                    with z.open(txt_files[0]) as f:
+                        df = pd.read_csv(f, low_memory=False)
+                        
+                        # Filter for Copper
+                        copper_data = df[df['CFTC_Contract_Market_Code'] == '085692'].copy()
+                        
+                        if not copper_data.empty:
+                            all_data.append(copper_data)
+                            print(f"  Found {len(copper_data)} records for {year}")
+                        else:
+                            print(f"  No copper data in {year}")
+        except Exception as e:
+            print(f"  Error with legacy format: {e}")
+            
+            # Try alternative format
+            try:
+                url2 = f"https://www.cftc.gov/files/dea/history/fut_disagg_txt_{year}.zip"
+                print(f"  Trying alternative format for {year}...")
+                response = requests.get(url2, timeout=30)
+                response.raise_for_status()
+                
+                with zipfile.ZipFile(io.BytesIO(response.content)) as z:
+                    txt_file = [f for f in z.namelist() if f.endswith('.txt')][0]
+                    
+                    with z.open(txt_file) as f:
+                        df = pd.read_csv(f, low_memory=False)
+                        copper_data = df[df['CFTC_Contract_Market_Code'] == '085692'].copy()
+                        
+                        if not copper_data.empty:
+                            all_data.append(copper_data)
+                            print(f"  Found {len(copper_data)} records for {year}")
+            except Exception as e2:
+                print(f"  Also failed alternative: {e2}")
+    
+    # Pattern 2: Current format (2017 onwards)
+    for year in range(2017, current_year + 1):
+        url = f"https://www.cftc.gov/files/dea/history/fut_disagg_txt_{year}.zip"
+        print(f"Fetching {year} (current format)...")
+        
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
             
             with zipfile.ZipFile(io.BytesIO(response.content)) as z:
-                # Get the txt file name
                 txt_file = [f for f in z.namelist() if f.endswith('.txt')][0]
                 
-                # Read the data
                 with z.open(txt_file) as f:
                     df = pd.read_csv(f, low_memory=False)
-                    
-                    # Filter for Copper (CFTC Contract Market Code = 085692)
                     copper_data = df[df['CFTC_Contract_Market_Code'] == '085692'].copy()
                     
                     if not copper_data.empty:
                         all_data.append(copper_data)
                         print(f"  Found {len(copper_data)} records for {year}")
-        
         except Exception as e:
             print(f"  Error fetching {year}: {e}")
-            continue
     
     if not all_data:
         print("No data found!")
@@ -69,8 +101,9 @@ def fetch_cot_data():
         df_combined['Report_Date_as_YYYY-MM-DD']
     )
     
-    # Sort by date
+    # Sort by date and remove duplicates
     df_combined = df_combined.sort_values('Report_Date_as_YYYY-MM-DD')
+    df_combined = df_combined.drop_duplicates(subset=['Report_Date_as_YYYY-MM-DD'], keep='last')
     
     return df_combined
 
@@ -135,7 +168,7 @@ def save_chart_data(df):
 
 
 if __name__ == '__main__':
-    print("Fetching Copper COT data from CFTC...\n")
+    print("Fetching Copper COT data from CFTC (2006 onwards)...\n")
     
     # Fetch data
     df = fetch_cot_data()

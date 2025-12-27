@@ -111,6 +111,29 @@
             background: #f8fafc;
             border-radius: 8px;
         }
+
+        .time-btn {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 20px;
+            margin: 0 5px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .time-btn:hover {
+            background: #f0f4ff;
+        }
+
+        .time-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
     </style>
 </head>
 
@@ -124,6 +147,13 @@
         </div>
 
         <div class="card">
+            <!-- Time Period Buttons -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button class="time-btn active" onclick="updatePeriod('ALL')">ALL</button>
+                <button class="time-btn" onclick="updatePeriod('5Y')">5Y</button>
+                <button class="time-btn" onclick="updatePeriod('1Y')">1Y</button>
+            </div>
+
             <div class="chart-container">
                 <canvas id="cotChart"></canvas>
             </div>
@@ -143,86 +173,125 @@
 
     <script>
         // Use embedded data instead of fetch
-        const data = cotData;
+        const allData = cotData;
+        let currentChart = null;
 
-        // Create chart
-        const ctx = document.getElementById('cotChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.map(d => d.date),
-                datasets: [{
-                    label: 'Managed Money Net % OI',
-                    data: data.map(d => d.net_pct_oi),
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.1,
-                    pointRadius: 0,
-                    pointHoverRadius: 5
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
+        function filterDataByPeriod(period) {
+            if (period === 'ALL') {
+                return allData;
+            }
+
+            const now = new Date(allData[allData.length - 1].date);
+            const cutoffDate = new Date(now);
+
+            if (period === '1Y') {
+                cutoffDate.setFullYear(now.getFullYear() - 1);
+            } else if (period === '5Y') {
+                cutoffDate.setFullYear(now.getFullYear() - 5);
+            }
+
+            return allData.filter(d => new Date(d.date) >= cutoffDate);
+        }
+
+        function createChart(data) {
+            const ctx = document.getElementById('cotChart').getContext('2d');
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.date),
+                    datasets: [{
+                        label: 'Managed Money Net % OI',
+                        data: data.map(d => d.net_pct_oi),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1,
+                        pointRadius: 0,
+                        pointHoverRadius: 5
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                const dataPoint = data[context.dataIndex];
-                                return [
-                                    `Net % OI: ${dataPoint.net_pct_oi.toFixed(2)}%`,
-                                    `Long: ${dataPoint.mm_long.toLocaleString()}`,
-                                    `Short: ${dataPoint.mm_short.toLocaleString()}`,
-                                    `Open Interest: ${dataPoint.open_interest.toLocaleString()}`
-                                ];
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const dataPoint = data[context.dataIndex];
+                                    return [
+                                        `Net % OI: ${dataPoint.net_pct_oi.toFixed(2)}%`,
+                                        `Long: ${dataPoint.mm_long.toLocaleString()}`,
+                                        `Short: ${dataPoint.mm_short.toLocaleString()}`,
+                                        `Open Interest: ${dataPoint.open_interest.toLocaleString()}`
+                                    ];
+                                }
                             }
                         }
-                    }
-                },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'year',
-                            displayFormats: {
-                                year: 'yyyy'
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'year',
+                                displayFormats: {
+                                    year: 'yyyy'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            grid: {
+                                display: false
                             }
                         },
-                        title: {
-                            display: true,
-                            text: 'Date'
-                        },
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Net Position (% of Open Interest)'
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        ticks: {
-                            callback: function (value) {
-                                return value.toFixed(0) + '%';
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Net Position (% of Open Interest)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return value.toFixed(0) + '%';
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+
+        function updatePeriod(period) {
+            // Update button states
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter data and update chart
+            const filteredData = filterDataByPeriod(period);
+            createChart(filteredData);
+        }
+
+        // Initialize chart with all data
+        createChart(allData);
     </script>
 </body>
 
