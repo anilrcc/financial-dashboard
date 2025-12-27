@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Update Money Supply (M2) data from FRED API
-Fetches M2 Money Stock and Velocity data and updates money_supply.html
+Update Money Supply (M2) data from FRED Website (CSV Download)
+Fetches M2 Money Stock and Velocity data directly from FRED graphs and updates money_supply.html.
+No API Key required.
 """
 
 import requests
@@ -9,42 +10,58 @@ import json
 from datetime import datetime
 import re
 import os
+import csv
+import io
 
-# FRED API Configuration
-FRED_API_KEY = "YOUR_FRED_API_KEY_HERE"  # User needs to get their own key from https://fred.stlouisfed.org/docs/api/api_key.html
-FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
-
-# FRED Series IDs
-SERIES_IDS = {
-    'm2': 'M2SL',    # M2 Money Stock, Seasonally Adjusted, Billions of Dollars
-    'velocity': 'M2V' # Velocity of M2 Money Stock, Ratio
+# FRED Direct CSV URLs
+# These endpoints allow downloading the graph data as CSV without an API key.
+CSV_URLS = {
+    'm2': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=M2SL',    # M2 Money Stock, Seasonally Adjusted
+    'velocity': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=M2V' # Velocity of M2 Money Stock
 }
 
-def fetch_fred_data(series_id, start_date='1959-01-01'):
-    """Fetch data from FRED API for a given series"""
-    params = {
-        'series_id': series_id,
-        'api_key': FRED_API_KEY,
-        'file_type': 'json',
-        'observation_start': start_date
+def fetch_csv_data(url):
+    """Fetch and parse CSV data from FRED website"""
+    print(f"Downloading data from: {url}")
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
     
-    response = requests.get(FRED_BASE_URL, params=params)
-    response.raise_for_status()
-    
-    data = response.json()
-    observations = data.get('observations', [])
-    
-    # Convert to our format: [{date: 'YYYY-MM-DD', value: X.XX}, ...]
-    formatted_data = []
-    for obs in observations:
-        if obs['value'] != '.':  # Skip missing values
-            formatted_data.append({
-                'date': obs['date'],
-                'value': float(obs['value'])
-            })
-    
-    return formatted_data
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        
+        # Parse CSV content
+        csv_text = response.text
+        f = io.StringIO(csv_text)
+        reader = csv.reader(f)
+        
+        # Skip header
+        header = next(reader, None)
+        
+        formatted_data = []
+        for row in reader:
+            if len(row) >= 2:
+                date_str = row[0]
+                val_str = row[1]
+                
+                # Validation
+                if val_str and val_str != '.':
+                    try:
+                        val = float(val_str)
+                        formatted_data.append({
+                            'date': date_str,
+                            'value': val
+                        })
+                    except ValueError:
+                        continue
+                        
+        print(f"  ✓ Parsed {len(formatted_data)} data points")
+        return formatted_data
+
+    except Exception as e:
+        print(f"  ✗ Error fetching CSV: {e}")
+        return []
 
 def calculate_yoy_growth(data):
     """Calculate Year-over-Year growth percentage"""
@@ -53,23 +70,40 @@ def calculate_yoy_growth(data):
     date_map = {item['date']: item['value'] for item in data}
     
     for item in data:
-        current_date = datetime.strptime(item['date'], '%Y-%m-%d')
-        # Check for the same month in previous year
-        prev_year_date = current_date.replace(year=current_date.year - 1).strftime('%Y-%m-%d')
-        
-        if prev_year_date in date_map:
-            prev_val = date_map[prev_year_date]
-            curr_val = item['value']
-            if prev_val != 0:
-                growth = ((curr_val - prev_val) / prev_val) * 100
-                growth_data.append({
-                    'date': item['date'],
-                    'value': round(growth, 2)
-                })
+        try:
+            current_date = datetime.strptime(item['date'], '%Y-%m-%d')
+            # Check for the same month in previous year
+            prev_year_date = current_date.replace(year=current_date.year - 1).strftime('%Y-%m-%d')
+            
+            if prev_year_date in date_map:
+                prev_val = date_map[prev_year_date]
+                curr_val = item['value']
+                if prev_val != 0:
+                    growth = ((curr_val - prev_val) / prev_val) * 100
+                    growth_data.append({
+                        'date': item['date'],
+                        'value': round(growth, 2)
+                    })
+        except ValueError:
+            continue
                 
     return growth_data
 
-def update_html_file(m2_data, growth_data, velocity_data):
+def calculate_mom_growth(data):
+    """Calculate Month-over-Month growth percentage"""
+    growth_data = []
+    for i in range(1, len(data)):
+        prev_val = data[i-1]['value']
+        curr_val = data[i]['value']
+        if prev_val != 0:
+            growth = ((curr_val - prev_val) / prev_val) * 100
+            growth_data.append({
+                'date': data[i]['date'],
+                'value': round(growth, 2)
+            })
+    return growth_data
+
+def update_html_file(m2_data, growth_data, mom_data, velocity_data):
     """Update the money_supply.html file with new data"""
     html_file = 'money_supply.html'
     
@@ -84,6 +118,7 @@ def update_html_file(m2_data, growth_data, velocity_data):
     # Convert data to JavaScript format
     m2_js = json.dumps(m2_data, separators=(',', ': '))
     growth_js = json.dumps(growth_data, separators=(',', ': '))
+    mom_js = json.dumps(mom_data, separators=(',', ': '))
     velocity_js = json.dumps(velocity_data, separators=(',', ': '))
     
     # Update M2 Data
@@ -94,10 +129,17 @@ def update_html_file(m2_data, growth_data, velocity_data):
         flags=re.DOTALL
     )
     
-    # Update Growth Data
     content = re.sub(
         r'const growthFullData = \[.*?\];',
         f'const growthFullData = {growth_js};',
+        content,
+        flags=re.DOTALL
+    )
+    
+    # Update MoM Data
+    content = re.sub(
+        r'(const|let) momFullData = \[.*?\];',
+        f'let momFullData = {mom_js};',
         content,
         flags=re.DOTALL
     )
@@ -120,11 +162,13 @@ def update_html_file(m2_data, growth_data, velocity_data):
     
     # Update displayed Last Updated text
     display_date = datetime.now().strftime('%b %d, %Y')
-    content = re.sub(
-        r'<div class="refresh-badge" id="last-updated">Last Updated: .*?</div>',
-        f'<div class="refresh-badge" id="last-updated">Last Updated: {display_date}</div>',
-        content
-    )
+    # Simple regex to update separate date badge if it exists
+    if 'id="last-updated"' in content:
+        content = re.sub(
+            r'<div class="refresh-badge" id="last-updated">Last Updated: .*?</div>',
+            f'<div class="refresh-badge" id="last-updated">Last Updated: {display_date}</div>',
+            content
+        )
     
     # Write the updated content back
     with open(html_file, 'w', encoding='utf-8') as f:
@@ -134,51 +178,38 @@ def update_html_file(m2_data, growth_data, velocity_data):
 
 def main():
     """Main function to update money supply data"""
-    print("Fetching Money Supply (M2) data from FRED...")
+    print("==================================================")
+    print("   Fetching Money Supply (M2) Data directly from FRED")
+    print("   (CSV Download Method - No API Key Required)")
+    print("==================================================")
     
-    # Check if API key is set
-    if FRED_API_KEY == "YOUR_FRED_API_KEY_HERE":
-        print("\n⚠️  ERROR: FRED API key not set!")
-        print("Please get a free API key from: https://fred.stlouisfed.org/docs/api/api_key.html")
-        print("Then update the FRED_API_KEY variable in this script.\n")
+    m2_data = fetch_csv_data(CSV_URLS['m2'])
+    velocity_data = fetch_csv_data(CSV_URLS['velocity'])
+    
+    if not m2_data:
+        print("❌ Critical: Failed to download M2 data. Aborting update.")
         return
+
+    print("Calculating YoY Growth...")
+    growth_data = calculate_yoy_growth(m2_data)
     
-    try:
-        # Fetch data
-        print("Fetching M2SL data...")
-        m2_data = fetch_fred_data(SERIES_IDS['m2'])
-        print(f"  ✓ Got {len(m2_data)} M2 observations")
-        
-        print("Calculating YoY Growth...")
-        growth_data = calculate_yoy_growth(m2_data)
-        print(f"  ✓ Calculated {len(growth_data)} growth points")
-        
-        # M2 data is in Billions, but for display we might want it in Trillions in the text, 
-        # but for charts keeping it raw or consistent is fine. 
-        # The HTML converts to Trillions for the KPI display.
-        
-        print("Fetching M2 Velocity data...")
-        velocity_data = fetch_fred_data(SERIES_IDS['velocity'])
-        print(f"  ✓ Got {len(velocity_data)} Velocity observations")
-        
-        # Update the HTML file
-        print("\nUpdating money_supply.html...")
-        if update_html_file(m2_data, growth_data, velocity_data):
-            print("✓ Successfully updated money_supply.html")
-            if m2_data:
-                print(f"\nLatest data points:")
-                print(f"  M2: ${m2_data[-1]['value']/1000:.2f}T on {m2_data[-1]['date']}")
-            if growth_data:
-                print(f"  Growth: {growth_data[-1]['value']}%")
-            if velocity_data:
-                print(f"  Velocity: {velocity_data[-1]['value']}")
-        else:
-            print("✗ Failed to update HTML file")
-            
-    except requests.exceptions.RequestException as e:
-        print(f"\n✗ Error fetching data from FRED: {e}")
-    except Exception as e:
-        print(f"\n✗ Error: {e}")
+    print("Calculating MoM Growth...")
+    mom_data = calculate_mom_growth(m2_data)
+    
+    # Filter Velocity to align with M2 dates if needed, or just use as is
+    # Velocity is quarterly usually, while M2 is monthly. 
+    # The Chart.js adapter handles different frequencies gracefully.
+    
+    print("\nUpdating money_supply.html...")
+    if update_html_file(m2_data, growth_data, mom_data, velocity_data):
+        print("✓ Successfully updated money_supply.html")
+        if m2_data:
+            latest = m2_data[-1]
+            print(f"\nLatest M2 Data: ${latest['value']/1000:.2f}T on {latest['date']}")
+        if growth_data:
+            print(f"Latest YoY Growth: {growth_data[-1]['value']}%")
+    else:
+        print("✗ Failed to update HTML file")
 
 if __name__ == "__main__":
     main()

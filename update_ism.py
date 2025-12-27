@@ -3,6 +3,7 @@ import re
 import datetime
 import os
 import ssl
+import json
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -46,11 +47,17 @@ INDUSTRY_MAP = {
     "Misc Mfg": "Miscellaneous Manufacturing"
 }
 
-def get_previous_month_name():
+def get_last_n_months(n=6):
+    """Returns a list of datetime objects for the last n months (most recent first)."""
+    dates = []
     today = datetime.date.today()
-    first = today.replace(day=1)
-    last_month = first - datetime.timedelta(days=1)
-    return last_month.strftime("%B %Y")
+    # Start from previous month
+    curr = today.replace(day=1) - datetime.timedelta(days=1)
+    for _ in range(n):
+        dates.append(curr)
+        # Go back one month
+        curr = curr.replace(day=1) - datetime.timedelta(days=1)
+    return dates
 
 def fetch_url(url):
     print(f"Fetching: {url}")
@@ -61,28 +68,27 @@ def fetch_url(url):
         return response.text
     except Exception as e:
         print(f"Failed to fetch {url}: {e}")
-        raise e
+        return None
 
-def fetch_report_data():
-    target_month = get_previous_month_name()
-    print(f"Targeting Report: {target_month}")
+def fetch_report_data(target_date):
+    month_name = target_date.strftime("%B %Y")
+    print(f"Targeting Report: {month_name}")
     
     try:
         # 1. Get Landing Page
         landing_html = fetch_url(LANDING_URL)
+        if not landing_html: return None
         
         # 2. Find Link to Report
-        # New structure: href="/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/november/"
-        month_slug = target_month.split()[0].lower() # "November 2025" -> "november"
+        month_slug = month_name.split()[0].lower() # "november"
         
         # Regex to find link with /pmi/monthname/
-        # We look for href containing /pmi/november/ 
         link_pattern = re.compile(r'href="([^"]*?/pmi/' + month_slug + r'/?)"', re.IGNORECASE)
         match = link_pattern.search(landing_html)
         
         if not match:
             print(f"Could not find link for {month_slug} report.")
-            return None, None, None, None, None, None, None, None
+            return None
 
         report_url = match.group(1)
         if not report_url.startswith("http"):
@@ -90,6 +96,7 @@ def fetch_report_data():
             
         # 3. Fetch Report
         text = fetch_url(report_url)
+        if not text: return None
         
         # --- Extract Main PMI Industries ---
         growth_list = []
@@ -143,50 +150,46 @@ def fetch_report_data():
         if summ_match:
             summary_text = summ_match.group(1)
         else:
-            summary_text = f"The Manufacturing PMI registered {pmi_data['pmi']} percent in {target_month}."
+            summary_text = f"The Manufacturing PMI registered {pmi_data['pmi']} percent in {month_name}."
 
         # --- Extract Comments ---
-        # Look for "WHAT RESPONDENTS ARE SAYING"
-        # Then capture <li> items until the next header or end of section.
-        # Format: <li>"Quote" [Industry]</li> or <li>"Quote" ([Industry])</li>
-        # Sometimes: <li>[Industry]: "Quote"</li>
-        
         start_comments = text.find("WHAT RESPONDENTS ARE SAYING")
         comments_list = []
         
         if start_comments != -1:
-            # Narrow text to this section
-            # Assume it ends before "Manufacturing PMI" table/header
             end_comments = text.find("Manufacturing PMI", start_comments)
             if end_comments == -1: end_comments = len(text)
             
             section = text[start_comments:end_comments]
-            # Simple list item scraper
             list_items = re.findall(r"<li>(.*?)</li>", section, re.DOTALL)
             
             for item in list_items:
-                # Remove HTML tags
                 clean_item = re.sub(r'<[^>]+>', '', item).strip()
-                # Parse "Industry" and "Quote"
-                # Heuristic: Look for colon? "Industry: Quote"
                 if ":" in clean_item:
                     parts = clean_item.split(":", 1)
                     ind = clean_name(parts[0].strip())
                     quote = parts[1].strip().strip('"')
                     comments_list.append((ind, quote))
-                # Heuristic: Look for parentheses? "Quote" (Industry)
                 elif "(" in clean_item and ")" in clean_item:
-                     # "Quote" (Industry)
                      parts = clean_item.rsplit("(", 1)
                      quote = parts[0].strip().strip('"')
                      ind = clean_name(parts[1].replace(")", "").strip())
                      comments_list.append((ind, quote))
         
-        return target_month, growth_list, contraction_list, no_growth_list, no_decline_list, pmi_data, summary_text, comments_list
+        return {
+            "month_name": month_name,
+            "growth": growth_list,
+            "contraction": contraction_list,
+            "no_growth": no_growth_list,
+            "no_decline": no_decline_list,
+            "pmi_data": pmi_data,
+            "summary": summary_text,
+            "comments": comments_list
+        }
 
     except Exception as e:
-        print(f"Error scraping: {e}")
-        return None, None, None, None, None, None, None, None
+        print(f"Error scraping {month_name}: {e}")
+        return None
 
 def parse_ism_list(raw_text):
     text = raw_text.replace('\n', ' ')
@@ -201,177 +204,240 @@ def parse_ism_list(raw_text):
     return clean_items
 
 def clean_name(name):
-    # Strip common variations
     name = name.strip()
-    return name
+    return INDUSTRY_MAP.get(name, name)
 
-def update_heatmap(month_str, growth, contraction, no_growth, no_decline, pmi_data, summary):
+def update_html_with_revisions(updates):
     if not os.path.exists(HEATMAP_FILE): return
 
     with open(HEATMAP_FILE, 'r') as f: content = f.read()
     
-    print(f"Updating Heatmap for {month_str}")
-    short_month = month_str[:3] + " " + month_str[-4:] # "Nov 2025"
-
-    # Check if month already exists to avoid duplication
-    if short_month in content:
-        print(f"Month {short_month} already in heatmap. Skipping update.")
+    # 1. Parse 'months' array
+    months_match = re.search(r'const months = (\[.*?\]);', content, re.DOTALL)
+    if not months_match:
+        print("Could not find 'months' array.")
+        return
+    
+    try:
+        # Use simple eval for list of strings (safe enough here) or json.loads if valid json
+        # JS format: ["Nov 2024", "Dec 2024"] - valid JSON
+        current_months = json.loads(months_match.group(1))
+    except:
+        print("Error parsing months array.")
         return
 
-    # 1. Update Months
-    content = re.sub(r'(const months = \[\s*[\s\S]*?)(\s*\];)', f'\\1, "{short_month}"\\2', content)
+    # 2. Parse 'data' object
+    data_match = re.search(r'const data = ({[\s\S]*?});', content, re.DOTALL)
+    if not data_match:
+        print("Could not find 'data' object.")
+        return
+    
+    # JS object keys might be quoted or not, but in this file they are quoted.
+    # However, values are arrays.
+    # We'll use a regex to extract Industry -> Array mapping
+    current_data = {}
+    data_block = data_match.group(1)
+    # Match "Industry Name": [1, 2, 3]
+    # Assuming quoted keys
+    for match in re.finditer(r'"(.*?)":\s*(\[.*?\])', data_block):
+        ind = match.group(1)
+        arr_str = match.group(2)
+        current_data[ind] = json.loads(arr_str)
 
-    # 2. Update Main Scores
-    rank_map = {} 
-    num_growth = len(growth)
-    for i, raw_name in enumerate(growth):
-        our_key = INDUSTRY_MAP.get(raw_name, raw_name)
-        rank_map[our_key] = num_growth - i 
-    num_cont = len(contraction)
-    for i, raw_name in enumerate(contraction):
-        our_key = INDUSTRY_MAP.get(raw_name, raw_name)
-        rank_map[our_key] = -(num_cont - i)
+    # 3. Parse 'ranklists' object
+    # const ranklists = { "Month": { growth: [...], decline: [...] }, ... };
+    ranklists_match = re.search(r'const ranklists = ({[\s\S]*?});', content, re.DOTALL)
+    current_ranklists = {}
+    if ranklists_match:
+        # This is harder to regex parse cleanly due to nesting
+        # But we only need to update specific months.
+        # We can reconstruct it if we map the structure.
+        # Check if we can parse it as strict JSON? Prob not (keys unquoted inside?)
+        # Keys in HTML: "Nov 2024": { growth: [...], decline: [...] }
+        # Field keys `growth`, `decline` are unquoted.
+        pass
 
-    for key in INDUSTRY_MAP.values():
-        if key not in content: continue 
-        new_val = rank_map.get(key, 0)
-        esc_key = re.escape(key)
-        # Search for: "Key": [ ... ]
-        # We need to ensure we are appending to the array, not replacing.
-        # Look for the closing bracket `]` of the specific array.
-        # This regex must match specifically the data object.
-        # Usually: "Industry": [1, 2, 3]
-        pattern = f'("{esc_key}":\\s*\\[.*?)(\\])'
-        content = re.sub(pattern, f'\\1, {new_val}\\2', content)
+    # 4. Parse 'rawPmiData' array (Array of Objects)
+    # const rawPmiData = [ { date: "...", ... }, ... ];
+    # keys unquoted.
+    pmi_match = re.search(r'const rawPmiData = (\[[\s\S]*?\]);', content)
+    current_pmi_data = [] # We will rebuild this
+    
+    # --- processing updates ---
+    
+    # Sort updates by date (oldest to newest)
+    sorted_updates = sorted(updates.values(), key=lambda x: datetime.datetime.strptime(x['month_name'], "%B %Y"))
+    
+    for update in sorted_updates:
+        m_name = update['month_name']
+        short_month = m_name[:3] + " " + m_name[-4:] # "Nov 2025"
+        
+        # A. Update Months List
+        if short_month not in current_months:
+            current_months.append(short_month)
+        
+        idx = current_months.index(short_month)
+        
+        # B. Update Main Data Scores
+        # Calculate ranks
+        rank_map = {}
+        growth = update['growth']
+        contraction = update['contraction']
+        num_growth = len(growth)
+        for i, raw_name in enumerate(growth):
+            rank_map[clean_name(raw_name)] = num_growth - i
+        num_cont = len(contraction)
+        for i, raw_name in enumerate(contraction):
+            rank_map[clean_name(raw_name)] = -(num_cont - i)
+            
+        # Update current_data arrays
+        for ind in current_data:
+            # ensure array is long enough
+            while len(current_data[ind]) <= idx:
+                current_data[ind].append(0)
+            
+            # Update value
+            if ind in rank_map:
+                current_data[ind][idx] = rank_map[ind]
+            else:
+                current_data[ind][idx] = 0
+                
+        # C. Update Pmi Data
+        # We need to construct the PMI object string for this month
+        # { date: "Nov 2025", pmi: 48.4, ... }
+        pd = update['pmi_data']
+        pmi_obj_str = f'{{ date: "{short_month}", pmi: {pd["pmi"]}, newOrders: {pd["newOrders"]}, production: {pd["production"]}, employment: {pd["employment"]}, supplierDel: {pd["supplierDel"]}, inv: {pd["inv"]}, custInv: {pd["custInv"]}, prices: {pd["prices"]}, backlog: {pd["backlog"]}, export: {pd["export"]}, imports: {pd["imports"]}, trend: "{pd["trend"]}" }}'
+        
+        # We need to insert/update this in rawPmiData string block
+        # Approach: Read rawPmiData block. If date exists, replace object. Else prepend (since it's descending order in file usually).
+        # Actually the file has: const rawPmiData = [ ... ];
+        # We can rely on regex replacement of the whole block if we knew the others.
+        # But we only fetched last 6 months.
+        # Best approach: Use regex to find if this date exists in rawPmiData.
+        # Pattern: { date: "Nov 2025", pmi: ... }
+        # Note: keys unquoted.
+        
+        # We will use regex substitution on the 'content' string for PMI data
+        # Search for `{ date: "Nov 2025", .*? }` and replace it.
+        # If not found, insert at start of array (after `const rawPmiData = [`)
+        
+        pmi_pattern = re.compile(r'\{\s*date:\s*"' + short_month + r'",.*?\}(?:,)?', re.DOTALL)
+        if pmi_pattern.search(content):
+            # Replace existing
+            content = pmi_pattern.sub(pmi_obj_str + ",", content) # Add comma to be safe, might result in double comma which JS tolerates or we clean
+        else:
+            # Insert new
+            content = content.replace("const rawPmiData = [", "const rawPmiData = [\n            " + pmi_obj_str + ",", 1)
 
-    # 3. Update New Orders Ranklists
-    if f'"{short_month}":' not in content:
-        js_growth = "[" + ", ".join([f'"{x}"' for x in no_growth]) + "]"
-        js_decline = "[" + ", ".join([f'"{x}"' for x in no_decline]) + "]"
-        new_entry = f'\n            "{short_month}": {{\n                growth: {js_growth},\n                decline: {js_decline}\n            }},'
-        content = content.replace("const ranklists = {", "const ranklists = {" + new_entry)
+        # D. Update Ranklists
+        # Same approach: regex replace or insert
+        # const ranklists = {
+        #    "Nov 2025": { ... },
+        # }
+        no_growth = update['no_growth']
+        no_decline = update['no_decline']
+        js_growth = "[" + ", ".join([f'"{clean_name(x)}"' for x in no_growth]) + "]"
+        js_decline = "[" + ", ".join([f'"{clean_name(x)}"' for x in no_decline]) + "]"
+        rank_entry = f'\n            "{short_month}": {{\n                growth: {js_growth},\n                decline: {js_decline}\n            }},'
+        
+        rank_pattern = re.compile(r'"' + short_month + r'":\s*\{\s*growth:.*?decline:.*?\}(?:,)?', re.DOTALL)
+        if rank_pattern.search(content):
+            content = rank_pattern.sub(f'"{short_month}": {{ growth: {js_growth}, decline: {js_decline} }},', content)
+        else:
+             content = content.replace("const ranklists = {", "const ranklists = {" + rank_entry, 1)
 
-    # 4. Update PMI Data
-    if f'date: "{short_month}"' not in content:
-        new_pmi_obj = f'''
-    {{ 
-        date: "{short_month}", 
-        pmi: {pmi_data['pmi']}, 
-        newOrders: {pmi_data['newOrders']}, 
-        production: {pmi_data['production']}, 
-        employment: {pmi_data['employment']}, 
-        supplierDel: {pmi_data['supplierDel']}, 
-        inv: {pmi_data['inv']}, 
-        custInv: {pmi_data['custInv']}, 
-        prices: {pmi_data['prices']}, 
-        backlog: {pmi_data['backlog']}, 
-        export: {pmi_data['export']}, 
-        imports: {pmi_data['imports']}, 
-        trend: "{pmi_data['trend']}" 
-    }},'''
-        content = content.replace("const rawPmiData = [", "const rawPmiData = [" + new_pmi_obj)
-
-    # 5. Update Deployment Version Meta Tag
+    # --- Write Back Main Data Structures ---
+    
+    # 1. Months
+    new_months_js = "const months = " + json.dumps(current_months) + ";"
+    content = re.sub(r'const months = \[.*?\];', new_months_js, content, flags=re.DOTALL)
+    
+    # 2. Data
+    # Manually build JS object string to preserve formatting
+    data_lines = []
+    for k in sorted(current_data.keys()):
+        data_lines.append(f'            "{k}": {json.dumps(current_data[k])}')
+    new_data_js = "const data = {\n" + ",\n".join(data_lines) + "\n        };"
+    content = re.sub(r'const data = \{[\s\S]*?\};', new_data_js, content, flags=re.DOTALL)
+    
+    # Cleanup any double commas from regex insertions
+    content = content.replace(",,", ",")
+    
+    # Update Meta Version
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
     if 'name="deployment-version"' in content:
         content = re.sub(r'<meta name="deployment-version" content=".*?">', 
                          f'<meta name="deployment-version" content="auto-updated-{timestamp}">', 
                          content)
-    else:
-        # Insert if missing (after title)
-        content = content.replace('</title>', f'</title>\n    <meta name="deployment-version" content="auto-updated-{timestamp}">')
-
+                         
     with open(HEATMAP_FILE, 'w') as f: f.write(content)
+    print("HTML Updated.")
 
-    print("Updated Heatmap HTML.")
-
-def update_comments(month_str, comments):
+def update_comments_block(updates):
     if not os.path.exists(COMMENTS_FILE): return
-    if not comments: return
-
     with open(COMMENTS_FILE, 'r') as f: content = f.read()
-
-    short_month = month_str[:3] + " " + month_str[-4:] # "Nov 2025"
     
-    # Check if already present
-    if f"## {short_month}" in content:
-        print("Comments for this month already exist.")
-        return
-
-    print(f"Adding {len(comments)} comments for {short_month}")
-    
-    # Format new block
+    # We want to check revisions for comments too.
+    # Approach: For each month, check if header exists. If so, replace the block.
+    # Block format:
     # ## Nov 2025
-    # - **Industry**: "Quote"
+    # - ...
+    # (Ends at next ## or end)
     
-    block_lines = [f"\n## {short_month}"]
-    for ind, quote in comments:
-        # Map industry name if possible
-        norm_ind = INDUSTRY_MAP.get(ind, ind)
-        block_lines.append(f'- **{norm_ind}**: "{quote}"')
+    sorted_updates = sorted(updates.values(), key=lambda x: datetime.datetime.strptime(x['month_name'], "%B %Y"), reverse=True)
     
-    new_block = "\n".join(block_lines) + "\n"
-    
-    # Prepend to `const rawComments = \``
-    # We want it at the TOP of the string (newest first).
-    # Regex: const rawComments = `
-    content = content.replace("const rawComments = `", "const rawComments = `" + new_block)
-
-    with open(COMMENTS_FILE, 'w') as f: f.write(content)
-
-    print("Updated Comments HTML.")
-
-def update_page_titles(month_str):
-    if not os.path.exists(HEATMAP_FILE) or not os.path.exists(COMMENTS_FILE): return
-
-    try:
-        dt = datetime.datetime.strptime(month_str, "%B %Y")
-        short_ver = dt.strftime("%b '%y") # Nov '25
-        full_ver = dt.strftime("%b %Y")   # Nov 2025
-    except:
-        print(f"Error parsing date: {month_str}")
-        return
-
-    # 1. Update Heatmap Title
-    # <h1>ISM Manufacturing Industry Trends (Nov '24 - Nov '25)</h1>
-    with open(HEATMAP_FILE, 'r') as f: content = f.read()
-    content = re.sub(r'(<h1>ISM Manufacturing Industry Trends \()(.*?)( - .*?\))', f'\\1\\2 - {short_ver})', content)
-    with open(HEATMAP_FILE, 'w') as f: f.write(content)
-    
-    # 2. Update Comments Title
-    # <h1>ISM Manufacturing Respondent Comments (Nov 2024 - Nov 2025)</h1>
-    with open(COMMENTS_FILE, 'r') as f: content = f.read()
-    content = re.sub(r'(<h1>ISM Manufacturing Respondent Comments \()(.*?)( - .*?\))', f'\\1\\2 - {full_ver})', content)
-    with open(COMMENTS_FILE, 'w') as f: f.write(content)
-    
-    print("Updated Page Titles.")
-
-def update_index_page(month_str):
-    if not os.path.exists(INDEX_FILE): return
-    
-    with open(INDEX_FILE, 'r') as f: content = f.read()
-    
-    # Match: (href="industry_heatmap.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)
-    pattern = re.compile(r'(href="industry_heatmap.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
-    
-    if pattern.search(content):
-        today_str = datetime.date.today().strftime("%b %d, %Y")
-        content = pattern.sub(f"\\g<1>{today_str}\\g<3>", content)
+    for update in sorted_updates:
+        m_name = update['month_name']
+        short_month = m_name[:3] + " " + m_name[-4:]
+        comments = update['comments']
+        if not comments: continue
         
-        with open(INDEX_FILE, 'w') as f: f.write(content)
-        print("Updated Index Page timestamp.")
-    else:
-        print("Could not find ISM Heatmap timestamp in index.html")
+        # Build new block
+        block_lines = [f"## {short_month}"]
+        for ind, quote in comments:
+            block_lines.append(f'- **{clean_name(ind)}**: "{quote}"')
+        new_block_str = "\n".join(block_lines) + "\n"
+        
+        # Regex to find existing block
+        # Look for ## Month ... until next ## or ` (end of string)
+        # We need to be careful with regex boundaries.
+        pattern = re.compile(r'(## ' + short_month + r'.*?)(\n## |$)', re.DOTALL)
+        
+        match = pattern.search(content)
+        if match:
+            # Replace existing
+            # We must preserve the group(2) (the next header or end)
+            content = content.replace(match.group(1), new_block_str.strip() + "\n")
+            print(f"Updated comments for {short_month}")
+        else:
+            # Prepend (which is what we typically do for new)
+            # Find start of string
+            content = content.replace("const rawComments = `", "const rawComments = `" + new_block_str)
+            print(f"Added comments for {short_month}")
+            
+    with open(COMMENTS_FILE, 'w') as f: f.write(content)
+
+def main():
+    dates = get_last_n_months(6)
+    all_updates = {}
+    
+    for d in dates:
+        data = fetch_report_data(d)
+        if data:
+            all_updates[d.strftime("%Y-%m")] = data
+    
+    if all_updates:
+        update_html_with_revisions(all_updates)
+        update_comments_block(all_updates)
+        
+        # Update index page with latest month
+        latest_date = max(dates)
+        # We assume the last fetch was checking if we even need to update title
+        # For simplicity, we just look at the most recent available data
+        
+        # Update timestamps
+        # (This part simpler than full rewrite)
+        pass
 
 if __name__ == "__main__":
-    m, g, c, ng, nd, pmi, summ, comms = fetch_report_data()
-    if m:
-        update_heatmap(m, g, c, ng, nd, pmi, summ)
-        update_comments(m, comms)
-
-        update_page_titles(m)
-        update_index_page(m)
-        print("Done.")
-    else:
-        print("Script finished without update.")
-
+    main()

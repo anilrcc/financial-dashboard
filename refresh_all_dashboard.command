@@ -10,31 +10,31 @@ echo "   Financial Dashboard - Data Refresh    "
 echo "========================================="
 
 echo ""
-echo "[1/8] Refreshing ISM Manufacturing Data..."
+echo "[1/9] Refreshing ISM Manufacturing Data..."
 python3 update_ism.py
 
 echo ""
-echo "[2/8] Refreshing ISM Services Data..."
+echo "[2/9] Refreshing ISM Services Data..."
 python3 update_services_ism.py
 
 echo ""
-echo "[3/8] Refreshing Treasury Yields..."
+echo "[3/9] Refreshing Treasury Yields..."
 python3 update_yields.py
 
 echo ""
-echo "[4/8] Refreshing Corporate Bond Spreads..."
+echo "[4/9] Refreshing Corporate Bond Spreads..."
 python3 update_corporate_bonds.py
 
 echo ""
-echo "[5/8] Refreshing Consumer Sentiment..."
+echo "[5/9] Refreshing Consumer Sentiment..."
 python3 update_consumer_sentiment.py
 
 echo ""
-echo "[6/8] Refreshing Building Permits..."
+echo "[6/9] Refreshing Building Permits..."
 python3 update_building_permits.py
 
 echo ""
-echo "[7/8] Refreshing Small Business Optimism..."
+echo "[7/9] Refreshing Small Business Optimism..."
 python3 update_small_business_optimism.py
 
 echo ""
