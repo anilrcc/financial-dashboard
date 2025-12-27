@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Update Corporate Bonds data from FRED API
-Fetches AAA, BBB, and CCC corporate bond yield data and updates corporate_bonds.html
+Update Corporate Bonds data from FRED Website (CSV)
+Fetches AAA, BBB, and CCC corporate bond yield data via direct CSV download and updates corporate_bonds.html
 """
 
 import requests
@@ -9,10 +9,8 @@ import json
 from datetime import datetime
 import re
 import os
-
-# FRED API Configuration
-FRED_API_KEY = "YOUR_FRED_API_KEY_HERE"  # User needs to get their own key from https://fred.stlouisfed.org/docs/api/api_key.html
-FRED_BASE_URL = "https://api.stlouisfed.org/fred/series/observations"
+import csv
+import io
 
 # FRED Series IDs for corporate bond yields
 SERIES_IDS = {
@@ -22,28 +20,45 @@ SERIES_IDS = {
 }
 
 def fetch_fred_data(series_id):
-    """Fetch data from FRED API for a given series"""
-    params = {
-        'series_id': series_id,
-        'api_key': FRED_API_KEY,
-        'file_type': 'json',
-        'observation_start': '1996-01-01'  # Get all historical data
+    """Fetch data from FRED Website (CSV) for a given series"""
+    # Direct CSV download URL
+    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
+    
+    print(f"  Fetching CSV from {url}...")
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'
     }
     
-    response = requests.get(FRED_BASE_URL, params=params)
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
     
-    data = response.json()
-    observations = data.get('observations', [])
-    
-    # Convert to our format: [{date: 'YYYY-MM-DD', value: X.XX}, ...]
+    # Parse CSV content
     formatted_data = []
-    for obs in observations:
-        if obs['value'] != '.':  # Skip missing values
-            formatted_data.append({
-                'date': obs['date'],
-                'value': float(obs['value'])
-            })
+    
+    # Use io.StringIO to treat the string as a file for the csv module
+    csv_file = io.StringIO(response.text)
+    reader = csv.reader(csv_file)
+    
+    # Skip header
+    next(reader, None)
+    
+    for row in reader:
+        if len(row) >= 2:
+            date_str = row[0]
+            val_str = row[1]
+            
+            # Skip invalid or missing values
+            if val_str == '.' or not val_str.strip():
+                continue
+                
+            try:
+                val = float(val_str)
+                formatted_data.append({
+                    'date': date_str,
+                    'value': val
+                })
+            except ValueError:
+                continue
     
     return formatted_data
 
@@ -106,13 +121,6 @@ def main():
     """Main function to update corporate bonds data"""
     print("Fetching corporate bond yield data from FRED...")
     
-    # Check if API key is set
-    if FRED_API_KEY == "YOUR_FRED_API_KEY_HERE":
-        print("\n⚠️  ERROR: FRED API key not set!")
-        print("Please get a free API key from: https://fred.stlouisfed.org/docs/api/api_key.html")
-        print("Then update the FRED_API_KEY variable in this script.\n")
-        return
-    
     try:
         # Fetch data for all three series
         print("Fetching AAA data...")
@@ -127,16 +135,19 @@ def main():
         ccc_data = fetch_fred_data(SERIES_IDS['ccc'])
         print(f"  ✓ Got {len(ccc_data)} CCC observations")
         
-        # Update the HTML file
-        print("\nUpdating corporate_bonds.html...")
-        if update_html_file(aaa_data, bbb_data, ccc_data):
-            print("✓ Successfully updated corporate_bonds.html")
-            print(f"\nLatest data points:")
-            print(f"  AAA: {aaa_data[-1]['value']}% on {aaa_data[-1]['date']}")
-            print(f"  BBB: {bbb_data[-1]['value']}% on {bbb_data[-1]['date']}")
-            print(f"  CCC: {ccc_data[-1]['value']}% on {ccc_data[-1]['date']}")
+        # Update the HTML file (only if we got data)
+        if aaa_data and bbb_data and ccc_data:
+            print("\nUpdating corporate_bonds.html...")
+            if update_html_file(aaa_data, bbb_data, ccc_data):
+                print("✓ Successfully updated corporate_bonds.html")
+                print(f"\nLatest data points:")
+                print(f"  AAA: {aaa_data[-1]['value']}% on {aaa_data[-1]['date']}")
+                print(f"  BBB: {bbb_data[-1]['value']}% on {bbb_data[-1]['date']}")
+                print(f"  CCC: {ccc_data[-1]['value']}% on {ccc_data[-1]['date']}")
+            else:
+                print("✗ Failed to update HTML file")
         else:
-            print("✗ Failed to update HTML file")
+            print("✗ Failed to fetch complete data for all series.")
             
     except requests.exceptions.RequestException as e:
         print(f"\n✗ Error fetching data from FRED: {e}")
