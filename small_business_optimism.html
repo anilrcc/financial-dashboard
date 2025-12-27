@@ -238,12 +238,21 @@
             </div>
         </div>
 
-        <!-- Plans to Make Capital Outlays -->
+        <!-- Expect Economy to Improve -->
         <div
             style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Plans to Make Capital Outlays</h3>
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Expect Economy to Improve</h3>
             <div style="height: 250px;">
-                <canvas id="capexChart"></canvas>
+                <canvas id="economyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Expect Real Sales Higher -->
+        <div
+            style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Expect Real Sales Higher</h3>
+            <div style="height: 250px;">
+                <canvas id="salesChart"></canvas>
             </div>
         </div>
     </div>
@@ -281,83 +290,82 @@
         // Placeholder Data - TODO: Populate with real historical NFIB data
         // For now, I'm generating some plausible dummy data around the recent range of 89-93 to demonstrate functionality
         const optimismData = [
-            { month: "Jan 2021", index: 95.0, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Feb 2021", index: 95.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Mar 2021", index: 98.2, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Apr 2021", index: 99.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "May 2021", index: 99.6, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jun 2021", index: 102.5, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jul 2021", index: 99.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Aug 2021", index: 100.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Sep 2021", index: 99.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Oct 2021", index: 98.2, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Nov 2021", index: 98.4, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Dec 2021", index: 98.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jan 2022", index: 97.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Feb 2022", index: 95.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Mar 2022", index: 93.2, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Apr 2022", index: 93.2, employment: null, expand: null, inventory: null, capex: null },
-            { month: "May 2022", index: 93.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jun 2022", index: 89.5, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jul 2022", index: 89.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Aug 2022", index: 91.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Sep 2022", index: 92.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Oct 2022", index: 91.3, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Nov 2022", index: 91.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Dec 2022", index: 89.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jan 2023", index: 90.3, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Feb 2023", index: 90.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Mar 2023", index: 90.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Apr 2023", index: 89.0, employment: null, expand: null, inventory: null, capex: null },
-            { month: "May 2023", index: 89.4, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jun 2023", index: 91.0, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jul 2023", index: 91.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Aug 2023", index: 91.3, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Sep 2023", index: 90.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Oct 2023", index: 90.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Nov 2023", index: 90.6, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Dec 2023", index: 91.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jan 2024", index: 89.9, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Feb 2024", index: 89.4, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Mar 2024", index: 88.5, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Apr 2024", index: 89.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "May 2024", index: 90.5, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jun 2024", index: 91.5, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jul 2024", index: 93.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Aug 2024", index: 91.2, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Sep 2024", index: 91.5, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Oct 2024", index: 93.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Nov 2024", index: 101.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Dec 2024", index: 105.1, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jan 2025", index: 102.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Feb 2025", index: 100.7, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Mar 2025", index: 97.4, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Apr 2025", index: 95.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "May 2025", index: 98.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jun 2025", index: 98.6, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Jul 2025", index: 100.3, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Aug 2025", index: 100.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Sep 2025", index: 98.8, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Oct 2025", index: 98.2, employment: null, expand: null, inventory: null, capex: null },
-            { month: "Nov 2025", index: 99.0, employment: 19.0, expand: null, inventory: -1.0, capex: 20.0 }
+            { month: "Jan 2021", index: 95.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2021", index: 95.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2021", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2021", index: 99.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2021", index: 99.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2021", index: 102.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2021", index: 99.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2021", index: 100.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2021", index: 99.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2021", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2021", index: 98.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2021", index: 98.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2022", index: 97.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2022", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2022", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2022", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2022", index: 93.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2022", index: 89.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2022", index: 89.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2022", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2022", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2022", index: 91.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2022", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2022", index: 89.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2023", index: 90.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2023", index: 90.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2023", index: 90.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2023", index: 89.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2023", index: 89.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2023", index: 91.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2023", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2023", index: 91.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2023", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2023", index: 90.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2023", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2023", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2024", index: 89.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2024", index: 89.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2024", index: 88.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2024", index: 89.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2024", index: 90.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2024", index: 91.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2024", index: 93.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2024", index: 91.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2024", index: 91.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2024", index: 93.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2024", index: 101.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2024", index: 105.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2025", index: 102.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2025", index: 100.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2025", index: 97.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2025", index: 95.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2025", index: 98.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2025", index: 98.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2025", index: 100.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2025", index: 100.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2025", index: 98.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2025", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2025", index: 99.0, employment: 19.0, expand: null, inventory: -1.0, economy: 15.0, sales: 15.0 }
         ];
 
         // Chart instances
         let optimismChart;
-        let employmentChart, expandChart, inventoryChart, mainCapexChart;
+        let employmentChart, expandChart, inventoryChart, economyChart, salesChart;
 
         // Helper to create small charts
-        function createSubChart(ctxId, label, data, color) {
+        function createSubChart(ctxId, label, labels, data, color) {
             const ctx = document.getElementById(ctxId).getContext('2d');
-            const rangeData = data.slice(-24); // Show last 24 months for sub-charts
 
             return new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: rangeData.map(d => d.month),
+                    labels: labels,
                     datasets: [{
                         label: label,
-                        data: rangeData.map(d => d.value !== undefined ? d.value : 0),
+                        data: data,
                         backgroundColor: color,
                         borderRadius: 4
                     }]
@@ -476,23 +484,24 @@
                 }
             });
 
-            // Initialize Sub-Charts (using employment, expand, inventory, capex data if available)
-            // We assume optimismData objects might have these extra fields.
-            // If not, we'll map to 0 or null.
-            const empData = optimismData.map(d => ({ month: d.month, value: d.employment }));
-            const expandData = optimismData.map(d => ({ month: d.month, value: d.expand }));
-            const invData = optimismData.map(d => ({ month: d.month, value: d.inventory }));
-            const capexData = optimismData.map(d => ({ month: d.month, value: d.capex }));
+            // Initialize Sub-Charts (using filtered rangeData)
+            const empData = rangeData.map(d => d.employment !== undefined ? d.employment : null);
+            const expandData = rangeData.map(d => d.expand !== undefined ? d.expand : null);
+            const invData = rangeData.map(d => d.inventory !== undefined ? d.inventory : null);
+            const economyData = rangeData.map(d => d.economy !== undefined ? d.economy : null);
+            const salesData = rangeData.map(d => d.sales !== undefined ? d.sales : null);
 
             if (employmentChart) employmentChart.destroy();
             if (expandChart) expandChart.destroy();
             if (inventoryChart) inventoryChart.destroy();
-            if (mainCapexChart) mainCapexChart.destroy();
+            if (economyChart) economyChart.destroy();
+            if (salesChart) salesChart.destroy();
 
-            employmentChart = createSubChart('employmentChart', 'Employment Plans', empData, '#8b5cf6');
-            expandChart = createSubChart('expandChart', 'Good Time to Expand', expandData, '#10b981');
-            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', invData, '#f59e0b');
-            mainCapexChart = createSubChart('capexChart', 'Capex Plans', capexData, '#3b82f6');
+            employmentChart = createSubChart('employmentChart', 'Employment Plans', labels, empData, '#8b5cf6');
+            expandChart = createSubChart('expandChart', 'Good Time to Expand', labels, expandData, '#10b981');
+            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', labels, invData, '#f59e0b');
+            economyChart = createSubChart('economyChart', 'Expect Economy to Improve', labels, economyData, '#3b82f6');
+            salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', labels, salesData, '#ec4899');
         }
 
         // 2. Populate Table

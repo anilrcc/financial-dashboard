@@ -114,7 +114,12 @@ def fetch_latest_data():
         employment_val = None
         expand_val = None
         inventory_val = None
-        capex_val = None
+        optimism_val = None
+        employment_val = None
+        expand_val = None
+        inventory_val = None
+        economy_val = None
+        sales_val = None
 
         # -- Main Index --
         val_match = re.search(r'Optimism Index.*?to\s+(\d+\.?\d*)', content, re.DOTALL | re.IGNORECASE)
@@ -148,29 +153,36 @@ def fetch_latest_data():
              sign = -1 if inv_match.group(1) else 1
              inventory_val = float(inv_match.group(2)) * sign
 
-        # -- Capex Plans --
-        # "Twenty percent ... plan capital outlays" -> Need to handle words if possible, or look for digits
-        # Try finding digit first
-        capex_match = re.search(r'(\d+)%.{0,50}?plan capital outlays', content, re.IGNORECASE | re.DOTALL)
-        if capex_match:
-            capex_val = float(capex_match.group(1))
-        else:
-            # Try word mapping for common cases
-            word_map = {'twenty': 20, 'twenty-one': 21, 'nineteen': 19, 'eighteen': 18, 'twenty-two': 22}
-            capex_word = re.search(r'(twenty|nineteen|twenty-one|twenty-two).{0,50}?plan capital outlays', content, re.IGNORECASE | re.DOTALL)
-            if capex_word:
-                word = capex_word.group(1).lower()
-                capex_val = float(word_map.get(word, 0))
+        # -- Expect Economy to Improve -- 
+        # Pattern: "net X% expect better business conditions" or similar
+        # "Expect Better Economy" is often "Expect Better Business Conditions" in NFIB terms
+        # Look for "expect better business conditions"
+        eco_match = re.search(r'net\s+(-?\d+)%.{0,100}?expect better business conditions', content, re.IGNORECASE | re.DOTALL)
+        if not eco_match:
+             # Try simpler pattern
+             eco_match = re.search(r'better business conditions.*?net\s+(-?\d+)%', content, re.IGNORECASE | re.DOTALL)
+        if eco_match:
+            economy_val = float(eco_match.group(1))
+
+        # -- Expect Real Sales Higher --
+        # "net X% expect higher real sales" or similar
+        # From previous context: "net percent of owners expecting higher real sales volumes rose ... to a net 15%"
+        sales_match = re.search(r'expecting higher real sales.*?net\s+(-?\d+)%', content, re.IGNORECASE | re.DOTALL)
+        if not sales_match:
+             sales_match = re.search(r'net\s+(-?\d+)%.{0,100}?expect higher real sales', content, re.IGNORECASE | re.DOTALL)
+        if sales_match:
+            sales_val = float(sales_match.group(1))
 
         if optimism_val is not None:
-             print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Cap: {capex_val}")
+             print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Eco: {economy_val}, Sales: {sales_val}")
              return {
                  "month": report_month, 
                  "index": optimism_val,
                  "employment": employment_val,
                  "expand": expand_val,
                  "inventory": inventory_val,
-                 "capex": capex_val
+                 "economy": economy_val,
+                 "sales": sales_val
              }
         else:
              print("Could not find index value in text.")
@@ -182,7 +194,7 @@ def fetch_latest_data():
 
 def load_historical_csv():
     """Load historical data from 'nfib_history.csv' if it exists.
-    Expected Format: Month, Index, Employment, Expand, Inventory, Capex
+    Expected Format: Month, Index, Employment, Expand, Inventory, Economy, Sales
     """
     csv_path = os.path.join(os.getcwd(), 'nfib_history.csv')
     if not os.path.exists(csv_path):
@@ -211,7 +223,8 @@ def load_historical_csv():
                         if len(parts) > 2: item['employment'] = parse_float(parts[2])
                         if len(parts) > 3: item['expand'] = parse_float(parts[3])
                         if len(parts) > 4: item['inventory'] = parse_float(parts[4])
-                        if len(parts) > 5: item['capex'] = parse_float(parts[5])
+                        if len(parts) > 5: item['economy'] = parse_float(parts[5])
+                        if len(parts) > 6: item['sales'] = parse_float(parts[6])
                         
                         csv_data.append(item)
                     except ValueError:
@@ -265,15 +278,17 @@ def update_html_file(new_data_point):
         emp = item.get('employment', 'null')
         exp = item.get('expand', 'null')
         inv = item.get('inventory', 'null')
-        cap = item.get('capex', 'null')
+        eco = item.get('economy', 'null')
+        sal = item.get('sales', 'null')
         
         # Handle None in string formatting
         emp = emp if emp is not None else 'null'
         exp = exp if exp is not None else 'null'
         inv = inv if inv is not None else 'null'
-        cap = cap if cap is not None else 'null'
+        eco = eco if eco is not None else 'null'
+        sal = sal if sal is not None else 'null'
 
-        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {emp}, expand: {exp}, inventory: {inv}, capex: {cap} }}')
+        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {emp}, expand: {exp}, inventory: {inv}, economy: {eco}, sales: {sal} }}')
     
     js_array_str = ",\n            ".join(js_lines)
     
