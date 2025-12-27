@@ -210,10 +210,15 @@
     <!-- Summary Box -->
     <div id="sentiment-summary-box" class="summary-box">
         <h3>Key Insights: Dec 2025</h3>
-        <p><strong>Current Sentiment: 52.9 (Bearish)</strong> - The index remains in the <strong style="color: #ef4444;">red zone (below 70)</strong>, indicating weak consumer confidence. This reading is up from 51.0 in Nov 2025 but still reflects pessimistic consumer outlook.</p>
-        <p><strong>Historical Context:</strong> Current sentiment is significantly below the long-term average of ~85 and well below the peak of 112.0 reached in Jan 2000. The index has been in bearish territory since Feb 2025.</p>
-        <p><strong>Trend:</strong> Month-over-month improvement of +1.9 points suggests slight stabilization, but year-over-year decline of -28.5% indicates sustained weakness in consumer confidence.</p>
-        </div>
+        <p><strong>Current Sentiment: 52.9 (Bearish)</strong> - The index remains in the <strong
+                style="color: #ef4444;">red zone (below 70)</strong>, indicating weak consumer confidence. This reading
+            is up from 51.0 in Nov 2025 but still reflects pessimistic consumer outlook.</p>
+        <p><strong>Historical Context:</strong> Current sentiment is significantly below the long-term average of ~85
+            and well below the peak of 112.0 reached in Jan 2000. The index has been in bearish territory since Feb
+            2025.</p>
+        <p><strong>Trend:</strong> Month-over-month improvement of +1.9 points suggests slight stabilization, but
+            year-over-year decline of -28.5% indicates sustained weakness in consumer confidence.</p>
+    </div>
 
     <!-- Data Table -->
     <div class="table-container">
@@ -1031,10 +1036,12 @@
                             },
                             ticks: {
                                 font: {
-                                    size: 12
+                                    size: 11
                                 },
-                                maxRotation: 45,
-                                minRotation: 45
+                                maxRotation: (range !== 'all' && range <= 12) ? 0 : 45,
+                                minRotation: (range !== 'all' && range <= 12) ? 0 : 45,
+                                autoSkip: true,
+                                maxTicksLimit: (range === 'all' || range > 36) ? 15 : 20
                             }
                         }
                     }

@@ -305,9 +305,10 @@
             <div class="chart-header">
                 <div class="chart-title">M2 Year-over-Year Growth (%)</div>
                 <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('growth', '6M')">6M</button>
+                    <button class="time-btn" onclick="updateChart('growth', '1Y')">1Y</button>
                     <button class="time-btn" onclick="updateChart('growth', '3Y')">3Y</button>
                     <button class="time-btn" onclick="updateChart('growth', '5Y')">5Y</button>
-                    <button class="time-btn" onclick="updateChart('growth', '10Y')">10Y</button>
                     <button class="time-btn active" onclick="updateChart('growth', 'All')">All</button>
                 </div>
             </div>
@@ -319,6 +320,7 @@
             <div class="chart-header">
                 <div class="chart-title">Velocity of M2 Money Stock</div>
                 <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('velocity', '1Y')">1Y</button>
                     <button class="time-btn" onclick="updateChart('velocity', '5Y')">5Y</button>
                     <button class="time-btn" onclick="updateChart('velocity', '10Y')">10Y</button>
                     <button class="time-btn active" onclick="updateChart('velocity', 'All')">All</button>
@@ -332,10 +334,10 @@
             <div class="chart-header">
                 <div class="chart-title">M2 Money Stock (Billions USD)</div>
                 <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('m2', '6M')">6M</button>
                     <button class="time-btn" onclick="updateChart('m2', '1Y')">1Y</button>
                     <button class="time-btn" onclick="updateChart('m2', '3Y')">3Y</button>
                     <button class="time-btn" onclick="updateChart('m2', '5Y')">5Y</button>
-                    <button class="time-btn" onclick="updateChart('m2', '10Y')">10Y</button>
                     <button class="time-btn active" onclick="updateChart('m2', 'All')">All</button>
                 </div>
             </div>
@@ -386,6 +388,7 @@
             let cutoffDate = new Date();
 
             switch (period) {
+                case '6M': cutoffDate.setMonth(now.getMonth() - 6); break;
                 case '1Y': cutoffDate.setFullYear(now.getFullYear() - 1); break;
                 case '3Y': cutoffDate.setFullYear(now.getFullYear() - 3); break;
                 case '5Y': cutoffDate.setFullYear(now.getFullYear() - 5); break;
@@ -454,14 +457,19 @@
                         x: {
                             type: 'time',
                             time: {
-                                unit: (period === '1Y' || period === '3Y') ? 'month' : 'year',
+                                unit: (period === '6M' || period === '1Y' || period === '3Y') ? 'month' : (period === '5Y') ? 'quarter' : 'year',
                                 displayFormats: {
                                     month: 'MMM yyyy',
+                                    quarter: 'MMM yyyy',
                                     year: 'yyyy'
                                 }
                             },
                             grid: { display: false },
-                            ticks: { maxRotation: 0, autoSkip: true }
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: (period === '6M') ? 6 : (period === '1Y') ? 12 : (period === '3Y') ? 18 : 10
+                            }
                         },
                         y: {
                             grid: { color: '#f1f5f9' },
