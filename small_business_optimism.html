@@ -681,13 +681,13 @@
             { month: "Nov 2020", index: 101.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
             { month: "Dec 2020", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
             // 2021 onwards - with sub-component data where available
-            { month: "Jan 2021", index: 95.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2021", index: 95.0, employment: 17, expand: 8, inventory: 4, economy: -23, sales: -6 },
             { month: "Feb 2021", index: 95.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
             { month: "Mar 2021", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
-            { month: "Apr 2021", index: 99.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
-            { month: "May 2021", index: 99.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
-            { month: "Jun 2021", index: 102.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
-            { month: "Jul 2021", index: 99.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2021", index: 99.8, employment: 21, expand: 14, inventory: 5, economy: -15, sales: 1 },
+            { month: "May 2021", index: 99.6, employment: 27, expand: 13, inventory: 6, economy: -26, sales: 2 },
+            { month: "Jun 2021", index: 102.5, employment: 28, expand: 15, inventory: 11, economy: -12, sales: 7 },
+            { month: "Jul 2021", index: 99.7, employment: 27, expand: 13, inventory: 6, economy: -20, sales: -4 },
             { month: "Aug 2021", index: 100.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
             { month: "Sep 2021", index: 99.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
             { month: "Oct 2021", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
@@ -1095,13 +1095,13 @@
                                 },
                                 avgTrough: {
                                     type: 'line',
-                                    yMin: 10.5,
-                                    yMax: 10.5,
+                                    yMin: -100,
+                                    yMax: -100,
                                     borderColor: 'rgba(239, 68, 68, 0.5)',
                                     borderWidth: 2,
                                     borderDash: [10, 5],
                                     label: {
-                                        content: 'Avg Trough (10.5)',
+                                        content: 'Avg Trough (-100)',
                                         enabled: false,
                                         position: 'end'
                                     }
