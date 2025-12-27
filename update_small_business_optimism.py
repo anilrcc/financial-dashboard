@@ -143,6 +143,13 @@ def fetch_latest_data():
         if expand_match:
             expand_val = float(expand_match.group(1))
 
+        # -- Uncertainty Index --
+        # "Uncertainty Index rose 4 points to 82."
+        uncertainty_val = None
+        unc_match = re.search(r'Uncertainty Index.*?to\s+(\d+)', content, re.IGNORECASE | re.DOTALL)
+        if unc_match:
+            uncertainty_val = float(unc_match.group(1))
+
         # -- Inventory Plans --
         # "net negative 1% ... plan inventory investment"
         inv_match = None
@@ -174,7 +181,7 @@ def fetch_latest_data():
             sales_val = float(sales_match.group(1))
 
         if optimism_val is not None:
-             print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Eco: {economy_val}, Sales: {sales_val}")
+             print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Eco: {economy_val}, Sales: {sales_val}, Unc: {uncertainty_val}")
              return {
                  "month": report_month, 
                  "index": optimism_val,
@@ -182,7 +189,8 @@ def fetch_latest_data():
                  "expand": expand_val,
                  "inventory": inventory_val,
                  "economy": economy_val,
-                 "sales": sales_val
+                 "sales": sales_val,
+                 "uncertainty": uncertainty_val
              }
         else:
              print("Could not find index value in text.")
@@ -194,7 +202,7 @@ def fetch_latest_data():
 
 def load_historical_csv():
     """Load historical data from 'nfib_history.csv' if it exists.
-    Expected Format: Month, Index, Employment, Expand, Inventory, Economy, Sales
+    Expected Format: Month, Index, Employment, Expand, Inventory, Economy, Sales, Uncertainty
     """
     csv_path = os.path.join(os.getcwd(), 'nfib_history.csv')
     if not os.path.exists(csv_path):
@@ -225,6 +233,7 @@ def load_historical_csv():
                         if len(parts) > 4: item['inventory'] = parse_float(parts[4])
                         if len(parts) > 5: item['economy'] = parse_float(parts[5])
                         if len(parts) > 6: item['sales'] = parse_float(parts[6])
+                        if len(parts) > 7: item['uncertainty'] = parse_float(parts[7])
                         
                         csv_data.append(item)
                     except ValueError:
@@ -280,6 +289,7 @@ def update_html_file(new_data_point):
         inv = item.get('inventory', 'null')
         eco = item.get('economy', 'null')
         sal = item.get('sales', 'null')
+        unc = item.get('uncertainty', 'null')
         
         # Handle None in string formatting
         emp = emp if emp is not None else 'null'
@@ -287,8 +297,9 @@ def update_html_file(new_data_point):
         inv = inv if inv is not None else 'null'
         eco = eco if eco is not None else 'null'
         sal = sal if sal is not None else 'null'
+        unc = unc if unc is not None else 'null'
 
-        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {emp}, expand: {exp}, inventory: {inv}, economy: {eco}, sales: {sal} }}')
+        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {emp}, expand: {exp}, inventory: {inv}, economy: {eco}, sales: {sal}, uncertainty: {unc} }}')
     
     js_array_str = ",\n            ".join(js_lines)
     
@@ -308,7 +319,6 @@ def update_html_file(new_data_point):
         prev = final_data[-2] if len(final_data) > 1 else None
         
         # Logic for insights
-        # Logic for insights
         status = "Above Average" if val >= 100 else "Below Average"
         color = "#10b981" if val >= 100 else "#ef4444" 
         
@@ -322,7 +332,7 @@ def update_html_file(new_data_point):
         # Sub-component Analysis
         eco_val = latest.get('economy')
         sales_val = latest.get('sales')
-        emp_val = latest.get('employment')
+        unc_val = latest.get('uncertainty')
 
         drivers = []
         if eco_val is not None:
@@ -332,6 +342,10 @@ def update_html_file(new_data_point):
         if sales_val is not None:
              if sales_val > 0: drivers.append(f"sales expectations are improving ({sales_val}%)")
              elif sales_val < 0: drivers.append(f"sales expectations remain soft ({sales_val}%)")
+
+        if unc_val is not None:
+             if unc_val > 80: drivers.append(f"Uncertainty Index remains high ({unc_val})")
+             else: drivers.append(f"Uncertainty Index is moderate ({unc_val})")
 
         driver_text = "Owners are seeing mixed signals."
         if drivers:

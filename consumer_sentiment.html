@@ -1057,7 +1057,7 @@
             // Reverse order for table (newest first)
             const reversedData = [...sentimentData].reverse();
 
-            reversedData.forEach((item, index) => {
+            reversedData.slice(0, 12).forEach((item, index) => {
                 const tr = document.createElement('tr');
 
                 // Month
