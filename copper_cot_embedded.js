@@ -1,5 +1,3862 @@
 const cotData = [
   {
+    "date": "2006-06-13",
+    "net_pct_oi": -0.69,
+    "mm_long": 6211,
+    "mm_short": 6751,
+    "open_interest": 78658
+  },
+  {
+    "date": "2006-06-20",
+    "net_pct_oi": 1.35,
+    "mm_long": 6238,
+    "mm_short": 5205,
+    "open_interest": 76311
+  },
+  {
+    "date": "2006-06-27",
+    "net_pct_oi": 0.03,
+    "mm_long": 5942,
+    "mm_short": 5919,
+    "open_interest": 73323
+  },
+  {
+    "date": "2006-07-03",
+    "net_pct_oi": 2.41,
+    "mm_long": 6543,
+    "mm_short": 4784,
+    "open_interest": 72880
+  },
+  {
+    "date": "2006-07-11",
+    "net_pct_oi": 3.47,
+    "mm_long": 8601,
+    "mm_short": 6005,
+    "open_interest": 74754
+  },
+  {
+    "date": "2006-07-18",
+    "net_pct_oi": 3.45,
+    "mm_long": 8819,
+    "mm_short": 6188,
+    "open_interest": 76332
+  },
+  {
+    "date": "2006-07-25",
+    "net_pct_oi": 0.31,
+    "mm_long": 6411,
+    "mm_short": 6187,
+    "open_interest": 73348
+  },
+  {
+    "date": "2006-08-01",
+    "net_pct_oi": -0.17,
+    "mm_long": 6393,
+    "mm_short": 6514,
+    "open_interest": 71537
+  },
+  {
+    "date": "2006-08-08",
+    "net_pct_oi": -0.68,
+    "mm_long": 7014,
+    "mm_short": 7508,
+    "open_interest": 72385
+  },
+  {
+    "date": "2006-08-15",
+    "net_pct_oi": -1.85,
+    "mm_long": 6975,
+    "mm_short": 8351,
+    "open_interest": 74277
+  },
+  {
+    "date": "2006-08-22",
+    "net_pct_oi": -4.3,
+    "mm_long": 5889,
+    "mm_short": 8986,
+    "open_interest": 72057
+  },
+  {
+    "date": "2006-08-29",
+    "net_pct_oi": -6.46,
+    "mm_long": 5979,
+    "mm_short": 10458,
+    "open_interest": 69311
+  },
+  {
+    "date": "2006-09-05",
+    "net_pct_oi": -3.68,
+    "mm_long": 7300,
+    "mm_short": 9847,
+    "open_interest": 69247
+  },
+  {
+    "date": "2006-09-12",
+    "net_pct_oi": -4.04,
+    "mm_long": 5629,
+    "mm_short": 8413,
+    "open_interest": 68944
+  },
+  {
+    "date": "2006-09-19",
+    "net_pct_oi": -5.12,
+    "mm_long": 6850,
+    "mm_short": 10338,
+    "open_interest": 68168
+  },
+  {
+    "date": "2006-09-26",
+    "net_pct_oi": -3.27,
+    "mm_long": 8477,
+    "mm_short": 10697,
+    "open_interest": 67977
+  },
+  {
+    "date": "2006-10-03",
+    "net_pct_oi": -7.51,
+    "mm_long": 8469,
+    "mm_short": 13680,
+    "open_interest": 69400
+  },
+  {
+    "date": "2006-10-10",
+    "net_pct_oi": -8.61,
+    "mm_long": 8637,
+    "mm_short": 14581,
+    "open_interest": 69015
+  },
+  {
+    "date": "2006-10-17",
+    "net_pct_oi": -2.9,
+    "mm_long": 10766,
+    "mm_short": 12874,
+    "open_interest": 72713
+  },
+  {
+    "date": "2006-10-24",
+    "net_pct_oi": -2.47,
+    "mm_long": 10098,
+    "mm_short": 11962,
+    "open_interest": 75321
+  },
+  {
+    "date": "2006-10-31",
+    "net_pct_oi": -5.83,
+    "mm_long": 9502,
+    "mm_short": 13841,
+    "open_interest": 74423
+  },
+  {
+    "date": "2006-11-07",
+    "net_pct_oi": -8.01,
+    "mm_long": 9627,
+    "mm_short": 15424,
+    "open_interest": 72371
+  },
+  {
+    "date": "2006-11-14",
+    "net_pct_oi": -13.09,
+    "mm_long": 7783,
+    "mm_short": 17430,
+    "open_interest": 73681
+  },
+  {
+    "date": "2006-11-21",
+    "net_pct_oi": -13.72,
+    "mm_long": 7383,
+    "mm_short": 17428,
+    "open_interest": 73218
+  },
+  {
+    "date": "2006-11-28",
+    "net_pct_oi": -14.17,
+    "mm_long": 7789,
+    "mm_short": 17752,
+    "open_interest": 70308
+  },
+  {
+    "date": "2006-12-05",
+    "net_pct_oi": -12.9,
+    "mm_long": 7779,
+    "mm_short": 16656,
+    "open_interest": 68793
+  },
+  {
+    "date": "2006-12-12",
+    "net_pct_oi": -13.69,
+    "mm_long": 7531,
+    "mm_short": 16829,
+    "open_interest": 67911
+  },
+  {
+    "date": "2006-12-19",
+    "net_pct_oi": -16.28,
+    "mm_long": 6108,
+    "mm_short": 17327,
+    "open_interest": 68920
+  },
+  {
+    "date": "2006-12-26",
+    "net_pct_oi": -18.99,
+    "mm_long": 4598,
+    "mm_short": 17390,
+    "open_interest": 67350
+  },
+  {
+    "date": "2007-01-03",
+    "net_pct_oi": -18.21,
+    "mm_long": 3709,
+    "mm_short": 16505,
+    "open_interest": 70253
+  },
+  {
+    "date": "2007-01-09",
+    "net_pct_oi": -22.03,
+    "mm_long": 3174,
+    "mm_short": 18567,
+    "open_interest": 69879
+  },
+  {
+    "date": "2007-01-16",
+    "net_pct_oi": -22.35,
+    "mm_long": 3230,
+    "mm_short": 18636,
+    "open_interest": 68933
+  },
+  {
+    "date": "2007-01-23",
+    "net_pct_oi": -23.01,
+    "mm_long": 2917,
+    "mm_short": 19188,
+    "open_interest": 70723
+  },
+  {
+    "date": "2007-01-30",
+    "net_pct_oi": -23.35,
+    "mm_long": 3038,
+    "mm_short": 19724,
+    "open_interest": 71448
+  },
+  {
+    "date": "2007-02-06",
+    "net_pct_oi": -24.19,
+    "mm_long": 2606,
+    "mm_short": 20032,
+    "open_interest": 72035
+  },
+  {
+    "date": "2007-02-13",
+    "net_pct_oi": -21.89,
+    "mm_long": 3340,
+    "mm_short": 18837,
+    "open_interest": 70803
+  },
+  {
+    "date": "2007-02-20",
+    "net_pct_oi": -21.76,
+    "mm_long": 3127,
+    "mm_short": 18649,
+    "open_interest": 71320
+  },
+  {
+    "date": "2007-02-27",
+    "net_pct_oi": -19.54,
+    "mm_long": 3445,
+    "mm_short": 16313,
+    "open_interest": 65863
+  },
+  {
+    "date": "2007-03-06",
+    "net_pct_oi": -21.45,
+    "mm_long": 2872,
+    "mm_short": 16919,
+    "open_interest": 65495
+  },
+  {
+    "date": "2007-03-13",
+    "net_pct_oi": -18.12,
+    "mm_long": 2669,
+    "mm_short": 14477,
+    "open_interest": 65156
+  },
+  {
+    "date": "2007-03-20",
+    "net_pct_oi": -9.73,
+    "mm_long": 5760,
+    "mm_short": 12696,
+    "open_interest": 71303
+  },
+  {
+    "date": "2007-03-27",
+    "net_pct_oi": -10.47,
+    "mm_long": 6827,
+    "mm_short": 14648,
+    "open_interest": 74716
+  },
+  {
+    "date": "2007-04-03",
+    "net_pct_oi": -6.91,
+    "mm_long": 8449,
+    "mm_short": 13785,
+    "open_interest": 77186
+  },
+  {
+    "date": "2007-04-10",
+    "net_pct_oi": -5.2,
+    "mm_long": 10827,
+    "mm_short": 14997,
+    "open_interest": 80185
+  },
+  {
+    "date": "2007-04-17",
+    "net_pct_oi": -3.36,
+    "mm_long": 12459,
+    "mm_short": 15166,
+    "open_interest": 80657
+  },
+  {
+    "date": "2007-04-24",
+    "net_pct_oi": -3.22,
+    "mm_long": 12224,
+    "mm_short": 14808,
+    "open_interest": 80138
+  },
+  {
+    "date": "2007-05-01",
+    "net_pct_oi": -1.71,
+    "mm_long": 14084,
+    "mm_short": 15487,
+    "open_interest": 81864
+  },
+  {
+    "date": "2007-05-08",
+    "net_pct_oi": -1.52,
+    "mm_long": 14867,
+    "mm_short": 16105,
+    "open_interest": 81613
+  },
+  {
+    "date": "2007-05-15",
+    "net_pct_oi": -3.42,
+    "mm_long": 14245,
+    "mm_short": 17044,
+    "open_interest": 81845
+  },
+  {
+    "date": "2007-05-22",
+    "net_pct_oi": -6.5,
+    "mm_long": 11627,
+    "mm_short": 16853,
+    "open_interest": 80380
+  },
+  {
+    "date": "2007-05-29",
+    "net_pct_oi": -6.72,
+    "mm_long": 11230,
+    "mm_short": 16598,
+    "open_interest": 79901
+  },
+  {
+    "date": "2007-06-05",
+    "net_pct_oi": -4.77,
+    "mm_long": 11877,
+    "mm_short": 15749,
+    "open_interest": 81226
+  },
+  {
+    "date": "2007-06-12",
+    "net_pct_oi": -4.21,
+    "mm_long": 12529,
+    "mm_short": 15770,
+    "open_interest": 76962
+  },
+  {
+    "date": "2007-06-19",
+    "net_pct_oi": -3.09,
+    "mm_long": 13265,
+    "mm_short": 15685,
+    "open_interest": 78337
+  },
+  {
+    "date": "2007-06-26",
+    "net_pct_oi": -4.85,
+    "mm_long": 12538,
+    "mm_short": 16392,
+    "open_interest": 79416
+  },
+  {
+    "date": "2007-07-03",
+    "net_pct_oi": -1.69,
+    "mm_long": 15221,
+    "mm_short": 16607,
+    "open_interest": 81852
+  },
+  {
+    "date": "2007-07-10",
+    "net_pct_oi": 3.12,
+    "mm_long": 19403,
+    "mm_short": 16673,
+    "open_interest": 87538
+  },
+  {
+    "date": "2007-07-17",
+    "net_pct_oi": 2.37,
+    "mm_long": 18702,
+    "mm_short": 16572,
+    "open_interest": 89893
+  },
+  {
+    "date": "2007-07-24",
+    "net_pct_oi": 3.91,
+    "mm_long": 20502,
+    "mm_short": 16808,
+    "open_interest": 94496
+  },
+  {
+    "date": "2007-07-31",
+    "net_pct_oi": 2.29,
+    "mm_long": 18274,
+    "mm_short": 16230,
+    "open_interest": 89395
+  },
+  {
+    "date": "2007-08-07",
+    "net_pct_oi": 1.12,
+    "mm_long": 16233,
+    "mm_short": 15289,
+    "open_interest": 84651
+  },
+  {
+    "date": "2007-08-14",
+    "net_pct_oi": 2.49,
+    "mm_long": 13706,
+    "mm_short": 11809,
+    "open_interest": 76111
+  },
+  {
+    "date": "2007-08-21",
+    "net_pct_oi": -2.35,
+    "mm_long": 10950,
+    "mm_short": 12751,
+    "open_interest": 76498
+  },
+  {
+    "date": "2007-08-28",
+    "net_pct_oi": -0.24,
+    "mm_long": 10035,
+    "mm_short": 10208,
+    "open_interest": 73083
+  },
+  {
+    "date": "2007-09-04",
+    "net_pct_oi": 2.77,
+    "mm_long": 10250,
+    "mm_short": 8331,
+    "open_interest": 69156
+  },
+  {
+    "date": "2007-09-11",
+    "net_pct_oi": 4.56,
+    "mm_long": 10991,
+    "mm_short": 7861,
+    "open_interest": 68684
+  },
+  {
+    "date": "2007-09-18",
+    "net_pct_oi": 8.3,
+    "mm_long": 13153,
+    "mm_short": 7212,
+    "open_interest": 71557
+  },
+  {
+    "date": "2007-09-25",
+    "net_pct_oi": 10.9,
+    "mm_long": 16479,
+    "mm_short": 8025,
+    "open_interest": 77528
+  },
+  {
+    "date": "2007-10-02",
+    "net_pct_oi": 13.09,
+    "mm_long": 19777,
+    "mm_short": 8901,
+    "open_interest": 83055
+  },
+  {
+    "date": "2007-10-09",
+    "net_pct_oi": 14.35,
+    "mm_long": 21878,
+    "mm_short": 9404,
+    "open_interest": 86905
+  },
+  {
+    "date": "2007-10-16",
+    "net_pct_oi": 11.48,
+    "mm_long": 21407,
+    "mm_short": 11055,
+    "open_interest": 90148
+  },
+  {
+    "date": "2007-10-23",
+    "net_pct_oi": 7.79,
+    "mm_long": 17603,
+    "mm_short": 10836,
+    "open_interest": 86858
+  },
+  {
+    "date": "2007-10-30",
+    "net_pct_oi": 4.68,
+    "mm_long": 15056,
+    "mm_short": 11032,
+    "open_interest": 86013
+  },
+  {
+    "date": "2007-11-06",
+    "net_pct_oi": 1.94,
+    "mm_long": 12577,
+    "mm_short": 10959,
+    "open_interest": 83317
+  },
+  {
+    "date": "2007-11-13",
+    "net_pct_oi": -3.01,
+    "mm_long": 9455,
+    "mm_short": 11817,
+    "open_interest": 78465
+  },
+  {
+    "date": "2007-11-20",
+    "net_pct_oi": -5.72,
+    "mm_long": 7339,
+    "mm_short": 11788,
+    "open_interest": 77837
+  },
+  {
+    "date": "2007-11-27",
+    "net_pct_oi": -7.73,
+    "mm_long": 5592,
+    "mm_short": 11306,
+    "open_interest": 73905
+  },
+  {
+    "date": "2007-12-04",
+    "net_pct_oi": -6.96,
+    "mm_long": 5507,
+    "mm_short": 10438,
+    "open_interest": 70839
+  },
+  {
+    "date": "2007-12-11",
+    "net_pct_oi": -7.04,
+    "mm_long": 5272,
+    "mm_short": 10265,
+    "open_interest": 70873
+  },
+  {
+    "date": "2007-12-18",
+    "net_pct_oi": -8.06,
+    "mm_long": 4963,
+    "mm_short": 10850,
+    "open_interest": 73019
+  },
+  {
+    "date": "2007-12-24",
+    "net_pct_oi": -7.1,
+    "mm_long": 5161,
+    "mm_short": 10256,
+    "open_interest": 71767
+  },
+  {
+    "date": "2007-12-31",
+    "net_pct_oi": -5.75,
+    "mm_long": 5432,
+    "mm_short": 9583,
+    "open_interest": 72142
+  },
+  {
+    "date": "2008-01-08",
+    "net_pct_oi": -3.09,
+    "mm_long": 6367,
+    "mm_short": 8706,
+    "open_interest": 75606
+  },
+  {
+    "date": "2008-01-15",
+    "net_pct_oi": -4.04,
+    "mm_long": 8327,
+    "mm_short": 11713,
+    "open_interest": 83849
+  },
+  {
+    "date": "2008-01-22",
+    "net_pct_oi": -3.55,
+    "mm_long": 9230,
+    "mm_short": 12296,
+    "open_interest": 86382
+  },
+  {
+    "date": "2008-01-29",
+    "net_pct_oi": -3.98,
+    "mm_long": 8598,
+    "mm_short": 12168,
+    "open_interest": 89706
+  },
+  {
+    "date": "2008-02-05",
+    "net_pct_oi": -3.26,
+    "mm_long": 9698,
+    "mm_short": 12644,
+    "open_interest": 90375
+  },
+  {
+    "date": "2008-02-12",
+    "net_pct_oi": 6.47,
+    "mm_long": 16552,
+    "mm_short": 10837,
+    "open_interest": 88310
+  },
+  {
+    "date": "2008-02-19",
+    "net_pct_oi": 9.12,
+    "mm_long": 19228,
+    "mm_short": 10688,
+    "open_interest": 93661
+  },
+  {
+    "date": "2008-02-26",
+    "net_pct_oi": 10.27,
+    "mm_long": 22373,
+    "mm_short": 11907,
+    "open_interest": 101872
+  },
+  {
+    "date": "2008-03-04",
+    "net_pct_oi": 11.96,
+    "mm_long": 24503,
+    "mm_short": 12315,
+    "open_interest": 101867
+  },
+  {
+    "date": "2008-03-11",
+    "net_pct_oi": 12.53,
+    "mm_long": 25514,
+    "mm_short": 12599,
+    "open_interest": 103107
+  },
+  {
+    "date": "2008-03-18",
+    "net_pct_oi": 11.3,
+    "mm_long": 23682,
+    "mm_short": 12163,
+    "open_interest": 101953
+  },
+  {
+    "date": "2008-03-25",
+    "net_pct_oi": 12.01,
+    "mm_long": 20107,
+    "mm_short": 8414,
+    "open_interest": 97323
+  },
+  {
+    "date": "2008-04-01",
+    "net_pct_oi": 13.68,
+    "mm_long": 22847,
+    "mm_short": 8912,
+    "open_interest": 101860
+  },
+  {
+    "date": "2008-04-08",
+    "net_pct_oi": 13.28,
+    "mm_long": 25173,
+    "mm_short": 11555,
+    "open_interest": 102525
+  },
+  {
+    "date": "2008-04-15",
+    "net_pct_oi": 13.36,
+    "mm_long": 27505,
+    "mm_short": 13465,
+    "open_interest": 105070
+  },
+  {
+    "date": "2008-04-22",
+    "net_pct_oi": 13.32,
+    "mm_long": 28071,
+    "mm_short": 13729,
+    "open_interest": 107654
+  },
+  {
+    "date": "2008-04-29",
+    "net_pct_oi": 11.51,
+    "mm_long": 26289,
+    "mm_short": 14297,
+    "open_interest": 104206
+  },
+  {
+    "date": "2008-05-06",
+    "net_pct_oi": 11.31,
+    "mm_long": 24783,
+    "mm_short": 13538,
+    "open_interest": 99434
+  },
+  {
+    "date": "2008-05-13",
+    "net_pct_oi": 9.96,
+    "mm_long": 22140,
+    "mm_short": 12395,
+    "open_interest": 97799
+  },
+  {
+    "date": "2008-05-20",
+    "net_pct_oi": 10.21,
+    "mm_long": 22062,
+    "mm_short": 11748,
+    "open_interest": 101017
+  },
+  {
+    "date": "2008-05-27",
+    "net_pct_oi": 10.06,
+    "mm_long": 20469,
+    "mm_short": 10564,
+    "open_interest": 98441
+  },
+  {
+    "date": "2008-06-03",
+    "net_pct_oi": 5.48,
+    "mm_long": 18475,
+    "mm_short": 13107,
+    "open_interest": 97981
+  },
+  {
+    "date": "2008-06-10",
+    "net_pct_oi": 6.99,
+    "mm_long": 18069,
+    "mm_short": 11345,
+    "open_interest": 96229
+  },
+  {
+    "date": "2008-06-17",
+    "net_pct_oi": 9.41,
+    "mm_long": 20450,
+    "mm_short": 10811,
+    "open_interest": 102488
+  },
+  {
+    "date": "2008-06-24",
+    "net_pct_oi": 13.22,
+    "mm_long": 22982,
+    "mm_short": 8507,
+    "open_interest": 109496
+  },
+  {
+    "date": "2008-07-01",
+    "net_pct_oi": 13.42,
+    "mm_long": 23753,
+    "mm_short": 8812,
+    "open_interest": 111367
+  },
+  {
+    "date": "2008-07-08",
+    "net_pct_oi": 11.37,
+    "mm_long": 22703,
+    "mm_short": 10170,
+    "open_interest": 110218
+  },
+  {
+    "date": "2008-07-15",
+    "net_pct_oi": 7.81,
+    "mm_long": 18678,
+    "mm_short": 10425,
+    "open_interest": 105627
+  },
+  {
+    "date": "2008-07-22",
+    "net_pct_oi": 4.9,
+    "mm_long": 18104,
+    "mm_short": 12665,
+    "open_interest": 110899
+  },
+  {
+    "date": "2008-07-29",
+    "net_pct_oi": 1.4,
+    "mm_long": 15600,
+    "mm_short": 14085,
+    "open_interest": 108234
+  },
+  {
+    "date": "2008-08-05",
+    "net_pct_oi": -1.55,
+    "mm_long": 12701,
+    "mm_short": 14406,
+    "open_interest": 110205
+  },
+  {
+    "date": "2008-08-12",
+    "net_pct_oi": -3.41,
+    "mm_long": 9786,
+    "mm_short": 13209,
+    "open_interest": 100371
+  },
+  {
+    "date": "2008-08-19",
+    "net_pct_oi": -8.68,
+    "mm_long": 6894,
+    "mm_short": 15130,
+    "open_interest": 94900
+  },
+  {
+    "date": "2008-08-26",
+    "net_pct_oi": -9.99,
+    "mm_long": 5732,
+    "mm_short": 14515,
+    "open_interest": 87899
+  },
+  {
+    "date": "2008-09-02",
+    "net_pct_oi": -13.32,
+    "mm_long": 4778,
+    "mm_short": 15131,
+    "open_interest": 77739
+  },
+  {
+    "date": "2008-09-09",
+    "net_pct_oi": -16.09,
+    "mm_long": 4420,
+    "mm_short": 16775,
+    "open_interest": 76798
+  },
+  {
+    "date": "2008-09-16",
+    "net_pct_oi": -17.13,
+    "mm_long": 3720,
+    "mm_short": 16858,
+    "open_interest": 76698
+  },
+  {
+    "date": "2008-09-23",
+    "net_pct_oi": -15.59,
+    "mm_long": 3649,
+    "mm_short": 15263,
+    "open_interest": 74489
+  },
+  {
+    "date": "2008-09-30",
+    "net_pct_oi": -18.31,
+    "mm_long": 3994,
+    "mm_short": 18315,
+    "open_interest": 78214
+  },
+  {
+    "date": "2008-10-07",
+    "net_pct_oi": -21.16,
+    "mm_long": 3268,
+    "mm_short": 20203,
+    "open_interest": 80024
+  },
+  {
+    "date": "2008-10-14",
+    "net_pct_oi": -19.53,
+    "mm_long": 3948,
+    "mm_short": 19700,
+    "open_interest": 80670
+  },
+  {
+    "date": "2008-10-21",
+    "net_pct_oi": -19.04,
+    "mm_long": 3628,
+    "mm_short": 19544,
+    "open_interest": 83603
+  },
+  {
+    "date": "2008-10-28",
+    "net_pct_oi": -15.99,
+    "mm_long": 4616,
+    "mm_short": 17297,
+    "open_interest": 79285
+  },
+  {
+    "date": "2008-11-04",
+    "net_pct_oi": -15.97,
+    "mm_long": 4443,
+    "mm_short": 16899,
+    "open_interest": 77976
+  },
+  {
+    "date": "2008-11-11",
+    "net_pct_oi": -17.06,
+    "mm_long": 3713,
+    "mm_short": 16871,
+    "open_interest": 77148
+  },
+  {
+    "date": "2008-11-18",
+    "net_pct_oi": -17.38,
+    "mm_long": 5381,
+    "mm_short": 19384,
+    "open_interest": 80583
+  },
+  {
+    "date": "2008-11-25",
+    "net_pct_oi": -18.55,
+    "mm_long": 5791,
+    "mm_short": 19216,
+    "open_interest": 72372
+  },
+  {
+    "date": "2008-12-02",
+    "net_pct_oi": -21.33,
+    "mm_long": 6338,
+    "mm_short": 21274,
+    "open_interest": 70029
+  },
+  {
+    "date": "2008-12-09",
+    "net_pct_oi": -22.72,
+    "mm_long": 5127,
+    "mm_short": 20808,
+    "open_interest": 69033
+  },
+  {
+    "date": "2008-12-16",
+    "net_pct_oi": -24.31,
+    "mm_long": 5640,
+    "mm_short": 23089,
+    "open_interest": 71777
+  },
+  {
+    "date": "2008-12-22",
+    "net_pct_oi": -23.03,
+    "mm_long": 6568,
+    "mm_short": 23659,
+    "open_interest": 74212
+  },
+  {
+    "date": "2008-12-30",
+    "net_pct_oi": -23.34,
+    "mm_long": 6809,
+    "mm_short": 24143,
+    "open_interest": 74252
+  },
+  {
+    "date": "2009-01-06",
+    "net_pct_oi": -21.71,
+    "mm_long": 7181,
+    "mm_short": 23756,
+    "open_interest": 76356
+  },
+  {
+    "date": "2009-01-13",
+    "net_pct_oi": -23.44,
+    "mm_long": 5402,
+    "mm_short": 24619,
+    "open_interest": 81996
+  },
+  {
+    "date": "2009-01-20",
+    "net_pct_oi": -24.73,
+    "mm_long": 4757,
+    "mm_short": 25437,
+    "open_interest": 83617
+  },
+  {
+    "date": "2009-01-27",
+    "net_pct_oi": -24.15,
+    "mm_long": 4460,
+    "mm_short": 24777,
+    "open_interest": 84113
+  },
+  {
+    "date": "2009-02-03",
+    "net_pct_oi": -23.3,
+    "mm_long": 4888,
+    "mm_short": 25232,
+    "open_interest": 87299
+  },
+  {
+    "date": "2009-02-10",
+    "net_pct_oi": -22.04,
+    "mm_long": 6383,
+    "mm_short": 24884,
+    "open_interest": 83934
+  },
+  {
+    "date": "2009-02-17",
+    "net_pct_oi": -24.5,
+    "mm_long": 4518,
+    "mm_short": 26420,
+    "open_interest": 89405
+  },
+  {
+    "date": "2009-02-24",
+    "net_pct_oi": -25.48,
+    "mm_long": 4889,
+    "mm_short": 26524,
+    "open_interest": 84903
+  },
+  {
+    "date": "2009-03-03",
+    "net_pct_oi": -24.57,
+    "mm_long": 4151,
+    "mm_short": 24036,
+    "open_interest": 80939
+  },
+  {
+    "date": "2009-03-10",
+    "net_pct_oi": -18.37,
+    "mm_long": 8907,
+    "mm_short": 24880,
+    "open_interest": 86966
+  },
+  {
+    "date": "2009-03-17",
+    "net_pct_oi": -14.49,
+    "mm_long": 10260,
+    "mm_short": 23724,
+    "open_interest": 92910
+  },
+  {
+    "date": "2009-03-24",
+    "net_pct_oi": -14.35,
+    "mm_long": 10537,
+    "mm_short": 24311,
+    "open_interest": 95985
+  },
+  {
+    "date": "2009-03-31",
+    "net_pct_oi": -14.05,
+    "mm_long": 10427,
+    "mm_short": 24000,
+    "open_interest": 96572
+  },
+  {
+    "date": "2009-04-07",
+    "net_pct_oi": -11.35,
+    "mm_long": 13329,
+    "mm_short": 24947,
+    "open_interest": 102332
+  },
+  {
+    "date": "2009-04-14",
+    "net_pct_oi": -11.91,
+    "mm_long": 12643,
+    "mm_short": 25363,
+    "open_interest": 106758
+  },
+  {
+    "date": "2009-04-21",
+    "net_pct_oi": -10.19,
+    "mm_long": 13754,
+    "mm_short": 24322,
+    "open_interest": 103736
+  },
+  {
+    "date": "2009-04-28",
+    "net_pct_oi": -8.56,
+    "mm_long": 15335,
+    "mm_short": 24424,
+    "open_interest": 106170
+  },
+  {
+    "date": "2009-05-05",
+    "net_pct_oi": -9.2,
+    "mm_long": 14307,
+    "mm_short": 23930,
+    "open_interest": 104619
+  },
+  {
+    "date": "2009-05-12",
+    "net_pct_oi": -8.35,
+    "mm_long": 13710,
+    "mm_short": 22771,
+    "open_interest": 108470
+  },
+  {
+    "date": "2009-05-19",
+    "net_pct_oi": -9.41,
+    "mm_long": 13162,
+    "mm_short": 23112,
+    "open_interest": 105791
+  },
+  {
+    "date": "2009-05-26",
+    "net_pct_oi": -8.43,
+    "mm_long": 13722,
+    "mm_short": 22800,
+    "open_interest": 107631
+  },
+  {
+    "date": "2009-06-02",
+    "net_pct_oi": -6.9,
+    "mm_long": 15209,
+    "mm_short": 22888,
+    "open_interest": 111357
+  },
+  {
+    "date": "2009-06-09",
+    "net_pct_oi": -7.13,
+    "mm_long": 13675,
+    "mm_short": 21506,
+    "open_interest": 109820
+  },
+  {
+    "date": "2009-06-16",
+    "net_pct_oi": -5.82,
+    "mm_long": 15278,
+    "mm_short": 21986,
+    "open_interest": 115321
+  },
+  {
+    "date": "2009-06-23",
+    "net_pct_oi": -10.08,
+    "mm_long": 12102,
+    "mm_short": 23144,
+    "open_interest": 109536
+  },
+  {
+    "date": "2009-06-30",
+    "net_pct_oi": -7.71,
+    "mm_long": 11787,
+    "mm_short": 19820,
+    "open_interest": 104189
+  },
+  {
+    "date": "2009-07-07",
+    "net_pct_oi": -8.05,
+    "mm_long": 11513,
+    "mm_short": 19756,
+    "open_interest": 102426
+  },
+  {
+    "date": "2009-07-14",
+    "net_pct_oi": -7.25,
+    "mm_long": 11479,
+    "mm_short": 19184,
+    "open_interest": 106268
+  },
+  {
+    "date": "2009-07-21",
+    "net_pct_oi": -1.51,
+    "mm_long": 17089,
+    "mm_short": 18841,
+    "open_interest": 115991
+  },
+  {
+    "date": "2009-07-28",
+    "net_pct_oi": -0.76,
+    "mm_long": 19135,
+    "mm_short": 20046,
+    "open_interest": 120479
+  },
+  {
+    "date": "2009-08-04",
+    "net_pct_oi": 1.89,
+    "mm_long": 21592,
+    "mm_short": 19288,
+    "open_interest": 121925
+  },
+  {
+    "date": "2009-08-11",
+    "net_pct_oi": 2.51,
+    "mm_long": 22007,
+    "mm_short": 19055,
+    "open_interest": 117741
+  },
+  {
+    "date": "2009-08-18",
+    "net_pct_oi": 2.46,
+    "mm_long": 22514,
+    "mm_short": 19641,
+    "open_interest": 116703
+  },
+  {
+    "date": "2009-08-25",
+    "net_pct_oi": 3.29,
+    "mm_long": 24068,
+    "mm_short": 20176,
+    "open_interest": 118454
+  },
+  {
+    "date": "2009-09-01",
+    "net_pct_oi": 0.75,
+    "mm_long": 22643,
+    "mm_short": 21741,
+    "open_interest": 119527
+  },
+  {
+    "date": "2009-09-08",
+    "net_pct_oi": 2.94,
+    "mm_long": 23106,
+    "mm_short": 19637,
+    "open_interest": 118148
+  },
+  {
+    "date": "2009-09-15",
+    "net_pct_oi": 0.91,
+    "mm_long": 21040,
+    "mm_short": 19972,
+    "open_interest": 117983
+  },
+  {
+    "date": "2009-09-22",
+    "net_pct_oi": -0.21,
+    "mm_long": 19009,
+    "mm_short": 19256,
+    "open_interest": 117248
+  },
+  {
+    "date": "2009-09-29",
+    "net_pct_oi": -3.42,
+    "mm_long": 16298,
+    "mm_short": 20190,
+    "open_interest": 113874
+  },
+  {
+    "date": "2009-10-06",
+    "net_pct_oi": -2.08,
+    "mm_long": 18466,
+    "mm_short": 20948,
+    "open_interest": 119080
+  },
+  {
+    "date": "2009-10-13",
+    "net_pct_oi": 0.78,
+    "mm_long": 19813,
+    "mm_short": 18860,
+    "open_interest": 121664
+  },
+  {
+    "date": "2009-10-20",
+    "net_pct_oi": 3.96,
+    "mm_long": 27199,
+    "mm_short": 21925,
+    "open_interest": 133100
+  },
+  {
+    "date": "2009-10-27",
+    "net_pct_oi": 9.68,
+    "mm_long": 31745,
+    "mm_short": 18342,
+    "open_interest": 138431
+  },
+  {
+    "date": "2009-11-03",
+    "net_pct_oi": 8.58,
+    "mm_long": 32606,
+    "mm_short": 20538,
+    "open_interest": 140662
+  },
+  {
+    "date": "2009-11-09",
+    "net_pct_oi": 6.34,
+    "mm_long": 32605,
+    "mm_short": 23488,
+    "open_interest": 143698
+  },
+  {
+    "date": "2009-11-17",
+    "net_pct_oi": 7.63,
+    "mm_long": 38864,
+    "mm_short": 27314,
+    "open_interest": 151451
+  },
+  {
+    "date": "2009-11-24",
+    "net_pct_oi": 8.52,
+    "mm_long": 40408,
+    "mm_short": 27456,
+    "open_interest": 152001
+  },
+  {
+    "date": "2009-12-01",
+    "net_pct_oi": 8.68,
+    "mm_long": 40865,
+    "mm_short": 27952,
+    "open_interest": 148809
+  },
+  {
+    "date": "2009-12-08",
+    "net_pct_oi": 9.54,
+    "mm_long": 42485,
+    "mm_short": 28369,
+    "open_interest": 147950
+  },
+  {
+    "date": "2009-12-15",
+    "net_pct_oi": 7.15,
+    "mm_long": 39995,
+    "mm_short": 29438,
+    "open_interest": 147691
+  },
+  {
+    "date": "2009-12-22",
+    "net_pct_oi": 5.39,
+    "mm_long": 37265,
+    "mm_short": 29411,
+    "open_interest": 145637
+  },
+  {
+    "date": "2009-12-29",
+    "net_pct_oi": 10.36,
+    "mm_long": 44847,
+    "mm_short": 28839,
+    "open_interest": 154559
+  },
+  {
+    "date": "2010-01-05",
+    "net_pct_oi": 10.77,
+    "mm_long": 45703,
+    "mm_short": 28631,
+    "open_interest": 158539
+  },
+  {
+    "date": "2010-01-12",
+    "net_pct_oi": 15.26,
+    "mm_long": 46290,
+    "mm_short": 23198,
+    "open_interest": 151321
+  },
+  {
+    "date": "2010-01-19",
+    "net_pct_oi": 19.98,
+    "mm_long": 45009,
+    "mm_short": 16438,
+    "open_interest": 143012
+  },
+  {
+    "date": "2010-01-26",
+    "net_pct_oi": 21.33,
+    "mm_long": 43187,
+    "mm_short": 13180,
+    "open_interest": 140683
+  },
+  {
+    "date": "2010-02-02",
+    "net_pct_oi": 12.55,
+    "mm_long": 33044,
+    "mm_short": 16462,
+    "open_interest": 132113
+  },
+  {
+    "date": "2010-02-09",
+    "net_pct_oi": 10.07,
+    "mm_long": 29581,
+    "mm_short": 17091,
+    "open_interest": 124076
+  },
+  {
+    "date": "2010-02-16",
+    "net_pct_oi": 10.94,
+    "mm_long": 30696,
+    "mm_short": 16868,
+    "open_interest": 126363
+  },
+  {
+    "date": "2010-02-23",
+    "net_pct_oi": 14.4,
+    "mm_long": 32754,
+    "mm_short": 14552,
+    "open_interest": 126394
+  },
+  {
+    "date": "2010-03-02",
+    "net_pct_oi": 15.6,
+    "mm_long": 33356,
+    "mm_short": 13721,
+    "open_interest": 125878
+  },
+  {
+    "date": "2010-03-09",
+    "net_pct_oi": 17.54,
+    "mm_long": 36197,
+    "mm_short": 13813,
+    "open_interest": 127613
+  },
+  {
+    "date": "2010-03-16",
+    "net_pct_oi": 17.52,
+    "mm_long": 36898,
+    "mm_short": 14102,
+    "open_interest": 130126
+  },
+  {
+    "date": "2010-03-23",
+    "net_pct_oi": 16.75,
+    "mm_long": 36665,
+    "mm_short": 14471,
+    "open_interest": 132494
+  },
+  {
+    "date": "2010-03-30",
+    "net_pct_oi": 19.98,
+    "mm_long": 41665,
+    "mm_short": 13384,
+    "open_interest": 141517
+  },
+  {
+    "date": "2010-04-06",
+    "net_pct_oi": 19.68,
+    "mm_long": 44918,
+    "mm_short": 15123,
+    "open_interest": 151388
+  },
+  {
+    "date": "2010-04-13",
+    "net_pct_oi": 19.78,
+    "mm_long": 47900,
+    "mm_short": 18165,
+    "open_interest": 150306
+  },
+  {
+    "date": "2010-04-20",
+    "net_pct_oi": 16.62,
+    "mm_long": 44612,
+    "mm_short": 19027,
+    "open_interest": 153954
+  },
+  {
+    "date": "2010-04-27",
+    "net_pct_oi": 14.74,
+    "mm_long": 41393,
+    "mm_short": 19012,
+    "open_interest": 151824
+  },
+  {
+    "date": "2010-05-04",
+    "net_pct_oi": 11.02,
+    "mm_long": 36192,
+    "mm_short": 20506,
+    "open_interest": 142318
+  },
+  {
+    "date": "2010-05-11",
+    "net_pct_oi": 10.84,
+    "mm_long": 30620,
+    "mm_short": 16418,
+    "open_interest": 130991
+  },
+  {
+    "date": "2010-05-18",
+    "net_pct_oi": 9.42,
+    "mm_long": 29369,
+    "mm_short": 17264,
+    "open_interest": 128554
+  },
+  {
+    "date": "2010-05-25",
+    "net_pct_oi": 6.54,
+    "mm_long": 26699,
+    "mm_short": 18278,
+    "open_interest": 128730
+  },
+  {
+    "date": "2010-06-01",
+    "net_pct_oi": 6.99,
+    "mm_long": 27075,
+    "mm_short": 18194,
+    "open_interest": 127018
+  },
+  {
+    "date": "2010-06-08",
+    "net_pct_oi": 1.98,
+    "mm_long": 26353,
+    "mm_short": 23740,
+    "open_interest": 131799
+  },
+  {
+    "date": "2010-06-15",
+    "net_pct_oi": 2.01,
+    "mm_long": 26181,
+    "mm_short": 23418,
+    "open_interest": 137265
+  },
+  {
+    "date": "2010-06-22",
+    "net_pct_oi": 2.02,
+    "mm_long": 26258,
+    "mm_short": 23427,
+    "open_interest": 139932
+  },
+  {
+    "date": "2010-06-29",
+    "net_pct_oi": 4.0,
+    "mm_long": 25870,
+    "mm_short": 20655,
+    "open_interest": 130392
+  },
+  {
+    "date": "2010-07-06",
+    "net_pct_oi": 3.9,
+    "mm_long": 25998,
+    "mm_short": 21010,
+    "open_interest": 127883
+  },
+  {
+    "date": "2010-07-13",
+    "net_pct_oi": 5.4,
+    "mm_long": 26262,
+    "mm_short": 19248,
+    "open_interest": 129938
+  },
+  {
+    "date": "2010-07-20",
+    "net_pct_oi": 5.08,
+    "mm_long": 26893,
+    "mm_short": 20157,
+    "open_interest": 132711
+  },
+  {
+    "date": "2010-07-27",
+    "net_pct_oi": 10.69,
+    "mm_long": 29773,
+    "mm_short": 15233,
+    "open_interest": 136009
+  },
+  {
+    "date": "2010-08-03",
+    "net_pct_oi": 12.12,
+    "mm_long": 32336,
+    "mm_short": 15149,
+    "open_interest": 141838
+  },
+  {
+    "date": "2010-08-10",
+    "net_pct_oi": 14.92,
+    "mm_long": 34757,
+    "mm_short": 13916,
+    "open_interest": 139666
+  },
+  {
+    "date": "2010-08-17",
+    "net_pct_oi": 13.68,
+    "mm_long": 35782,
+    "mm_short": 16498,
+    "open_interest": 140934
+  },
+  {
+    "date": "2010-08-24",
+    "net_pct_oi": 10.63,
+    "mm_long": 31565,
+    "mm_short": 16702,
+    "open_interest": 139877
+  },
+  {
+    "date": "2010-08-31",
+    "net_pct_oi": 14.52,
+    "mm_long": 34577,
+    "mm_short": 15094,
+    "open_interest": 134206
+  },
+  {
+    "date": "2010-09-07",
+    "net_pct_oi": 17.5,
+    "mm_long": 37055,
+    "mm_short": 13068,
+    "open_interest": 137079
+  },
+  {
+    "date": "2010-09-14",
+    "net_pct_oi": 16.7,
+    "mm_long": 37292,
+    "mm_short": 13740,
+    "open_interest": 141028
+  },
+  {
+    "date": "2010-09-21",
+    "net_pct_oi": 17.09,
+    "mm_long": 38554,
+    "mm_short": 14117,
+    "open_interest": 142955
+  },
+  {
+    "date": "2010-09-28",
+    "net_pct_oi": 19.74,
+    "mm_long": 42777,
+    "mm_short": 13609,
+    "open_interest": 147744
+  },
+  {
+    "date": "2010-10-05",
+    "net_pct_oi": 20.53,
+    "mm_long": 45546,
+    "mm_short": 14037,
+    "open_interest": 153457
+  },
+  {
+    "date": "2010-10-12",
+    "net_pct_oi": 20.49,
+    "mm_long": 47223,
+    "mm_short": 14666,
+    "open_interest": 158917
+  },
+  {
+    "date": "2010-10-19",
+    "net_pct_oi": 20.15,
+    "mm_long": 47549,
+    "mm_short": 14730,
+    "open_interest": 162855
+  },
+  {
+    "date": "2010-10-26",
+    "net_pct_oi": 19.56,
+    "mm_long": 47373,
+    "mm_short": 14695,
+    "open_interest": 167063
+  },
+  {
+    "date": "2010-11-02",
+    "net_pct_oi": 19.37,
+    "mm_long": 45388,
+    "mm_short": 13780,
+    "open_interest": 163209
+  },
+  {
+    "date": "2010-11-09",
+    "net_pct_oi": 21.4,
+    "mm_long": 47578,
+    "mm_short": 12480,
+    "open_interest": 164045
+  },
+  {
+    "date": "2010-11-16",
+    "net_pct_oi": 20.14,
+    "mm_long": 42984,
+    "mm_short": 12297,
+    "open_interest": 152332
+  },
+  {
+    "date": "2010-11-23",
+    "net_pct_oi": 17.97,
+    "mm_long": 39563,
+    "mm_short": 13315,
+    "open_interest": 146054
+  },
+  {
+    "date": "2010-11-30",
+    "net_pct_oi": 18.25,
+    "mm_long": 40880,
+    "mm_short": 13827,
+    "open_interest": 148249
+  },
+  {
+    "date": "2010-12-07",
+    "net_pct_oi": 20.71,
+    "mm_long": 45906,
+    "mm_short": 13249,
+    "open_interest": 157675
+  },
+  {
+    "date": "2010-12-14",
+    "net_pct_oi": 22.13,
+    "mm_long": 49597,
+    "mm_short": 13400,
+    "open_interest": 163546
+  },
+  {
+    "date": "2010-12-21",
+    "net_pct_oi": 23.2,
+    "mm_long": 51615,
+    "mm_short": 13011,
+    "open_interest": 166422
+  },
+  {
+    "date": "2010-12-28",
+    "net_pct_oi": 23.37,
+    "mm_long": 53134,
+    "mm_short": 14029,
+    "open_interest": 167334
+  },
+  {
+    "date": "2011-01-04",
+    "net_pct_oi": 22.57,
+    "mm_long": 52984,
+    "mm_short": 15448,
+    "open_interest": 166289
+  },
+  {
+    "date": "2011-01-11",
+    "net_pct_oi": 21.8,
+    "mm_long": 53059,
+    "mm_short": 16979,
+    "open_interest": 165488
+  },
+  {
+    "date": "2011-01-18",
+    "net_pct_oi": 21.88,
+    "mm_long": 54289,
+    "mm_short": 17998,
+    "open_interest": 165873
+  },
+  {
+    "date": "2011-01-25",
+    "net_pct_oi": 18.07,
+    "mm_long": 45774,
+    "mm_short": 17615,
+    "open_interest": 155810
+  },
+  {
+    "date": "2011-02-01",
+    "net_pct_oi": 19.99,
+    "mm_long": 49583,
+    "mm_short": 17543,
+    "open_interest": 160259
+  },
+  {
+    "date": "2011-02-08",
+    "net_pct_oi": 22.55,
+    "mm_long": 54743,
+    "mm_short": 18153,
+    "open_interest": 162263
+  },
+  {
+    "date": "2011-02-15",
+    "net_pct_oi": 21.22,
+    "mm_long": 50917,
+    "mm_short": 17072,
+    "open_interest": 159468
+  },
+  {
+    "date": "2011-02-22",
+    "net_pct_oi": 15.93,
+    "mm_long": 44905,
+    "mm_short": 20712,
+    "open_interest": 151893
+  },
+  {
+    "date": "2011-03-01",
+    "net_pct_oi": 17.42,
+    "mm_long": 42879,
+    "mm_short": 17172,
+    "open_interest": 147581
+  },
+  {
+    "date": "2011-03-08",
+    "net_pct_oi": 15.71,
+    "mm_long": 40875,
+    "mm_short": 18601,
+    "open_interest": 141773
+  },
+  {
+    "date": "2011-03-15",
+    "net_pct_oi": 17.67,
+    "mm_long": 38541,
+    "mm_short": 14738,
+    "open_interest": 134739
+  },
+  {
+    "date": "2011-03-22",
+    "net_pct_oi": 14.42,
+    "mm_long": 36716,
+    "mm_short": 17430,
+    "open_interest": 133713
+  },
+  {
+    "date": "2011-03-29",
+    "net_pct_oi": 18.82,
+    "mm_long": 40475,
+    "mm_short": 14901,
+    "open_interest": 135882
+  },
+  {
+    "date": "2011-04-05",
+    "net_pct_oi": 15.03,
+    "mm_long": 37825,
+    "mm_short": 17635,
+    "open_interest": 134293
+  },
+  {
+    "date": "2011-04-12",
+    "net_pct_oi": 19.73,
+    "mm_long": 43729,
+    "mm_short": 15699,
+    "open_interest": 142085
+  },
+  {
+    "date": "2011-04-19",
+    "net_pct_oi": 13.25,
+    "mm_long": 32507,
+    "mm_short": 14966,
+    "open_interest": 132383
+  },
+  {
+    "date": "2011-04-26",
+    "net_pct_oi": 13.41,
+    "mm_long": 32025,
+    "mm_short": 14474,
+    "open_interest": 130849
+  },
+  {
+    "date": "2011-05-03",
+    "net_pct_oi": 11.87,
+    "mm_long": 30572,
+    "mm_short": 15630,
+    "open_interest": 125898
+  },
+  {
+    "date": "2011-05-10",
+    "net_pct_oi": 5.05,
+    "mm_long": 24325,
+    "mm_short": 18249,
+    "open_interest": 120303
+  },
+  {
+    "date": "2011-05-17",
+    "net_pct_oi": 3.13,
+    "mm_long": 21163,
+    "mm_short": 17418,
+    "open_interest": 119749
+  },
+  {
+    "date": "2011-05-24",
+    "net_pct_oi": 2.23,
+    "mm_long": 20377,
+    "mm_short": 17677,
+    "open_interest": 120829
+  },
+  {
+    "date": "2011-05-31",
+    "net_pct_oi": 5.89,
+    "mm_long": 21672,
+    "mm_short": 14368,
+    "open_interest": 123919
+  },
+  {
+    "date": "2011-06-07",
+    "net_pct_oi": 6.55,
+    "mm_long": 22152,
+    "mm_short": 14090,
+    "open_interest": 122995
+  },
+  {
+    "date": "2011-06-14",
+    "net_pct_oi": 6.75,
+    "mm_long": 23245,
+    "mm_short": 14291,
+    "open_interest": 132616
+  },
+  {
+    "date": "2011-06-21",
+    "net_pct_oi": 5.58,
+    "mm_long": 21939,
+    "mm_short": 14471,
+    "open_interest": 133849
+  },
+  {
+    "date": "2011-06-28",
+    "net_pct_oi": 7.16,
+    "mm_long": 22588,
+    "mm_short": 13693,
+    "open_interest": 124236
+  },
+  {
+    "date": "2011-07-05",
+    "net_pct_oi": 15.8,
+    "mm_long": 34019,
+    "mm_short": 12118,
+    "open_interest": 138627
+  },
+  {
+    "date": "2011-07-12",
+    "net_pct_oi": 18.4,
+    "mm_long": 41293,
+    "mm_short": 14263,
+    "open_interest": 146864
+  },
+  {
+    "date": "2011-07-19",
+    "net_pct_oi": 17.66,
+    "mm_long": 43163,
+    "mm_short": 16158,
+    "open_interest": 152876
+  },
+  {
+    "date": "2011-07-26",
+    "net_pct_oi": 18.68,
+    "mm_long": 45067,
+    "mm_short": 15894,
+    "open_interest": 156140
+  },
+  {
+    "date": "2011-08-02",
+    "net_pct_oi": 17.52,
+    "mm_long": 44102,
+    "mm_short": 16760,
+    "open_interest": 156089
+  },
+  {
+    "date": "2011-08-09",
+    "net_pct_oi": 8.28,
+    "mm_long": 28024,
+    "mm_short": 17384,
+    "open_interest": 128475
+  },
+  {
+    "date": "2011-08-16",
+    "net_pct_oi": 2.02,
+    "mm_long": 20555,
+    "mm_short": 18014,
+    "open_interest": 125673
+  },
+  {
+    "date": "2011-08-23",
+    "net_pct_oi": -0.26,
+    "mm_long": 20433,
+    "mm_short": 20763,
+    "open_interest": 126380
+  },
+  {
+    "date": "2011-08-30",
+    "net_pct_oi": -0.72,
+    "mm_long": 21119,
+    "mm_short": 21950,
+    "open_interest": 115815
+  },
+  {
+    "date": "2011-09-06",
+    "net_pct_oi": 2.76,
+    "mm_long": 23600,
+    "mm_short": 20398,
+    "open_interest": 115872
+  },
+  {
+    "date": "2011-09-13",
+    "net_pct_oi": 0.25,
+    "mm_long": 23006,
+    "mm_short": 22706,
+    "open_interest": 118383
+  },
+  {
+    "date": "2011-09-20",
+    "net_pct_oi": -5.35,
+    "mm_long": 22534,
+    "mm_short": 29255,
+    "open_interest": 125531
+  },
+  {
+    "date": "2011-09-27",
+    "net_pct_oi": -2.96,
+    "mm_long": 22311,
+    "mm_short": 25857,
+    "open_interest": 119891
+  },
+  {
+    "date": "2011-10-04",
+    "net_pct_oi": -4.36,
+    "mm_long": 19926,
+    "mm_short": 25229,
+    "open_interest": 121499
+  },
+  {
+    "date": "2011-10-11",
+    "net_pct_oi": -7.74,
+    "mm_long": 19392,
+    "mm_short": 28904,
+    "open_interest": 122868
+  },
+  {
+    "date": "2011-10-18",
+    "net_pct_oi": -6.45,
+    "mm_long": 19730,
+    "mm_short": 28052,
+    "open_interest": 129014
+  },
+  {
+    "date": "2011-10-25",
+    "net_pct_oi": -3.89,
+    "mm_long": 19892,
+    "mm_short": 24941,
+    "open_interest": 129893
+  },
+  {
+    "date": "2011-11-01",
+    "net_pct_oi": -0.75,
+    "mm_long": 19877,
+    "mm_short": 20819,
+    "open_interest": 126363
+  },
+  {
+    "date": "2011-11-08",
+    "net_pct_oi": -1.45,
+    "mm_long": 18611,
+    "mm_short": 20400,
+    "open_interest": 123572
+  },
+  {
+    "date": "2011-11-15",
+    "net_pct_oi": -2.71,
+    "mm_long": 18588,
+    "mm_short": 22109,
+    "open_interest": 129991
+  },
+  {
+    "date": "2011-11-22",
+    "net_pct_oi": -6.23,
+    "mm_long": 16951,
+    "mm_short": 24689,
+    "open_interest": 124189
+  },
+  {
+    "date": "2011-11-29",
+    "net_pct_oi": -6.25,
+    "mm_long": 17318,
+    "mm_short": 24346,
+    "open_interest": 112374
+  },
+  {
+    "date": "2011-12-06",
+    "net_pct_oi": -2.41,
+    "mm_long": 19784,
+    "mm_short": 22508,
+    "open_interest": 113252
+  },
+  {
+    "date": "2011-12-13",
+    "net_pct_oi": -2.93,
+    "mm_long": 20483,
+    "mm_short": 23884,
+    "open_interest": 115993
+  },
+  {
+    "date": "2011-12-20",
+    "net_pct_oi": -4.71,
+    "mm_long": 21312,
+    "mm_short": 26773,
+    "open_interest": 116050
+  },
+  {
+    "date": "2011-12-27",
+    "net_pct_oi": -3.43,
+    "mm_long": 21990,
+    "mm_short": 26014,
+    "open_interest": 117153
+  },
+  {
+    "date": "2012-01-03",
+    "net_pct_oi": -1.66,
+    "mm_long": 22625,
+    "mm_short": 24636,
+    "open_interest": 120794
+  },
+  {
+    "date": "2012-01-10",
+    "net_pct_oi": -1.95,
+    "mm_long": 23792,
+    "mm_short": 26257,
+    "open_interest": 126638
+  },
+  {
+    "date": "2012-01-17",
+    "net_pct_oi": 3.6,
+    "mm_long": 26589,
+    "mm_short": 21814,
+    "open_interest": 132457
+  },
+  {
+    "date": "2012-01-24",
+    "net_pct_oi": 5.09,
+    "mm_long": 29021,
+    "mm_short": 21760,
+    "open_interest": 142751
+  },
+  {
+    "date": "2012-01-31",
+    "net_pct_oi": 5.07,
+    "mm_long": 30968,
+    "mm_short": 23273,
+    "open_interest": 151787
+  },
+  {
+    "date": "2012-02-07",
+    "net_pct_oi": 7.68,
+    "mm_long": 33747,
+    "mm_short": 21449,
+    "open_interest": 160030
+  },
+  {
+    "date": "2012-02-14",
+    "net_pct_oi": 8.97,
+    "mm_long": 35559,
+    "mm_short": 20811,
+    "open_interest": 164491
+  },
+  {
+    "date": "2012-02-21",
+    "net_pct_oi": 8.16,
+    "mm_long": 35154,
+    "mm_short": 21894,
+    "open_interest": 162525
+  },
+  {
+    "date": "2012-02-28",
+    "net_pct_oi": 10.14,
+    "mm_long": 36758,
+    "mm_short": 21216,
+    "open_interest": 153312
+  },
+  {
+    "date": "2012-03-06",
+    "net_pct_oi": 8.87,
+    "mm_long": 36249,
+    "mm_short": 22704,
+    "open_interest": 152741
+  },
+  {
+    "date": "2012-03-13",
+    "net_pct_oi": 9.39,
+    "mm_long": 36765,
+    "mm_short": 22582,
+    "open_interest": 150968
+  },
+  {
+    "date": "2012-03-20",
+    "net_pct_oi": 11.05,
+    "mm_long": 41482,
+    "mm_short": 24422,
+    "open_interest": 154394
+  },
+  {
+    "date": "2012-03-27",
+    "net_pct_oi": 9.79,
+    "mm_long": 37884,
+    "mm_short": 23001,
+    "open_interest": 152037
+  },
+  {
+    "date": "2012-04-03",
+    "net_pct_oi": 11.91,
+    "mm_long": 40451,
+    "mm_short": 21809,
+    "open_interest": 156569
+  },
+  {
+    "date": "2012-04-10",
+    "net_pct_oi": 1.99,
+    "mm_long": 31944,
+    "mm_short": 28989,
+    "open_interest": 148468
+  },
+  {
+    "date": "2012-04-17",
+    "net_pct_oi": 1.38,
+    "mm_long": 32425,
+    "mm_short": 30222,
+    "open_interest": 159119
+  },
+  {
+    "date": "2012-04-24",
+    "net_pct_oi": 1.38,
+    "mm_long": 30516,
+    "mm_short": 28326,
+    "open_interest": 159256
+  },
+  {
+    "date": "2012-05-01",
+    "net_pct_oi": 10.79,
+    "mm_long": 34702,
+    "mm_short": 19137,
+    "open_interest": 144241
+  },
+  {
+    "date": "2012-05-08",
+    "net_pct_oi": 10.69,
+    "mm_long": 36648,
+    "mm_short": 21192,
+    "open_interest": 144583
+  },
+  {
+    "date": "2012-05-15",
+    "net_pct_oi": 3.27,
+    "mm_long": 33163,
+    "mm_short": 28330,
+    "open_interest": 147934
+  },
+  {
+    "date": "2012-05-22",
+    "net_pct_oi": -1.87,
+    "mm_long": 31600,
+    "mm_short": 34408,
+    "open_interest": 150189
+  },
+  {
+    "date": "2012-05-29",
+    "net_pct_oi": -4.54,
+    "mm_long": 30938,
+    "mm_short": 37695,
+    "open_interest": 148694
+  },
+  {
+    "date": "2012-06-05",
+    "net_pct_oi": -8.43,
+    "mm_long": 28758,
+    "mm_short": 41933,
+    "open_interest": 156252
+  },
+  {
+    "date": "2012-06-12",
+    "net_pct_oi": -8.77,
+    "mm_long": 28590,
+    "mm_short": 41929,
+    "open_interest": 152084
+  },
+  {
+    "date": "2012-06-19",
+    "net_pct_oi": -8.21,
+    "mm_long": 28881,
+    "mm_short": 40778,
+    "open_interest": 144845
+  },
+  {
+    "date": "2012-06-26",
+    "net_pct_oi": -9.4,
+    "mm_long": 27883,
+    "mm_short": 41652,
+    "open_interest": 146442
+  },
+  {
+    "date": "2012-07-03",
+    "net_pct_oi": -1.29,
+    "mm_long": 31702,
+    "mm_short": 33456,
+    "open_interest": 135682
+  },
+  {
+    "date": "2012-07-10",
+    "net_pct_oi": -3.59,
+    "mm_long": 31663,
+    "mm_short": 36477,
+    "open_interest": 134099
+  },
+  {
+    "date": "2012-07-17",
+    "net_pct_oi": -1.28,
+    "mm_long": 32459,
+    "mm_short": 34222,
+    "open_interest": 138098
+  },
+  {
+    "date": "2012-07-24",
+    "net_pct_oi": -5.36,
+    "mm_long": 32010,
+    "mm_short": 39646,
+    "open_interest": 142395
+  },
+  {
+    "date": "2012-07-31",
+    "net_pct_oi": -4.67,
+    "mm_long": 30835,
+    "mm_short": 37499,
+    "open_interest": 142774
+  },
+  {
+    "date": "2012-08-07",
+    "net_pct_oi": -5.65,
+    "mm_long": 31819,
+    "mm_short": 40020,
+    "open_interest": 145059
+  },
+  {
+    "date": "2012-08-14",
+    "net_pct_oi": -6.89,
+    "mm_long": 29190,
+    "mm_short": 39955,
+    "open_interest": 156244
+  },
+  {
+    "date": "2012-08-21",
+    "net_pct_oi": -2.16,
+    "mm_long": 32237,
+    "mm_short": 35458,
+    "open_interest": 149461
+  },
+  {
+    "date": "2012-08-28",
+    "net_pct_oi": 2.24,
+    "mm_long": 33200,
+    "mm_short": 29943,
+    "open_interest": 145214
+  },
+  {
+    "date": "2012-09-04",
+    "net_pct_oi": 0.49,
+    "mm_long": 30512,
+    "mm_short": 29839,
+    "open_interest": 136512
+  },
+  {
+    "date": "2012-09-11",
+    "net_pct_oi": 11.85,
+    "mm_long": 41429,
+    "mm_short": 23931,
+    "open_interest": 147630
+  },
+  {
+    "date": "2012-09-18",
+    "net_pct_oi": 11.51,
+    "mm_long": 42111,
+    "mm_short": 24947,
+    "open_interest": 149098
+  },
+  {
+    "date": "2012-09-25",
+    "net_pct_oi": 13.52,
+    "mm_long": 46597,
+    "mm_short": 26015,
+    "open_interest": 152263
+  },
+  {
+    "date": "2012-10-02",
+    "net_pct_oi": 15.97,
+    "mm_long": 47502,
+    "mm_short": 23186,
+    "open_interest": 152264
+  },
+  {
+    "date": "2012-10-09",
+    "net_pct_oi": 15.43,
+    "mm_long": 45002,
+    "mm_short": 21554,
+    "open_interest": 152004
+  },
+  {
+    "date": "2012-10-16",
+    "net_pct_oi": 15.82,
+    "mm_long": 43632,
+    "mm_short": 19856,
+    "open_interest": 150296
+  },
+  {
+    "date": "2012-10-23",
+    "net_pct_oi": 11.77,
+    "mm_long": 39694,
+    "mm_short": 21627,
+    "open_interest": 153564
+  },
+  {
+    "date": "2012-10-30",
+    "net_pct_oi": 4.45,
+    "mm_long": 35512,
+    "mm_short": 28548,
+    "open_interest": 156569
+  },
+  {
+    "date": "2012-11-06",
+    "net_pct_oi": 1.33,
+    "mm_long": 32746,
+    "mm_short": 30674,
+    "open_interest": 155396
+  },
+  {
+    "date": "2012-11-13",
+    "net_pct_oi": -0.55,
+    "mm_long": 30809,
+    "mm_short": 31640,
+    "open_interest": 151884
+  },
+  {
+    "date": "2012-11-20",
+    "net_pct_oi": -1.79,
+    "mm_long": 29778,
+    "mm_short": 32430,
+    "open_interest": 147748
+  },
+  {
+    "date": "2012-11-27",
+    "net_pct_oi": -1.07,
+    "mm_long": 29202,
+    "mm_short": 30755,
+    "open_interest": 145313
+  },
+  {
+    "date": "2012-12-04",
+    "net_pct_oi": 9.36,
+    "mm_long": 33312,
+    "mm_short": 19831,
+    "open_interest": 143993
+  },
+  {
+    "date": "2012-12-11",
+    "net_pct_oi": 14.62,
+    "mm_long": 39284,
+    "mm_short": 17161,
+    "open_interest": 151310
+  },
+  {
+    "date": "2012-12-18",
+    "net_pct_oi": 15.95,
+    "mm_long": 42233,
+    "mm_short": 17702,
+    "open_interest": 153815
+  },
+  {
+    "date": "2012-12-24",
+    "net_pct_oi": 10.1,
+    "mm_long": 35797,
+    "mm_short": 20809,
+    "open_interest": 148449
+  },
+  {
+    "date": "2012-12-31",
+    "net_pct_oi": 10.87,
+    "mm_long": 34694,
+    "mm_short": 18770,
+    "open_interest": 146548
+  },
+  {
+    "date": "2013-01-08",
+    "net_pct_oi": 12.91,
+    "mm_long": 36715,
+    "mm_short": 16550,
+    "open_interest": 156245
+  },
+  {
+    "date": "2013-01-15",
+    "net_pct_oi": 10.38,
+    "mm_long": 35789,
+    "mm_short": 19621,
+    "open_interest": 155689
+  },
+  {
+    "date": "2013-01-22",
+    "net_pct_oi": 10.15,
+    "mm_long": 35415,
+    "mm_short": 18977,
+    "open_interest": 161899
+  },
+  {
+    "date": "2013-01-29",
+    "net_pct_oi": 8.57,
+    "mm_long": 35221,
+    "mm_short": 20773,
+    "open_interest": 168493
+  },
+  {
+    "date": "2013-02-05",
+    "net_pct_oi": 12.31,
+    "mm_long": 44912,
+    "mm_short": 22262,
+    "open_interest": 183941
+  },
+  {
+    "date": "2013-02-12",
+    "net_pct_oi": 13.24,
+    "mm_long": 44964,
+    "mm_short": 21866,
+    "open_interest": 174441
+  },
+  {
+    "date": "2013-02-19",
+    "net_pct_oi": 6.4,
+    "mm_long": 38179,
+    "mm_short": 26766,
+    "open_interest": 178372
+  },
+  {
+    "date": "2013-02-26",
+    "net_pct_oi": -4.45,
+    "mm_long": 25839,
+    "mm_short": 33004,
+    "open_interest": 161180
+  },
+  {
+    "date": "2013-03-05",
+    "net_pct_oi": -10.27,
+    "mm_long": 24581,
+    "mm_short": 40963,
+    "open_interest": 159485
+  },
+  {
+    "date": "2013-03-12",
+    "net_pct_oi": -10.58,
+    "mm_long": 24540,
+    "mm_short": 41303,
+    "open_interest": 158500
+  },
+  {
+    "date": "2013-03-19",
+    "net_pct_oi": -15.25,
+    "mm_long": 22064,
+    "mm_short": 47782,
+    "open_interest": 168616
+  },
+  {
+    "date": "2013-03-26",
+    "net_pct_oi": -17.36,
+    "mm_long": 22684,
+    "mm_short": 52720,
+    "open_interest": 172979
+  },
+  {
+    "date": "2013-04-02",
+    "net_pct_oi": -21.67,
+    "mm_long": 21302,
+    "mm_short": 60302,
+    "open_interest": 179944
+  },
+  {
+    "date": "2013-04-09",
+    "net_pct_oi": -18.03,
+    "mm_long": 24749,
+    "mm_short": 57691,
+    "open_interest": 182719
+  },
+  {
+    "date": "2013-04-16",
+    "net_pct_oi": -14.67,
+    "mm_long": 26087,
+    "mm_short": 53591,
+    "open_interest": 187450
+  },
+  {
+    "date": "2013-04-23",
+    "net_pct_oi": -9.16,
+    "mm_long": 30284,
+    "mm_short": 46075,
+    "open_interest": 172312
+  },
+  {
+    "date": "2013-04-30",
+    "net_pct_oi": -14.11,
+    "mm_long": 27703,
+    "mm_short": 51133,
+    "open_interest": 166042
+  },
+  {
+    "date": "2013-05-07",
+    "net_pct_oi": -10.58,
+    "mm_long": 26935,
+    "mm_short": 43731,
+    "open_interest": 158787
+  },
+  {
+    "date": "2013-05-14",
+    "net_pct_oi": -8.24,
+    "mm_long": 27503,
+    "mm_short": 40667,
+    "open_interest": 159750
+  },
+  {
+    "date": "2013-05-21",
+    "net_pct_oi": -5.6,
+    "mm_long": 27848,
+    "mm_short": 36937,
+    "open_interest": 162304
+  },
+  {
+    "date": "2013-05-28",
+    "net_pct_oi": -5.37,
+    "mm_long": 27120,
+    "mm_short": 36038,
+    "open_interest": 165931
+  },
+  {
+    "date": "2013-06-04",
+    "net_pct_oi": -3.95,
+    "mm_long": 28533,
+    "mm_short": 35189,
+    "open_interest": 168538
+  },
+  {
+    "date": "2013-06-11",
+    "net_pct_oi": -10.33,
+    "mm_long": 25973,
+    "mm_short": 44687,
+    "open_interest": 181231
+  },
+  {
+    "date": "2013-06-18",
+    "net_pct_oi": -14.89,
+    "mm_long": 26887,
+    "mm_short": 55896,
+    "open_interest": 194877
+  },
+  {
+    "date": "2013-06-25",
+    "net_pct_oi": -18.24,
+    "mm_long": 27037,
+    "mm_short": 59634,
+    "open_interest": 178746
+  },
+  {
+    "date": "2013-07-02",
+    "net_pct_oi": -15.77,
+    "mm_long": 29465,
+    "mm_short": 56428,
+    "open_interest": 170977
+  },
+  {
+    "date": "2013-07-09",
+    "net_pct_oi": -15.54,
+    "mm_long": 28384,
+    "mm_short": 54668,
+    "open_interest": 169108
+  },
+  {
+    "date": "2013-07-16",
+    "net_pct_oi": -9.55,
+    "mm_long": 28748,
+    "mm_short": 44400,
+    "open_interest": 163870
+  },
+  {
+    "date": "2013-07-23",
+    "net_pct_oi": -8.0,
+    "mm_long": 29208,
+    "mm_short": 42158,
+    "open_interest": 161805
+  },
+  {
+    "date": "2013-07-30",
+    "net_pct_oi": -16.2,
+    "mm_long": 25653,
+    "mm_short": 52576,
+    "open_interest": 166158
+  },
+  {
+    "date": "2013-08-06",
+    "net_pct_oi": -8.95,
+    "mm_long": 26753,
+    "mm_short": 41414,
+    "open_interest": 163880
+  },
+  {
+    "date": "2013-08-13",
+    "net_pct_oi": 4.27,
+    "mm_long": 30434,
+    "mm_short": 23535,
+    "open_interest": 161593
+  },
+  {
+    "date": "2013-08-20",
+    "net_pct_oi": 8.92,
+    "mm_long": 36260,
+    "mm_short": 21978,
+    "open_interest": 160062
+  },
+  {
+    "date": "2013-08-27",
+    "net_pct_oi": 8.33,
+    "mm_long": 34638,
+    "mm_short": 21578,
+    "open_interest": 156847
+  },
+  {
+    "date": "2013-09-03",
+    "net_pct_oi": 5.52,
+    "mm_long": 32446,
+    "mm_short": 24224,
+    "open_interest": 149072
+  },
+  {
+    "date": "2013-09-10",
+    "net_pct_oi": 1.35,
+    "mm_long": 29114,
+    "mm_short": 27096,
+    "open_interest": 149202
+  },
+  {
+    "date": "2013-09-17",
+    "net_pct_oi": -2.55,
+    "mm_long": 27078,
+    "mm_short": 30880,
+    "open_interest": 149173
+  },
+  {
+    "date": "2013-09-24",
+    "net_pct_oi": 3.58,
+    "mm_long": 29218,
+    "mm_short": 23942,
+    "open_interest": 147511
+  },
+  {
+    "date": "2013-10-01",
+    "net_pct_oi": 5.29,
+    "mm_long": 30036,
+    "mm_short": 22207,
+    "open_interest": 148001
+  },
+  {
+    "date": "2013-10-08",
+    "net_pct_oi": 2.98,
+    "mm_long": 27721,
+    "mm_short": 23308,
+    "open_interest": 147936
+  },
+  {
+    "date": "2013-10-15",
+    "net_pct_oi": 2.72,
+    "mm_long": 28591,
+    "mm_short": 24509,
+    "open_interest": 149819
+  },
+  {
+    "date": "2013-10-22",
+    "net_pct_oi": 11.96,
+    "mm_long": 35451,
+    "mm_short": 16920,
+    "open_interest": 154924
+  },
+  {
+    "date": "2013-10-29",
+    "net_pct_oi": 6.66,
+    "mm_long": 30992,
+    "mm_short": 20702,
+    "open_interest": 154498
+  },
+  {
+    "date": "2013-11-05",
+    "net_pct_oi": 3.32,
+    "mm_long": 28774,
+    "mm_short": 23844,
+    "open_interest": 148624
+  },
+  {
+    "date": "2013-11-12",
+    "net_pct_oi": -4.98,
+    "mm_long": 28395,
+    "mm_short": 36526,
+    "open_interest": 163264
+  },
+  {
+    "date": "2013-11-19",
+    "net_pct_oi": -13.9,
+    "mm_long": 27744,
+    "mm_short": 51802,
+    "open_interest": 173106
+  },
+  {
+    "date": "2013-11-26",
+    "net_pct_oi": -12.43,
+    "mm_long": 29315,
+    "mm_short": 49053,
+    "open_interest": 158780
+  },
+  {
+    "date": "2013-12-03",
+    "net_pct_oi": -12.07,
+    "mm_long": 30360,
+    "mm_short": 49676,
+    "open_interest": 160042
+  },
+  {
+    "date": "2013-12-10",
+    "net_pct_oi": -0.78,
+    "mm_long": 34596,
+    "mm_short": 35840,
+    "open_interest": 159552
+  },
+  {
+    "date": "2013-12-17",
+    "net_pct_oi": 12.92,
+    "mm_long": 43742,
+    "mm_short": 23085,
+    "open_interest": 159879
+  },
+  {
+    "date": "2013-12-24",
+    "net_pct_oi": 17.86,
+    "mm_long": 50492,
+    "mm_short": 21040,
+    "open_interest": 164932
+  },
+  {
+    "date": "2013-12-31",
+    "net_pct_oi": 21.33,
+    "mm_long": 55831,
+    "mm_short": 20208,
+    "open_interest": 167024
+  },
+  {
+    "date": "2014-01-07",
+    "net_pct_oi": 20.65,
+    "mm_long": 55828,
+    "mm_short": 20803,
+    "open_interest": 169588
+  },
+  {
+    "date": "2014-01-14",
+    "net_pct_oi": 15.72,
+    "mm_long": 47778,
+    "mm_short": 22108,
+    "open_interest": 163296
+  },
+  {
+    "date": "2014-01-21",
+    "net_pct_oi": 19.17,
+    "mm_long": 51056,
+    "mm_short": 20367,
+    "open_interest": 160115
+  },
+  {
+    "date": "2014-01-28",
+    "net_pct_oi": 7.68,
+    "mm_long": 41471,
+    "mm_short": 29737,
+    "open_interest": 152829
+  },
+  {
+    "date": "2014-02-04",
+    "net_pct_oi": -4.49,
+    "mm_long": 33477,
+    "mm_short": 40299,
+    "open_interest": 151800
+  },
+  {
+    "date": "2014-02-11",
+    "net_pct_oi": -9.57,
+    "mm_long": 31535,
+    "mm_short": 47326,
+    "open_interest": 164996
+  },
+  {
+    "date": "2014-02-18",
+    "net_pct_oi": -5.46,
+    "mm_long": 32313,
+    "mm_short": 41218,
+    "open_interest": 162959
+  },
+  {
+    "date": "2014-02-25",
+    "net_pct_oi": 1.04,
+    "mm_long": 34461,
+    "mm_short": 32943,
+    "open_interest": 146265
+  },
+  {
+    "date": "2014-03-04",
+    "net_pct_oi": -1.71,
+    "mm_long": 35504,
+    "mm_short": 37992,
+    "open_interest": 145295
+  },
+  {
+    "date": "2014-03-11",
+    "net_pct_oi": -6.65,
+    "mm_long": 32249,
+    "mm_short": 42610,
+    "open_interest": 155791
+  },
+  {
+    "date": "2014-03-18",
+    "net_pct_oi": -13.72,
+    "mm_long": 29156,
+    "mm_short": 51040,
+    "open_interest": 159542
+  },
+  {
+    "date": "2014-03-25",
+    "net_pct_oi": -16.21,
+    "mm_long": 28600,
+    "mm_short": 53570,
+    "open_interest": 154057
+  },
+  {
+    "date": "2014-04-01",
+    "net_pct_oi": -12.88,
+    "mm_long": 28894,
+    "mm_short": 48618,
+    "open_interest": 153098
+  },
+  {
+    "date": "2014-04-08",
+    "net_pct_oi": -8.72,
+    "mm_long": 29092,
+    "mm_short": 42467,
+    "open_interest": 153322
+  },
+  {
+    "date": "2014-04-15",
+    "net_pct_oi": -9.04,
+    "mm_long": 28940,
+    "mm_short": 43768,
+    "open_interest": 164022
+  },
+  {
+    "date": "2014-04-22",
+    "net_pct_oi": -2.26,
+    "mm_long": 31896,
+    "mm_short": 35353,
+    "open_interest": 152890
+  },
+  {
+    "date": "2014-04-29",
+    "net_pct_oi": 3.6,
+    "mm_long": 33870,
+    "mm_short": 28860,
+    "open_interest": 138987
+  },
+  {
+    "date": "2014-05-06",
+    "net_pct_oi": 0.45,
+    "mm_long": 32328,
+    "mm_short": 31688,
+    "open_interest": 142069
+  },
+  {
+    "date": "2014-05-13",
+    "net_pct_oi": 8.66,
+    "mm_long": 40720,
+    "mm_short": 27593,
+    "open_interest": 151610
+  },
+  {
+    "date": "2014-05-20",
+    "net_pct_oi": 12.43,
+    "mm_long": 41903,
+    "mm_short": 23219,
+    "open_interest": 150346
+  },
+  {
+    "date": "2014-05-27",
+    "net_pct_oi": 13.82,
+    "mm_long": 42800,
+    "mm_short": 21594,
+    "open_interest": 153499
+  },
+  {
+    "date": "2014-06-03",
+    "net_pct_oi": 10.64,
+    "mm_long": 38036,
+    "mm_short": 21887,
+    "open_interest": 151783
+  },
+  {
+    "date": "2014-06-10",
+    "net_pct_oi": 3.39,
+    "mm_long": 30795,
+    "mm_short": 25794,
+    "open_interest": 147453
+  },
+  {
+    "date": "2014-06-17",
+    "net_pct_oi": -0.26,
+    "mm_long": 28750,
+    "mm_short": 29151,
+    "open_interest": 151523
+  },
+  {
+    "date": "2014-06-24",
+    "net_pct_oi": 9.98,
+    "mm_long": 34514,
+    "mm_short": 20301,
+    "open_interest": 142413
+  },
+  {
+    "date": "2014-07-01",
+    "net_pct_oi": 16.88,
+    "mm_long": 44419,
+    "mm_short": 19729,
+    "open_interest": 146243
+  },
+  {
+    "date": "2014-07-08",
+    "net_pct_oi": 23.77,
+    "mm_long": 56092,
+    "mm_short": 17815,
+    "open_interest": 161048
+  },
+  {
+    "date": "2014-07-15",
+    "net_pct_oi": 27.26,
+    "mm_long": 66443,
+    "mm_short": 17540,
+    "open_interest": 179412
+  },
+  {
+    "date": "2014-07-22",
+    "net_pct_oi": 24.39,
+    "mm_long": 62523,
+    "mm_short": 18508,
+    "open_interest": 180479
+  },
+  {
+    "date": "2014-07-29",
+    "net_pct_oi": 22.13,
+    "mm_long": 56748,
+    "mm_short": 18009,
+    "open_interest": 175017
+  },
+  {
+    "date": "2014-08-05",
+    "net_pct_oi": 19.98,
+    "mm_long": 54131,
+    "mm_short": 19908,
+    "open_interest": 171323
+  },
+  {
+    "date": "2014-08-12",
+    "net_pct_oi": 12.37,
+    "mm_long": 39744,
+    "mm_short": 20732,
+    "open_interest": 153657
+  },
+  {
+    "date": "2014-08-19",
+    "net_pct_oi": 5.65,
+    "mm_long": 33090,
+    "mm_short": 24505,
+    "open_interest": 152025
+  },
+  {
+    "date": "2014-08-26",
+    "net_pct_oi": 11.81,
+    "mm_long": 36633,
+    "mm_short": 19321,
+    "open_interest": 146526
+  },
+  {
+    "date": "2014-09-02",
+    "net_pct_oi": 4.81,
+    "mm_long": 30584,
+    "mm_short": 24029,
+    "open_interest": 136370
+  },
+  {
+    "date": "2014-09-09",
+    "net_pct_oi": -1.5,
+    "mm_long": 30719,
+    "mm_short": 32883,
+    "open_interest": 144047
+  },
+  {
+    "date": "2014-09-16",
+    "net_pct_oi": 0.48,
+    "mm_long": 34162,
+    "mm_short": 33469,
+    "open_interest": 143370
+  },
+  {
+    "date": "2014-09-23",
+    "net_pct_oi": -8.17,
+    "mm_long": 31928,
+    "mm_short": 44354,
+    "open_interest": 152016
+  },
+  {
+    "date": "2014-09-30",
+    "net_pct_oi": -13.39,
+    "mm_long": 32208,
+    "mm_short": 53678,
+    "open_interest": 160389
+  },
+  {
+    "date": "2014-10-07",
+    "net_pct_oi": -12.71,
+    "mm_long": 33480,
+    "mm_short": 54784,
+    "open_interest": 167622
+  },
+  {
+    "date": "2014-10-14",
+    "net_pct_oi": -6.85,
+    "mm_long": 37055,
+    "mm_short": 48527,
+    "open_interest": 167530
+  },
+  {
+    "date": "2014-10-21",
+    "net_pct_oi": -6.83,
+    "mm_long": 35376,
+    "mm_short": 47371,
+    "open_interest": 175541
+  },
+  {
+    "date": "2014-10-28",
+    "net_pct_oi": -0.78,
+    "mm_long": 38389,
+    "mm_short": 39713,
+    "open_interest": 169924
+  },
+  {
+    "date": "2014-11-04",
+    "net_pct_oi": -3.65,
+    "mm_long": 32801,
+    "mm_short": 38817,
+    "open_interest": 164942
+  },
+  {
+    "date": "2014-11-11",
+    "net_pct_oi": -1.02,
+    "mm_long": 33215,
+    "mm_short": 34948,
+    "open_interest": 170361
+  },
+  {
+    "date": "2014-11-18",
+    "net_pct_oi": -0.76,
+    "mm_long": 35758,
+    "mm_short": 37096,
+    "open_interest": 176417
+  },
+  {
+    "date": "2014-11-25",
+    "net_pct_oi": -1.16,
+    "mm_long": 39395,
+    "mm_short": 41262,
+    "open_interest": 160924
+  },
+  {
+    "date": "2014-12-02",
+    "net_pct_oi": -3.75,
+    "mm_long": 35992,
+    "mm_short": 41968,
+    "open_interest": 159261
+  },
+  {
+    "date": "2014-12-09",
+    "net_pct_oi": -3.54,
+    "mm_long": 36364,
+    "mm_short": 41761,
+    "open_interest": 152267
+  },
+  {
+    "date": "2014-12-16",
+    "net_pct_oi": -3.29,
+    "mm_long": 35384,
+    "mm_short": 40384,
+    "open_interest": 152045
+  },
+  {
+    "date": "2014-12-23",
+    "net_pct_oi": -2.77,
+    "mm_long": 35155,
+    "mm_short": 39385,
+    "open_interest": 152816
+  },
+  {
+    "date": "2014-12-30",
+    "net_pct_oi": -2.83,
+    "mm_long": 34871,
+    "mm_short": 39379,
+    "open_interest": 159107
+  },
+  {
+    "date": "2015-01-06",
+    "net_pct_oi": -6.43,
+    "mm_long": 34032,
+    "mm_short": 44964,
+    "open_interest": 170037
+  },
+  {
+    "date": "2015-01-13",
+    "net_pct_oi": -5.53,
+    "mm_long": 38275,
+    "mm_short": 48206,
+    "open_interest": 179459
+  },
+  {
+    "date": "2015-01-20",
+    "net_pct_oi": -4.67,
+    "mm_long": 35731,
+    "mm_short": 43808,
+    "open_interest": 172846
+  },
+  {
+    "date": "2015-01-27",
+    "net_pct_oi": -7.27,
+    "mm_long": 35675,
+    "mm_short": 48696,
+    "open_interest": 179152
+  },
+  {
+    "date": "2015-02-03",
+    "net_pct_oi": -5.71,
+    "mm_long": 37593,
+    "mm_short": 47919,
+    "open_interest": 180944
+  },
+  {
+    "date": "2015-02-10",
+    "net_pct_oi": -7.59,
+    "mm_long": 36383,
+    "mm_short": 50477,
+    "open_interest": 185606
+  },
+  {
+    "date": "2015-02-17",
+    "net_pct_oi": -4.94,
+    "mm_long": 36309,
+    "mm_short": 45481,
+    "open_interest": 185675
+  },
+  {
+    "date": "2015-02-24",
+    "net_pct_oi": -0.19,
+    "mm_long": 39964,
+    "mm_short": 40288,
+    "open_interest": 171520
+  },
+  {
+    "date": "2015-03-03",
+    "net_pct_oi": 0.62,
+    "mm_long": 40181,
+    "mm_short": 39175,
+    "open_interest": 163020
+  },
+  {
+    "date": "2015-03-10",
+    "net_pct_oi": 1.44,
+    "mm_long": 41275,
+    "mm_short": 38918,
+    "open_interest": 164239
+  },
+  {
+    "date": "2015-03-17",
+    "net_pct_oi": 2.35,
+    "mm_long": 40981,
+    "mm_short": 37123,
+    "open_interest": 164490
+  },
+  {
+    "date": "2015-03-24",
+    "net_pct_oi": 9.05,
+    "mm_long": 43482,
+    "mm_short": 28496,
+    "open_interest": 165590
+  },
+  {
+    "date": "2015-03-31",
+    "net_pct_oi": 10.01,
+    "mm_long": 45870,
+    "mm_short": 28832,
+    "open_interest": 170125
+  },
+  {
+    "date": "2015-04-07",
+    "net_pct_oi": 8.98,
+    "mm_long": 44883,
+    "mm_short": 29527,
+    "open_interest": 171006
+  },
+  {
+    "date": "2015-04-14",
+    "net_pct_oi": 8.61,
+    "mm_long": 42063,
+    "mm_short": 27784,
+    "open_interest": 165760
+  },
+  {
+    "date": "2015-04-21",
+    "net_pct_oi": 8.61,
+    "mm_long": 38320,
+    "mm_short": 24742,
+    "open_interest": 157721
+  },
+  {
+    "date": "2015-04-28",
+    "net_pct_oi": 9.01,
+    "mm_long": 37369,
+    "mm_short": 23448,
+    "open_interest": 154447
+  },
+  {
+    "date": "2015-05-05",
+    "net_pct_oi": 19.01,
+    "mm_long": 49484,
+    "mm_short": 17886,
+    "open_interest": 166179
+  },
+  {
+    "date": "2015-05-12",
+    "net_pct_oi": 22.45,
+    "mm_long": 58412,
+    "mm_short": 18435,
+    "open_interest": 178077
+  },
+  {
+    "date": "2015-05-19",
+    "net_pct_oi": 21.5,
+    "mm_long": 59058,
+    "mm_short": 20532,
+    "open_interest": 179210
+  },
+  {
+    "date": "2015-05-26",
+    "net_pct_oi": 16.38,
+    "mm_long": 51953,
+    "mm_short": 23676,
+    "open_interest": 172622
+  },
+  {
+    "date": "2015-06-02",
+    "net_pct_oi": 2.63,
+    "mm_long": 35472,
+    "mm_short": 31252,
+    "open_interest": 160588
+  },
+  {
+    "date": "2015-06-09",
+    "net_pct_oi": -2.41,
+    "mm_long": 33595,
+    "mm_short": 37730,
+    "open_interest": 171541
+  },
+  {
+    "date": "2015-06-16",
+    "net_pct_oi": -3.73,
+    "mm_long": 36278,
+    "mm_short": 43064,
+    "open_interest": 181765
+  },
+  {
+    "date": "2015-06-23",
+    "net_pct_oi": -10.01,
+    "mm_long": 34130,
+    "mm_short": 52614,
+    "open_interest": 184635
+  },
+  {
+    "date": "2015-06-30",
+    "net_pct_oi": -12.79,
+    "mm_long": 35476,
+    "mm_short": 56751,
+    "open_interest": 166278
+  },
+  {
+    "date": "2015-07-07",
+    "net_pct_oi": -14.97,
+    "mm_long": 34057,
+    "mm_short": 59066,
+    "open_interest": 167008
+  },
+  {
+    "date": "2015-07-14",
+    "net_pct_oi": -13.2,
+    "mm_long": 32666,
+    "mm_short": 54010,
+    "open_interest": 161713
+  },
+  {
+    "date": "2015-07-21",
+    "net_pct_oi": -15.79,
+    "mm_long": 32628,
+    "mm_short": 58810,
+    "open_interest": 165842
+  },
+  {
+    "date": "2015-07-28",
+    "net_pct_oi": -15.72,
+    "mm_long": 32972,
+    "mm_short": 58706,
+    "open_interest": 163656
+  },
+  {
+    "date": "2015-08-04",
+    "net_pct_oi": -18.5,
+    "mm_long": 33385,
+    "mm_short": 66920,
+    "open_interest": 181276
+  },
+  {
+    "date": "2015-08-11",
+    "net_pct_oi": -16.76,
+    "mm_long": 34267,
+    "mm_short": 66966,
+    "open_interest": 195117
+  },
+  {
+    "date": "2015-08-18",
+    "net_pct_oi": -14.39,
+    "mm_long": 34655,
+    "mm_short": 62169,
+    "open_interest": 191265
+  },
+  {
+    "date": "2015-08-25",
+    "net_pct_oi": -10.92,
+    "mm_long": 34548,
+    "mm_short": 52780,
+    "open_interest": 166991
+  },
+  {
+    "date": "2015-09-01",
+    "net_pct_oi": -9.93,
+    "mm_long": 34564,
+    "mm_short": 50321,
+    "open_interest": 158648
+  },
+  {
+    "date": "2015-09-08",
+    "net_pct_oi": -2.9,
+    "mm_long": 38573,
+    "mm_short": 43184,
+    "open_interest": 159016
+  },
+  {
+    "date": "2015-09-15",
+    "net_pct_oi": 0.73,
+    "mm_long": 36890,
+    "mm_short": 35757,
+    "open_interest": 154631
+  },
+  {
+    "date": "2015-09-22",
+    "net_pct_oi": -3.32,
+    "mm_long": 33365,
+    "mm_short": 38433,
+    "open_interest": 152575
+  },
+  {
+    "date": "2015-09-29",
+    "net_pct_oi": -5.84,
+    "mm_long": 32052,
+    "mm_short": 40905,
+    "open_interest": 151710
+  },
+  {
+    "date": "2015-10-06",
+    "net_pct_oi": -0.63,
+    "mm_long": 34763,
+    "mm_short": 35733,
+    "open_interest": 153387
+  },
+  {
+    "date": "2015-10-13",
+    "net_pct_oi": 4.7,
+    "mm_long": 36957,
+    "mm_short": 29608,
+    "open_interest": 156482
+  },
+  {
+    "date": "2015-10-20",
+    "net_pct_oi": 4.3,
+    "mm_long": 35883,
+    "mm_short": 28872,
+    "open_interest": 162963
+  },
+  {
+    "date": "2015-10-27",
+    "net_pct_oi": 4.95,
+    "mm_long": 36805,
+    "mm_short": 28586,
+    "open_interest": 165946
+  },
+  {
+    "date": "2015-11-03",
+    "net_pct_oi": -1.73,
+    "mm_long": 32466,
+    "mm_short": 35327,
+    "open_interest": 165386
+  },
+  {
+    "date": "2015-11-10",
+    "net_pct_oi": -11.13,
+    "mm_long": 29676,
+    "mm_short": 49026,
+    "open_interest": 173872
+  },
+  {
+    "date": "2015-11-17",
+    "net_pct_oi": -14.44,
+    "mm_long": 28890,
+    "mm_short": 56804,
+    "open_interest": 193328
+  },
+  {
+    "date": "2015-11-24",
+    "net_pct_oi": -16.24,
+    "mm_long": 30056,
+    "mm_short": 60297,
+    "open_interest": 186199
+  },
+  {
+    "date": "2015-12-01",
+    "net_pct_oi": -20.6,
+    "mm_long": 29883,
+    "mm_short": 67063,
+    "open_interest": 180517
+  },
+  {
+    "date": "2015-12-08",
+    "net_pct_oi": -19.98,
+    "mm_long": 30038,
+    "mm_short": 65850,
+    "open_interest": 179248
+  },
+  {
+    "date": "2015-12-15",
+    "net_pct_oi": -20.82,
+    "mm_long": 30012,
+    "mm_short": 67234,
+    "open_interest": 178761
+  },
+  {
+    "date": "2015-12-22",
+    "net_pct_oi": -16.89,
+    "mm_long": 29459,
+    "mm_short": 58211,
+    "open_interest": 170210
+  },
+  {
+    "date": "2015-12-29",
+    "net_pct_oi": -15.48,
+    "mm_long": 28222,
+    "mm_short": 54186,
+    "open_interest": 167689
+  },
+  {
+    "date": "2016-01-05",
+    "net_pct_oi": -16.74,
+    "mm_long": 26775,
+    "mm_short": 55534,
+    "open_interest": 171819
+  },
+  {
+    "date": "2016-01-12",
+    "net_pct_oi": -16.39,
+    "mm_long": 29055,
+    "mm_short": 60779,
+    "open_interest": 193520
+  },
+  {
+    "date": "2016-01-19",
+    "net_pct_oi": -17.07,
+    "mm_long": 29784,
+    "mm_short": 63757,
+    "open_interest": 199011
+  },
+  {
+    "date": "2016-01-26",
+    "net_pct_oi": -11.78,
+    "mm_long": 32609,
+    "mm_short": 56517,
+    "open_interest": 202900
+  },
+  {
+    "date": "2016-02-02",
+    "net_pct_oi": -9.43,
+    "mm_long": 30981,
+    "mm_short": 49991,
+    "open_interest": 201682
+  },
+  {
+    "date": "2016-02-09",
+    "net_pct_oi": -3.75,
+    "mm_long": 36582,
+    "mm_short": 43693,
+    "open_interest": 189518
+  },
+  {
+    "date": "2016-02-16",
+    "net_pct_oi": -4.02,
+    "mm_long": 33244,
+    "mm_short": 40921,
+    "open_interest": 191131
+  },
+  {
+    "date": "2016-02-23",
+    "net_pct_oi": -1.19,
+    "mm_long": 30808,
+    "mm_short": 32874,
+    "open_interest": 173541
+  },
+  {
+    "date": "2016-03-01",
+    "net_pct_oi": 3.72,
+    "mm_long": 36254,
+    "mm_short": 30297,
+    "open_interest": 160010
+  },
+  {
+    "date": "2016-03-08",
+    "net_pct_oi": 16.78,
+    "mm_long": 47964,
+    "mm_short": 20133,
+    "open_interest": 165888
+  },
+  {
+    "date": "2016-03-15",
+    "net_pct_oi": 13.7,
+    "mm_long": 43814,
+    "mm_short": 19770,
+    "open_interest": 175443
+  },
+  {
+    "date": "2016-03-22",
+    "net_pct_oi": 12.89,
+    "mm_long": 42807,
+    "mm_short": 19832,
+    "open_interest": 178177
+  },
+  {
+    "date": "2016-03-29",
+    "net_pct_oi": 11.28,
+    "mm_long": 43527,
+    "mm_short": 22454,
+    "open_interest": 186775
+  },
+  {
+    "date": "2016-04-05",
+    "net_pct_oi": 4.4,
+    "mm_long": 38199,
+    "mm_short": 29720,
+    "open_interest": 192906
+  },
+  {
+    "date": "2016-04-12",
+    "net_pct_oi": -4.79,
+    "mm_long": 34360,
+    "mm_short": 44001,
+    "open_interest": 201236
+  },
+  {
+    "date": "2016-04-19",
+    "net_pct_oi": -4.03,
+    "mm_long": 37254,
+    "mm_short": 45384,
+    "open_interest": 201891
+  },
+  {
+    "date": "2016-04-26",
+    "net_pct_oi": 9.17,
+    "mm_long": 43389,
+    "mm_short": 27576,
+    "open_interest": 172378
+  },
+  {
+    "date": "2016-05-03",
+    "net_pct_oi": 9.46,
+    "mm_long": 44230,
+    "mm_short": 27541,
+    "open_interest": 176458
+  },
+  {
+    "date": "2016-05-10",
+    "net_pct_oi": -3.47,
+    "mm_long": 38221,
+    "mm_short": 44631,
+    "open_interest": 184768
+  },
+  {
+    "date": "2016-05-17",
+    "net_pct_oi": -12.0,
+    "mm_long": 38937,
+    "mm_short": 63322,
+    "open_interest": 203157
+  },
+  {
+    "date": "2016-05-24",
+    "net_pct_oi": -15.95,
+    "mm_long": 32598,
+    "mm_short": 66128,
+    "open_interest": 210264
+  },
+  {
+    "date": "2016-05-31",
+    "net_pct_oi": -14.44,
+    "mm_long": 31668,
+    "mm_short": 63027,
+    "open_interest": 217128
+  },
+  {
+    "date": "2016-06-07",
+    "net_pct_oi": -16.37,
+    "mm_long": 33397,
+    "mm_short": 70704,
+    "open_interest": 227927
+  },
+  {
+    "date": "2016-06-14",
+    "net_pct_oi": -19.8,
+    "mm_long": 31338,
+    "mm_short": 78683,
+    "open_interest": 239071
+  },
+  {
+    "date": "2016-06-21",
+    "net_pct_oi": -13.01,
+    "mm_long": 32112,
+    "mm_short": 60150,
+    "open_interest": 215529
+  },
+  {
+    "date": "2016-06-28",
+    "net_pct_oi": -3.54,
+    "mm_long": 31985,
+    "mm_short": 37924,
+    "open_interest": 167927
+  },
+  {
+    "date": "2016-07-05",
+    "net_pct_oi": 2.59,
+    "mm_long": 33063,
+    "mm_short": 28802,
+    "open_interest": 164665
+  },
+  {
+    "date": "2016-07-12",
+    "net_pct_oi": 2.88,
+    "mm_long": 36601,
+    "mm_short": 31820,
+    "open_interest": 166225
+  },
+  {
+    "date": "2016-07-19",
+    "net_pct_oi": 10.24,
+    "mm_long": 41760,
+    "mm_short": 23489,
+    "open_interest": 178364
+  },
+  {
+    "date": "2016-07-26",
+    "net_pct_oi": 15.6,
+    "mm_long": 47795,
+    "mm_short": 18590,
+    "open_interest": 187184
+  },
+  {
+    "date": "2016-08-02",
+    "net_pct_oi": 9.47,
+    "mm_long": 43247,
+    "mm_short": 25359,
+    "open_interest": 188805
+  },
+  {
+    "date": "2016-08-09",
+    "net_pct_oi": -0.45,
+    "mm_long": 38984,
+    "mm_short": 39840,
+    "open_interest": 188297
+  },
+  {
+    "date": "2016-08-16",
+    "net_pct_oi": 0.95,
+    "mm_long": 37872,
+    "mm_short": 36152,
+    "open_interest": 180360
+  },
+  {
+    "date": "2016-08-23",
+    "net_pct_oi": -3.14,
+    "mm_long": 43094,
+    "mm_short": 49122,
+    "open_interest": 192196
+  },
+  {
+    "date": "2016-08-30",
+    "net_pct_oi": -14.36,
+    "mm_long": 39812,
+    "mm_short": 66663,
+    "open_interest": 187028
+  },
+  {
+    "date": "2016-09-06",
+    "net_pct_oi": -20.48,
+    "mm_long": 44089,
+    "mm_short": 85764,
+    "open_interest": 203453
+  },
+  {
+    "date": "2016-09-13",
+    "net_pct_oi": -17.94,
+    "mm_long": 48595,
+    "mm_short": 85173,
+    "open_interest": 203945
+  },
+  {
+    "date": "2016-09-20",
+    "net_pct_oi": -10.26,
+    "mm_long": 49634,
+    "mm_short": 69193,
+    "open_interest": 190574
+  },
+  {
+    "date": "2016-09-27",
+    "net_pct_oi": 1.64,
+    "mm_long": 53244,
+    "mm_short": 50288,
+    "open_interest": 179904
+  },
+  {
+    "date": "2016-10-04",
+    "net_pct_oi": 3.9,
+    "mm_long": 56286,
+    "mm_short": 49198,
+    "open_interest": 181809
+  },
+  {
+    "date": "2016-10-11",
+    "net_pct_oi": 6.94,
+    "mm_long": 57782,
+    "mm_short": 44889,
+    "open_interest": 185814
+  },
+  {
+    "date": "2016-10-18",
+    "net_pct_oi": -6.69,
+    "mm_long": 54708,
+    "mm_short": 68605,
+    "open_interest": 207729
+  },
+  {
+    "date": "2016-10-25",
+    "net_pct_oi": -7.79,
+    "mm_long": 56342,
+    "mm_short": 72984,
+    "open_interest": 213569
+  },
+  {
+    "date": "2016-11-01",
+    "net_pct_oi": 11.51,
+    "mm_long": 67830,
+    "mm_short": 44457,
+    "open_interest": 203042
+  },
+  {
+    "date": "2016-11-08",
+    "net_pct_oi": 25.35,
+    "mm_long": 92038,
+    "mm_short": 32750,
+    "open_interest": 233922
+  },
+  {
+    "date": "2016-11-15",
+    "net_pct_oi": 29.59,
+    "mm_long": 96999,
+    "mm_short": 26397,
+    "open_interest": 238615
+  },
+  {
+    "date": "2016-11-22",
+    "net_pct_oi": 32.32,
+    "mm_long": 100460,
+    "mm_short": 24081,
+    "open_interest": 236293
+  },
+  {
+    "date": "2016-11-29",
+    "net_pct_oi": 35.14,
+    "mm_long": 104367,
+    "mm_short": 23399,
+    "open_interest": 230420
+  },
+  {
+    "date": "2016-12-06",
+    "net_pct_oi": 35.06,
+    "mm_long": 104205,
+    "mm_short": 21370,
+    "open_interest": 236290
+  },
+  {
+    "date": "2016-12-13",
+    "net_pct_oi": 36.77,
+    "mm_long": 108085,
+    "mm_short": 21016,
+    "open_interest": 236822
+  },
+  {
+    "date": "2016-12-20",
+    "net_pct_oi": 33.97,
+    "mm_long": 102422,
+    "mm_short": 23266,
+    "open_interest": 233042
+  },
+  {
+    "date": "2016-12-27",
+    "net_pct_oi": 31.68,
+    "mm_long": 96708,
+    "mm_short": 24556,
+    "open_interest": 227733
+  },
+  {
     "date": "2017-01-03",
     "net_pct_oi": 31.52,
     "mm_long": 94060,
