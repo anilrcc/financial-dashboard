@@ -413,7 +413,7 @@
                 data: {
                     datasets: [{
                         label: label,
-                        data: data,
+                        data: data.map(d => ({ x: d.date, y: d.value })),
                         borderColor: color,
                         backgroundColor: color,
                         borderWidth: 2,
