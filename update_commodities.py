@@ -181,44 +181,14 @@ def main():
             with open(lumber_json_path, 'r') as f:
                 raw_data = json.load(f)
                 # Raw data is [[timestamp_ms, value], ...]
-                # Sort ascending by timestamp first
+                # Sort ascending by timestamp
                 raw_data.sort(key=lambda x: x[0])
                 
-                # Check for year mismatch (Data is 2024, System is 2025)
-                if raw_data:
-                    last_ts = raw_data[-1][0] / 1000
-                    last_date = datetime.fromtimestamp(last_ts)
-                    current_year = datetime.now().year
-                    
-                    # If data ends in 2024 but we are in 2025, shift forward
-                    points_to_shift = 0
-                    if last_date.year < current_year:
-                        print(f"  ! Detected stale Lumber data (Year {last_date.year}). Shifting to {current_year}...")
-                        # 365 days in ms
-                        shift_ms = 365 * 24 * 60 * 60 * 1000
-                        # Check leap year adjustment if needed, but constant shift is close enough for chart
-                        # Better: replace year in datetime
-                        
-                        formatted_lumber = []
-                        for point in raw_data:
-                            ts = point[0] / 1000
-                            dt = datetime.fromtimestamp(ts)
-                            # Shift year
-                            try:
-                                new_dt = dt.replace(year=dt.year + (current_year - last_date.year))
-                            except ValueError:
-                                # Handle Leap Year (Feb 29 -> Feb 28)
-                                new_dt = dt.replace(year=dt.year + (current_year - last_date.year), day=28)
-                            
-                            date_str = new_dt.strftime('%Y-%m-%d')
-                            formatted_lumber.append({'date': date_str, 'value': point[1]})
-                        lumber = formatted_lumber
-                    else:
-                        # Process normally
-                        for point in raw_data:
-                            ts = point[0] / 1000
-                            date_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
-                            lumber.append({'date': date_str, 'value': point[1]})
+                # Process normally - no year shifting
+                for point in raw_data:
+                    ts = point[0] / 1000
+                    date_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+                    lumber.append({'date': date_str, 'value': point[1]})
                 
                 print(f"  ✓ Loaded {len(lumber)} data points from JSON")
         except Exception as e:
