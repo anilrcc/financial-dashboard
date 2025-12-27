@@ -205,6 +205,19 @@ def generate_summary_html(data):
              else:
                  color = "#ef4444"
              
+        elif type_fmt == "sb_optimism":
+             # SB Optimism Zones based on chart references
+             # > 100 (Baseline): Strong (Green)
+             # 90 - 100: Moderate (Yellow)
+             # < 90 (Trough): Weak (Red)
+             display_val = f"{val:.1f}"
+             if val >= 100:
+                 color = "#22c55e" # Green
+             elif val >= 90:
+                 color = "#eab308" # Yellow
+             else:
+                 color = "#ef4444" # Red
+             
         return display_val, color
 
     mfg_val, mfg_col = fmt(data['mfg_pmi'], "pmi")
@@ -213,7 +226,7 @@ def generate_summary_html(data):
     sent_val, sent_col = fmt(data['consumer_sentiment'], "sentiment")
     credit_val, credit_col = fmt(data['credit_spread_bbb_aaa'], "credit")
     house_val, house_col = fmt(data['housing_permits'], "housing")
-    sb_val, sb_col = fmt(data['sb_optimism'], "sentiment") # Use sentiment formatting for SBAC
+    sb_val, sb_col = fmt(data['sb_optimism'], "sb_optimism")
 
     # Generate Dynamic Description
     desc_parts = []
@@ -228,7 +241,8 @@ def generate_summary_html(data):
     
     sb_desc = ""
     if data['sb_optimism']:
-        sb_desc = f", Small Business Optimism is <strong>{'strong' if data['sb_optimism'] >= 98 else 'weak'}</strong> ({sb_val})"
+        sb_state = "strong" if data['sb_optimism'] >= 100 else "moderate" if data['sb_optimism'] >= 90 else "weak"
+        sb_desc = f", Small Business Optimism is <strong>{sb_state}</strong> ({sb_val})"
 
     curve_desc = "inverted" if data['yield_spread_10y2y'] and data['yield_spread_10y2y'] < 0 else "normal"
     sent_desc = "Bearish"

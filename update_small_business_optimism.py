@@ -308,8 +308,9 @@ def update_html_file(new_data_point):
         prev = final_data[-2] if len(final_data) > 1 else None
         
         # Logic for insights
-        status = "Above Average" if val >= 98 else "Below Average"
-        color = "#10b981" if val >= 98 else "#ef4444" 
+        # Logic for insights
+        status = "Above Average" if val >= 100 else "Below Average"
+        color = "#10b981" if val >= 100 else "#ef4444" 
         
         change_text = ""
         if prev:
@@ -317,11 +318,29 @@ def update_html_file(new_data_point):
             if diff > 0: change_text = f"rise of {diff:.1f} points from {prev['month']}"
             elif diff < 0: change_text = f"drop of {abs(diff):.1f} points from {prev['month']}"
             else: change_text = "unchanged from previous month"
+
+        # Sub-component Analysis
+        eco_val = latest.get('economy')
+        sales_val = latest.get('sales')
+        emp_val = latest.get('employment')
+
+        drivers = []
+        if eco_val is not None:
+             if eco_val > 0: drivers.append(f"optimism about the economy is net positive ({eco_val}%)")
+             elif eco_val < -20: drivers.append(f"economic outlook remains pessimistic ({eco_val}%)")
+        
+        if sales_val is not None:
+             if sales_val > 0: drivers.append(f"sales expectations are improving ({sales_val}%)")
+             elif sales_val < 0: drivers.append(f"sales expectations remain soft ({sales_val}%)")
+
+        driver_text = "Owners are seeing mixed signals."
+        if drivers:
+            driver_text = f"Key drivers include: {', '.join(drivers)}."
             
         summary_html = f'''
         <h3>Key Insights: {latest['month']}</h3>
-        <p><strong>Current Index: {val:.1f} ({status})</strong> - The index remains <strong style="color: {color};">{status.lower()}</strong> relative to the 50-year average of 98. This represents a {change_text}.</p>
-        <p><strong>Historical Context:</strong> The index is currently {"recovering" if val > 95 else "depressed"}, sitting {"above" if val > 98 else "below"} the historical average. Inflation and labor quality continue to be key headwinds for small business owners.</p>
+        <p><strong>Current Index: {val:.1f} ({status})</strong> - The index remains <strong style="color: {color};">{status.lower()}</strong> relative to the baseline of 100. This represents a {change_text}.</p>
+        <p><strong>Historical Context:</strong> {driver_text} Inflation and labor quality continue to be cited as persistent headwinds, although recent data suggests some stabilization in sentiment.</p>
         '''
         
         sum_pattern = re.compile(r'(<div id="optimism-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
