@@ -414,6 +414,24 @@
             }
         }
 
+        function calculateSMA(data, windowSize) {
+            if (!data || data.length < windowSize) return [];
+            let result = [];
+            for (let i = 0; i < data.length; i++) {
+                const date = data[i].date;
+                if (i < windowSize - 1) {
+                    result.push({ date: date, value: null });
+                    continue;
+                }
+                let sum = 0;
+                for (let j = 0; j < windowSize; j++) {
+                    sum += data[i - j].value;
+                }
+                result.push({ date: date, value: sum / windowSize });
+            }
+            return result;
+        }
+
         function filterData(data, period) {
             if (!data || data.length === 0) return [];
             if (period === 'All') return data;
@@ -428,22 +446,51 @@
             const ctxPos = document.getElementById(ctxId);
             if (!ctxPos) return null; // Safety check
             const ctx = ctxPos.getContext('2d');
+
+            // Calculate SMAs
+            const sma50Full = calculateSMA(data, 50);
+            const sma200Full = calculateSMA(data, 200);
+
             const filtered = filterData(data, period);
+            const filteredSMA50 = filterData(sma50Full, period);
+            const filteredSMA200 = filterData(sma200Full, period);
 
             return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: [{
-                        label: label,
-                        data: filtered.map(d => ({ x: d.date, y: d.value })),
-                        borderColor: color,
-                        backgroundColor: color,
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        pointHoverRadius: 4,
-                        fill: false,
-                        tension: 0.2
-                    }]
+                    datasets: [
+                        {
+                            label: label,
+                            data: filtered.map(d => ({ x: d.date, y: d.value })),
+                            borderColor: color,
+                            backgroundColor: color,
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            fill: false,
+                            tension: 0.2
+                        },
+                        {
+                            label: '50 DMA',
+                            data: filteredSMA50.map(d => ({ x: d.date, y: d.value })),
+                            borderColor: '#f59e0b', // Amber
+                            borderWidth: 1.5,
+                            pointRadius: 0,
+                            pointHoverRadius: 0,
+                            fill: false,
+                            tension: 0.2
+                        },
+                        {
+                            label: '200 DMA',
+                            data: filteredSMA200.map(d => ({ x: d.date, y: d.value })),
+                            borderColor: '#000000', // Black
+                            borderWidth: 1.5,
+                            pointRadius: 0,
+                            pointHoverRadius: 0,
+                            fill: false,
+                            tension: 0.2
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
@@ -455,7 +502,14 @@
                             mode: 'index',
                             callbacks: {
                                 label: function (context) {
-                                    return label + ': ' + context.parsed.y.toLocaleString();
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                    }
+                                    return label;
                                 }
                             }
                         }
