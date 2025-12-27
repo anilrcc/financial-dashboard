@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Small Business Optimism Index</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
+    <style>
+        :root {
+            --primary-bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-color: #0ea5e9;
+            /* Sky Blue */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .back-nav {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+        }
+
+        .back-nav a:hover {
+            color: var(--accent-color);
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 600px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-box {
+            width: 100%;
+            max-width: 800px;
+            background-color: #e0f2fe;
+            /* Light Sky */
+            border-left: 5px solid var(--accent-color);
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .summary-box h3 {
+            margin-top: 0;
+            color: #0369a1;
+            /* Dark Sky */
+        }
+
+        .summary-box p {
+            margin: 0;
+            line-height: 1.6;
+            color: #0c4a6e;
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .trend-up {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .trend-down {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .footer {
+            margin-top: 40px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .time-range-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .time-range-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .time-range-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .time-range-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="back-nav">
+        <a href="index.html">← Back to Financial Dashboard</a>
+    </div>
+
+    <h1>Small Business Optimism Index</h1>
+
+    <!-- Time Range Controls -->
+    <div class="time-range-controls">
+        <button class="time-range-btn" data-range="3">3M</button>
+        <button class="time-range-btn" data-range="6">6M</button>
+        <button class="time-range-btn" data-range="12">1Y</button>
+        <button class="time-range-btn" data-range="36">3Y</button>
+        <button class="time-range-btn" data-range="60">5Y</button>
+        <button class="time-range-btn active" data-range="all">All</button>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+        <canvas id="optimismChart"></canvas>
+    </div>
+
+    <!-- Leading Index Chart -->
+    <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #334155;">Leading Index (5-Component
+        Average)</h2>
+    <div class="chart-container" style="height: 400px;">
+        <canvas id="leadingIndexChart"></canvas>
+    </div>
+
+    <!-- Sub-Indices Grid -->
+    <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #334155;">Key Components</h2>
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; max-width: 1200px; width: 100%; margin-bottom: 40px;">
+
+        <!-- Plans to Increase Employment -->
+        <div
+            style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Plans to Increase Employment</h3>
+            <div style="height: 250px;">
+                <canvas id="employmentChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Good Time to Expand -->
+        <div
+            style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Good Time to Expand</h3>
+            <div style="height: 250px;">
+                <canvas id="expandChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Plans to Increase Inventories -->
+        <div
+            style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Plans to Increase Inventories</h3>
+            <div style="height: 250px;">
+                <canvas id="inventoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Expect Economy to Improve -->
+        <div
+            style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Expect Economy to Improve</h3>
+            <div style="height: 250px;">
+                <canvas id="economyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Expect Real Sales Higher -->
+        <div
+            style="background: white; border-radius: 12px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="margin: 0 0 15px 0; font-size: 1.1rem; color: #475569;">Expect Real Sales Higher</h3>
+            <div style="height: 250px;">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Box -->
+    <div id="optimism-summary-box" class="summary-box">
+        <h3>Key Insights: Nov 2025</h3>
+        <p><strong>Current Index: 99.0 (Below Average)</strong> - The index remains <strong
+                style="color: #ef4444;">below average</strong> relative to the baseline of 100. This represents a rise
+            of 0.8 points from Oct 2025.</p>
+        <p><strong>Historical Context:</strong> Key drivers include: optimism about the economy is net positive (15.0%),
+            sales expectations are improving (15.0%). Inflation and labor quality continue to be cited as persistent
+            headwinds, although recent data suggests some stabilization in sentiment.</p>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Index</th>
+                    <th>MoM Change</th>
+                    <th>YoY Change</th>
+                </tr>
+            </thead>
+            <tbody id="optimismTableBody">
+                <!-- JS will populate this -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Source: NFIB Small Business Economic Trends</p>
+        <p>Last Updated: <span id="last-updated-date">Dec 27, 2025</span></p>
+    </div>
+
+    <script>
+        // NFIB Small Business Optimism Index - Historical data from 1990 onwards
+        const optimismData = [
+            // 1990-2020 historical data from NFIB Excel file
+            { month: "Jan 1990", index: 89.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1990", index: 87.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1990", index: 86.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1990", index: 87.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1990", index: 86.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1990", index: 86.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1990", index: 85.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1990", index: 84.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1990", index: 82.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1990", index: 79.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1990", index: 80.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1990", index: 83.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1991", index: 84.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1991", index: 88.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1991", index: 93.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1991", index: 94.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1991", index: 94.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1991", index: 94.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1991", index: 94.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1991", index: 93.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1991", index: 93.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1991", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1991", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1991", index: 91.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1992", index: 92.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1992", index: 93.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1992", index: 95.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1992", index: 96.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1992", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1992", index: 95.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1992", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1992", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1992", index: 92.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1992", index: 92.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1992", index: 92.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1992", index: 94.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1993", index: 94.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1993", index: 91.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1993", index: 90.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1993", index: 89.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1993", index: 86.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1993", index: 86.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1993", index: 87.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1993", index: 85.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1993", index: 86.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1993", index: 87.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1993", index: 89.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1993", index: 90.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1994", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1994", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1994", index: 92.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1994", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1994", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1994", index: 91.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1994", index: 90.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1994", index: 91.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1994", index: 90.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1994", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1994", index: 94.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1994", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1995", index: 93.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1995", index: 92.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1995", index: 93.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1995", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1995", index: 91.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1995", index: 91.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1995", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1995", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1995", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1995", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1995", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1995", index: 92.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1996", index: 91.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1996", index: 91.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1996", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1996", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1996", index: 91.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1996", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1996", index: 91.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1996", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1996", index: 91.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1996", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1996", index: 89.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1996", index: 90.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1997", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1997", index: 92.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1997", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1997", index: 91.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1997", index: 92.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1997", index: 92.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1997", index: 93.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1997", index: 94.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1997", index: 94.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1997", index: 94.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1997", index: 93.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1997", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1998", index: 92.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1998", index: 92.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1998", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1998", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1998", index: 93.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1998", index: 91.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1998", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1998", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1998", index: 89.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1998", index: 89.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1998", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1998", index: 91.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 1999", index: 91.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 1999", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 1999", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 1999", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 1999", index: 90.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 1999", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 1999", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 1999", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 1999", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 1999", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 1999", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 1999", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2000", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2000", index: 91.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2000", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2000", index: 90.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2000", index: 90.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2000", index: 89.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2000", index: 91.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2000", index: 93.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2000", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2000", index: 90.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2000", index: 90.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2000", index: 88.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2001", index: 89.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2001", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2001", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2001", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2001", index: 93.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2001", index: 92.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2001", index: 94.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2001", index: 95.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2001", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2001", index: 93.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2001", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2001", index: 98.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2002", index: 98.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2002", index: 98.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2002", index: 101.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2002", index: 98.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2002", index: 97.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2002", index: 97.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2002", index: 96.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2002", index: 98.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2002", index: 97.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2002", index: 96.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2002", index: 98.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2002", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2003", index: 95.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2003", index: 93.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2003", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2003", index: 96.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2003", index: 97.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2003", index: 99.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2003", index: 98.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2003", index: 99.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2003", index: 98.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2003", index: 99.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2003", index: 100.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2003", index: 101.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2004", index: 100.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2004", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2004", index: 97.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2004", index: 99.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2004", index: 97.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2004", index: 97.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2004", index: 99.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2004", index: 97.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2004", index: 98.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2004", index: 97.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2004", index: 101.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2004", index: 99.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2005", index: 97.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2005", index: 96.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2005", index: 95.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2005", index: 92.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2005", index: 92.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2005", index: 94.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2005", index: 93.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2005", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2005", index: 92.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2005", index: 94.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2005", index: 93.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2005", index: 94.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2006", index: 93.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2006", index: 93.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2006", index: 91.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2006", index: 91.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2006", index: 89.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2006", index: 89.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2006", index: 89.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2006", index: 89.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2006", index: 91.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2006", index: 93.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2006", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2006", index: 89.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2007", index: 91.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2007", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2007", index: 90.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2007", index: 89.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2007", index: 89.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2007", index: 89.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2007", index: 90.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2007", index: 90.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2007", index: 90.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2007", index: 89.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2007", index: 87.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2007", index: 87.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2008", index: 85.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2008", index: 88.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2008", index: 86.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2008", index: 87.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2008", index: 86.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2008", index: 85.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2008", index: 85.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2008", index: 88.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2008", index: 91.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2008", index: 87.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2008", index: 86.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2008", index: 84.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2009", index: 84.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2009", index: 83.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2009", index: 82.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2009", index: 87.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2009", index: 89.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2009", index: 89.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2009", index: 87.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2009", index: 89.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2009", index: 88.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2009", index: 89.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2009", index: 87.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2009", index: 87.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2010", index: 87.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2010", index: 85.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2010", index: 85.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2010", index: 86.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2010", index: 87.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2010", index: 85.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2010", index: 83.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2010", index: 83.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2010", index: 84.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2010", index: 86.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2010", index: 89.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2010", index: 88.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2011", index: 89.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2011", index: 89.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2011", index: 87.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2011", index: 85.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2011", index: 85.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2011", index: 85.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2011", index: 84.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2011", index: 81.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2011", index: 82.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2011", index: 83.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2011", index: 84.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2011", index: 86.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2012", index: 87.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2012", index: 87.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2012", index: 87.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2012", index: 87.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2012", index: 87.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2012", index: 85.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2012", index: 85.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2012", index: 87.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2012", index: 87.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2012", index: 87.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2012", index: 82.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2012", index: 82.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2013", index: 83.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2013", index: 85.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2013", index: 85.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2013", index: 87.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2013", index: 88.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2013", index: 88.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2013", index: 88.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2013", index: 88.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2013", index: 87.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2013", index: 85.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2013", index: 85.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2013", index: 87.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2014", index: 87.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2014", index: 85.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2014", index: 86.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2014", index: 87.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2014", index: 89.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2014", index: 88.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2014", index: 88.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2014", index: 89.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2014", index: 89.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2014", index: 89.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2014", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2014", index: 93.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2015", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2015", index: 92.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2015", index: 91.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2015", index: 96.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2015", index: 97.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2015", index: 94.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2015", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2015", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2015", index: 96.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2015", index: 96.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2015", index: 94.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2015", index: 95.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2016", index: 93.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2016", index: 92.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2016", index: 92.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2016", index: 93.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2016", index: 93.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2016", index: 94.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2016", index: 94.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2016", index: 94.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2016", index: 94.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2016", index: 94.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2016", index: 98.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2016", index: 105.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2017", index: 105.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2017", index: 105.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2017", index: 104.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2017", index: 104.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2017", index: 104.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2017", index: 103.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2017", index: 105.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2017", index: 105.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2017", index: 103.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2017", index: 103.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2017", index: 107.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2017", index: 104.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2018", index: 106.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2018", index: 107.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2018", index: 104.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2018", index: 104.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2018", index: 107.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2018", index: 107.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2018", index: 107.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2018", index: 108.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2018", index: 107.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2018", index: 107.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2018", index: 104.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2018", index: 104.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2019", index: 101.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2019", index: 101.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2019", index: 101.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2019", index: 103.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2019", index: 104.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2019", index: 103.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2019", index: 104.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2019", index: 103.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2019", index: 101.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2019", index: 102.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2019", index: 104.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2019", index: 102.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2020", index: 103.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2020", index: 104.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2020", index: 96.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2020", index: 91.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2020", index: 94.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2020", index: 100.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2020", index: 98.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2020", index: 100.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2020", index: 103.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2020", index: 103.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2020", index: 101.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2020", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            // 2021 onwards - with sub-component data where available
+            { month: "Jan 2021", index: 95.0, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2021", index: 95.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2021", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2021", index: 99.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2021", index: 99.6, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2021", index: 102.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2021", index: 99.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2021", index: 100.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2021", index: 99.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2021", index: 98.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2021", index: 98.4, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2021", index: 98.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2022", index: 97.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Feb 2022", index: 95.7, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Mar 2022", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Apr 2022", index: 93.2, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "May 2022", index: 93.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jun 2022", index: 89.5, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jul 2022", index: 89.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Aug 2022", index: 91.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Sep 2022", index: 92.1, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Oct 2022", index: 91.3, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Nov 2022", index: 91.9, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Dec 2022", index: 89.8, employment: null, expand: null, inventory: null, economy: null, sales: null },
+            { month: "Jan 2023", index: 90.3, employment: 19, expand: 7, inventory: -8, economy: -45, sales: -14 },
+            { month: "Feb 2023", index: 90.9, employment: 17, expand: 6, inventory: -7, economy: -47, sales: -9 },
+            { month: "Mar 2023", index: 90.1, employment: 15, expand: 2, inventory: -4, economy: -47, sales: -15 },
+            { month: "Apr 2023", index: 89.0, employment: 17, expand: 3, inventory: -5, economy: -49, sales: -19 },
+            { month: "May 2023", index: 89.4, employment: 19, expand: 3, inventory: -2, economy: -50, sales: -21 },
+            { month: "Jun 2023", index: 91.0, employment: 15, expand: 6, inventory: -3, economy: -40, sales: -14 },
+            { month: "Jul 2023", index: 91.9, employment: 17, expand: 6, inventory: -2, economy: -30, sales: -12 },
+            { month: "Aug 2023", index: 91.3, employment: 17, expand: 6, inventory: 0, economy: -37, sales: -14 },
+            { month: "Sep 2023", index: 90.8, employment: 18, expand: 5, inventory: -1, economy: -43, sales: -13 },
+            { month: "Oct 2023", index: 90.7, employment: 17, expand: 6, inventory: 0, economy: -43, sales: -10 },
+            { month: "Nov 2023", index: 90.6, employment: 18, expand: 8, inventory: -3, economy: -42, sales: -8 },
+            { month: "Dec 2023", index: 91.9, employment: 16, expand: 8, inventory: -5, economy: -36, sales: -4 },
+            { month: "Jan 2024", index: 89.9, employment: 14, expand: null, inventory: -4, economy: -38, sales: -16 },
+            { month: "Feb 2024", index: 89.4, employment: 12, expand: null, inventory: -7, economy: -39, sales: -10 },
+            { month: "Mar 2024", index: 88.5, employment: 11, expand: null, inventory: -7, economy: -36, sales: -18 },
+            { month: "Apr 2024", index: 89.7, employment: 12, expand: 4, inventory: -6, economy: null, sales: -12 },
+            { month: "May 2024", index: 90.5, employment: 15, expand: 4, inventory: -6, economy: -30, sales: -13 },
+            { month: "Jun 2024", index: 91.5, employment: 15, expand: 4, inventory: -2, economy: -25, sales: -13 },
+            { month: "Jul 2024", index: 93.7, employment: 15, expand: 5, inventory: 2, economy: -7, sales: -9 },
+            { month: "Aug 2024", index: 91.2, employment: 13, expand: null, inventory: -1, economy: -13, sales: -18 },
+            { month: "Sep 2024", index: 91.5, employment: 15, expand: 4, inventory: -3, economy: -12, sales: -9 },
+            { month: "Oct 2024", index: 93.7, employment: 15, expand: 6, inventory: -2, economy: -5, sales: -4 },
+            { month: "Nov 2024", index: 101.7, employment: 18, expand: 13, inventory: 1, economy: 36, sales: 14 },
+            { month: "Dec 2024", index: 105.1, employment: 19, expand: 20, inventory: 6, economy: 52, sales: 22 },
+            { month: "Jan 2025", index: 102.8, employment: 18, expand: null, inventory: 0, economy: 47, sales: 20 },
+            { month: "Feb 2025", index: 100.7, employment: 15, expand: null, inventory: -1, economy: 37, sales: 14 },
+            { month: "Mar 2025", index: 97.4, employment: 12, expand: null, inventory: -1, economy: 21, sales: 3 },
+            { month: "Apr 2025", index: 95.8, employment: 13, expand: null, inventory: -4, economy: 15, sales: -1 },
+            { month: "May 2025", index: 98.8, employment: 12, expand: null, inventory: -1, economy: 25, sales: 10 },
+            { month: "Jun 2025", index: 98.6, employment: 13, expand: 11, inventory: -5, economy: 22, sales: 7 },
+            { month: "Jul 2025", index: 100.3, employment: 14, expand: 16, inventory: 1, economy: 36, sales: 6 },
+            { month: "Aug 2025", index: 100.8, employment: 15, expand: 14, inventory: 0, economy: 34, sales: 12 },
+            { month: "Sep 2025", index: 98.8, employment: 16, expand: 11, inventory: -7, economy: 23, sales: 8 },
+            { month: "Oct 2025", index: 98.2, employment: 15, expand: 13, inventory: -2, economy: 20, sales: 6 },
+            { month: "Nov 2025", index: 99.0, employment: 19.0, expand: null, inventory: -1.0, economy: 15.0, sales: 15.0 }
+        ];
+
+        // Chart instances
+        let optimismChart;
+        let leadingIndexChart;
+        let employmentChart, expandChart, inventoryChart, economyChart, salesChart;
+
+        // Historical Leading Index from NFIB Excel file (1990-2020)
+        const historicalLeadingIndex = {
+            "Jan 1990": 35.0, "Feb 1990": 21.0, "Mar 1990": 8.0, "Apr 1990": 11.0, "May 1990":
+                3.0, "Jun 1990": 5.0, "Jul 1990": 1.0, "Aug 1990": -11.0, "Sep 1990": -20.0, "Oct 1990": -42.0, "Nov 1990": -33.0,
+            "Dec 1990": -10.0, "Jan 1991": -3.0, "Feb 1991": 60.0, "Mar 1991": 105.0, "Apr 1991": 103.0, "May 1991": 95.0, "Jun
+    1991": 97.0, "Jul 1991": 98.0, "Aug 1991": 86.0, "Sep 1991": 80.0, "Oct 1991": 72.0, "Nov 1991": 46.0, "Dec 1991":
+    51.0, "Jan 1992": 66.0, "Feb 1992": 78.0, "Mar 1992": 98.0, "Apr 1992": 99.0, "May 1992": 95.0, "Jun 1992": 89.0,
+            "Jul 1992": 64.0, "Aug 1992": 64.0, "Sep 1992": 57.0, "Oct 1992": 51.0, "Nov 1992": 55.0, "Dec 1992": 70.0, "Jan
+    1993": 68.0, "Feb 1993": 39.0, "Mar 1993": 20.0, "Apr 1993": 8.0, "May 1993": -23.0, "Jun 1993": -26.0, "Jul 1993":
+                - 18.0, "Aug 1993": -35.0, "Sep 1993": -17.0, "Oct 1993": -10.0, "Nov 1993": 14.0, "Dec 1993": 24.0, "Jan 1994":
+                41.0, "Feb 1994": 41.0, "Mar 1994": 42.0, "Apr 1994": 23.0, "May 1994": 25.0, "Jun 1994": 32.0, "Jul 1994": 20.0,
+            "Aug 1994": 30.0, "Sep 1994": 24.0, "Oct 1994": 37.0, "Nov 1994": 65.0, "Dec 1994": 56.0, "Jan 1995": 62.0, "Feb
+    1995": 46.0, "Mar 1995": 58.0, "Apr 1995": 40.0, "May 1995": 33.0, "Jun 1995": 34.0, "Jul 1995": 41.0, "Aug 1995":
+    50.0, "Sep 1995": 55.0, "Oct 1995": 53.0, "Nov 1995": 55.0, "Dec 1995": 43.0, "Jan 1996": 32.0, "Feb 1996": 31.0,
+            "Mar 1996": 40.0, "Apr 1996": 36.0, "May 1996": 25.0, "Jun 1996": 40.0, "Jul 1996": 34.0, "Aug 1996": 40.0, "Sep
+    1996": 28.0, "Oct 1996": 38.0, "Nov 1996": 15.0, "Dec 1996": 27.0, "Jan 1997": 40.0, "Feb 1997": 43.0, "Mar 1997":
+    36.0, "Apr 1997": 31.0, "May 1997": 45.0, "Jun 1997": 48.0, "Jul 1997": 61.0, "Aug 1997": 67.0, "Sep 1997": 62.0,
+            "Oct 1997": 66.0, "Nov 1997": 60.0, "Dec 1997": 53.0, "Jan 1998": 43.0, "Feb 1998": 42.0, "Mar 1998": 39.0, "Apr
+    1998": 53.0, "May 1998": 50.0, "Jun 1998": 35.0, "Jul 1998": 39.0, "Aug 1998": 25.0, "Sep 1998": 14.0, "Oct 1998":
+    7.0, "Nov 1998": 23.0, "Dec 1998": 28.0, "Jan 1999": 28.0, "Feb 1999": 25.0, "Mar 1999": 25.0, "Apr 1999": 23.0,
+            "May 1999": 21.0, "Jun 1999": 22.0, "Jul 1999": 37.0, "Aug 1999": 37.0, "Sep 1999": 40.0, "Oct 1999": 37.0, "Nov
+    1999": 53.0, "Dec 1999": 48.0, "Jan 2000": 51.0, "Feb 2000": 28.0, "Mar 2000": 23.0, "Apr 2000": 23.0, "May 2000":
+    20.0, "Jun 2000": 7.0, "Jul 2000": 35.0, "Aug 2000": 50.0, "Sep 2000": 37.0, "Oct 2000": 21.0, "Nov 2000": 18.0,
+            "Dec 2000": -12.0, "Jan 2001": 8.0, "Feb 2001": 29.0, "Mar 2001": 51.0, "Apr 2001": 48.0, "May 2001": 59.0, "Jun
+    2001": 46.0, "Jul 2001": 67.0, "Aug 2001": 80.0, "Sep 2001": 48.0, "Oct 2001": 61.0, "Nov 2001": 82.0, "Dec 2001":
+    106.0, "Jan 2002": 107.0, "Feb 2002": 105.0, "Mar 2002": 145.0, "Apr 2002": 111.0, "May 2002": 103.0, "Jun 2002":
+                106.0, "Jul 2002": 84.0, "Aug 2002": 112.0, "Sep 2002": 98.0, "Oct 2002": 86.0, "Nov 2002": 109.0, "Dec 2002": 80.0,
+            "Jan 2003": 74.0, "Feb 2003": 53.0, "Mar 2003": 38.0, "Apr 2003": 97.0, "May 2003": 99.0, "Jun 2003": 127.0, "Jul
+    2003": 105.0, "Aug 2003": 119.0, "Sep 2003": 112.0, "Oct 2003": 125.0, "Nov 2003": 136.0, "Dec 2003": 147.0, "Jan
+    2004": 131.0, "Feb 2004": 107.0, "Mar 2004": 94.0, "Apr 2004": 118.0, "May 2004": 96.0, "Jun 2004": 100.0, "Jul
+    2004": 119.0, "Aug 2004": 103.0, "Sep 2004": 115.0, "Oct 2004": 97.0, "Nov 2004": 145.0, "Dec 2004": 117.0, "Jan
+    2005": 94.0, "Feb 2005": 89.0, "Mar 2005": 81.0, "Apr 2005": 46.0, "May 2005": 44.0, "Jun 2005": 73.0, "Jul 2005":
+    61.0, "Aug 2005": 52.0, "Sep 2005": 42.0, "Oct 2005": 68.0, "Nov 2005": 54.0, "Dec 2005": 65.0, "Jan 2006": 55.0,
+            "Feb 2006": 56.0, "Mar 2006": 35.0, "Apr 2006": 33.0, "May 2006": 11.0, "Jun 2006": 10.0, "Jul 2006": 20.0, "Aug
+    2006": 11.0, "Sep 2006": 34.0, "Oct 2006": 57.0, "Nov 2006": 49.0, "Dec 2006": 15.0, "Jan 2007": 35.0, "Feb 2007":
+    37.0, "Mar 2007": 27.0, "Apr 2007": 15.0, "May 2007": 15.0, "Jun 2007": 16.0, "Jul 2007": 29.0, "Aug 2007": 21.0,
+            "Sep 2007": 28.0, "Oct 2007": 17.0, "Nov 2007": -3.0, "Dec 2007": -2.0, "Jan 2008": -29.0, "Feb 2008": 6.0, "Mar
+    2008": -26.0, "Apr 2008": -11.0, "May 2008": -26.0, "Jun 2008": -30.0, "Jul 2008": -27.0, "Aug 2008": 12.0, "Sep
+    2008": 39.0, "Oct 2008": -13.0, "Nov 2008": -16.0, "Dec 2008": -33.0, "Jan 2009": -33.0, "Feb 2009": -45.0, "Mar
+    2009": -52.0, "Apr 2009": -1.0, "May 2009": 17.0, "Jun 2009": 15.0, "Jul 2009": -9.0, "Aug 2009": 16.0, "Sep 2009":
+    11.0, "Oct 2009": 20.0, "Nov 2009": -1.0, "Dec 2009": -5.0, "Jan 2010": 3.0, "Feb 2010": -15.0, "Mar 2010": -9.0,
+            "Apr 2010": 4.0, "May 2010": 20.0, "Jun 2010": -4.0, "Jul 2010": -27.0, "Aug 2010": -20.0, "Sep 2010": -10.0, "Oct
+    2010": 15.0, "Nov 2010": 36.0, "Dec 2010": 25.0, "Jan 2011": 31.0, "Feb 2011": 35.0, "Mar 2011": 12.0, "Apr 2011":
+                - 8.0, "May 2011": -13.0, "Jun 2011": -14.0, "Jul 2011": -25.0, "Aug 2011": -49.0, "Sep 2011": -40.0, "Oct 2011":
+                -27.0, "Nov 2011": -18.0, "Dec 2011": -2.0, "Jan 2012": 6.0, "Feb 2012": 9.0, "Mar 2012": 5.0, "Apr 2012": 5.0, "May
+    2012": 7.0, "Jun 2012": -8.0, "Jul 2012": -7.0, "Aug 2012": 7.0, "Sep 2012": 10.0, "Oct 2012": 9.0, "Nov 2012":
+                - 73.0, "Dec 2012": -69.0, "Jan 2013": -57.0, "Feb 2013": -41.0, "Mar 2013": -43.0, "Apr 2013": -17.0, "May 2013":
+                2.0, "Jun 2013": 9.0, "Jul 2013": 5.0, "Aug 2013": 8.0, "Sep 2013": -9.0, "Oct 2013": -29.0, "Nov 2013": -31.0, "Dec
+    2013": -10.0, "Jan 2014": -4.0, "Feb 2014": -23.0, "Mar 2014": -8.0, "Apr 2014": 3.0, "May 2014": 17.0, "Jun 2014":
+    2.0, "Jul 2014": 11.0, "Aug 2014": 12.0, "Sep 2014": 16.0, "Oct 2014": 13.0, "Nov 2014": 41.0, "Dec 2014": 56.0,
+            "Jan 2015": 30.0, "Feb 2015": 34.0, "Mar 2015": 21.0, "Apr 2015": 16.0, "May 2015": 20.0, "Jun 2015": 0.0, "Jul
+    2015": 16.0, "Aug 2015": 10.0, "Sep 2015": 15.0, "Oct 2015": 11.0, "Nov 2015": 0.0, "Dec 2015": -8.0, "Jan 2016":
+                - 21.0, "Feb 2016": -24.0, "Mar 2016": -20.0, "Apr 2016": -16.0, "May 2016": -8.0, "Jun 2016": -1.0, "Jul 2016": 8.0,
+            "Aug 2016": -3.0, "Sep 2016": 11.0, "Oct 2016": 6.0, "Nov 2016": 52.0, "Dec 2016": 139.0, "Jan 2017": 142.0, "Feb
+    2017": 134.0, "Mar 2017": 133.0, "Apr 2017": 120.0, "May 2017": 118.0, "Jun 2017": 106.0, "Jul 2017": 119.0, "Aug
+    2017": 121.0, "Sep 2017": 106.0, "Oct 2017": 108.0, "Nov 2017": 152.0, "Dec 2017": 117.0, "Jan 2018": 138.0, "Feb
+    2018": 140.0, "Mar 2018": 112.0, "Apr 2018": 105.0, "May 2018": 127.0, "Jun 2018": 121.0, "Jul 2018": 127.0, "Aug
+    2018": 136.0, "Sep 2018": 126.0, "Oct 2018": 122.0, "Nov 2018": 95.0, "Dec 2018": 83.0, "Jan 2019": 52.0, "Feb
+    2019": 61.0, "Mar 2019": 63.0, "Apr 2019": 74.0, "May 2019": 83.0, "Jun 2019": 78.0, "Jul 2019": 88.0, "Aug 2019":
+    72.0, "Sep 2019": 60.0, "Oct 2019": 65.0, "Nov 2019": 77.0, "Dec 2019": 75.0, "Jan 2020": 78.0, "Feb 2020": 93.0,
+            "Mar 2020": 30.0, "Apr 2020": 59.0, "May 2020": 81.0, "Jun 2020": 114.0, "Jul 2020": 81.0, "Aug 2020": 87.0, "Sep
+    2020": 112.0, "Oct 2020": 96.0, "Nov 2020": 52.0, "Dec 2020": -5.0 };
+
+    // Calculate Leading Index (use historical data if available, otherwise sum components)
+    function calculateLeadingIndex(data) {
+                return data.map(d => {
+                    // Check if we have historical data for this month
+                    if (historicalLeadingIndex[d.month]) {
+                        return historicalLeadingIndex[d.month];
+                    }
+
+                    // Otherwise sum the components (not average)
+                    const components = [d.employment, d.expand, d.inventory, d.economy, d.sales];
+                    const validComponents = components.filter(c => c !== null && c !== undefined);
+
+                    if (validComponents.length === 0) return null;
+
+                    const total = validComponents.reduce((sum, val) => sum + val, 0);
+                    return Math.round(total * 10) / 10; // Round to 1 decimal
+                });
+    }
+
+        // Helper to create small charts
+        function createSubChart(ctxId, label, labels, data, color) {
+            const ctx = document.getElementById(ctxId).getContext('2d');
+
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: color,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: {
+                            display: true,
+                            ticks: {
+                                font: { size: 10 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 1. Initialize Chart
+        function initChart(months = 60) {
+            const ctx = document.getElementById('optimismChart').getContext('2d');
+
+            // Get data for the specified range
+            const rangeData = months === 'all' ? optimismData : optimismData.slice(-months);
+            const labels = rangeData.map(d => d.month);
+            const dataPoints = rangeData.map(d => d.index);
+
+            // Destroy existing chart if it exists
+            if (optimismChart) {
+                optimismChart.destroy();
+            }
+
+            optimismChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Optimism Index',
+                        data: dataPoints,
+                        borderColor: '#0ea5e9',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#0ea5e9',
+                        pointBorderWidth: 2,
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        annotation: {
+                            annotations: {
+                                // Baseline Line at 100
+                                avgLine: {
+                                    type: 'line',
+                                    yMin: 100,
+                                    yMax: 100,
+                                    borderColor: 'rgba(100, 116, 139, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        content: 'Baseline (100)',
+                                        enabled: false,
+                                        position: 'end'
+                                    }
+                                },
+                                // Average Peak at 105
+                                avgPeak: {
+                                    type: 'line',
+                                    yMin: 105,
+                                    yMax: 105,
+                                    borderColor: 'rgba(34, 197, 94, 0.5)', // Green
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        content: 'Avg Peak (105)',
+                                        enabled: false,
+                                        position: 'end'
+                                    }
+                                },
+                                // Average Trough at 90
+                                avgTrough: {
+                                    type: 'line',
+                                    yMin: 90,
+                                    yMax: 90,
+                                    borderColor: 'rgba(239, 68, 68, 0.5)', // Red
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        content: 'Avg Trough (90)',
+                                        enabled: false,
+                                        position: 'end'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: 85,
+                            suggestedMax: 110,
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                },
+                                stepSize: 5
+                            },
+                            title: {
+                                display: true,
+                                text: 'Index Value',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize Leading Index Chart
+            const leadingIndexData = calculateLeadingIndex(rangeData);
+            const leadingCtx = document.getElementById('leadingIndexChart').getContext('2d');
+
+            if (leadingIndexChart) {
+                leadingIndexChart.destroy();
+            }
+
+            leadingIndexChart = new Chart(leadingCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Leading Index',
+                        data: leadingIndexData,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 2.5,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#8b5cf6',
+                        pointBorderWidth: 2,
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        annotation: {
+                            annotations: {
+                                zeroLine: {
+                                    type: 'line',
+                                    yMin: 0,
+                                    yMax: 0,
+                                    borderColor: 'rgba(100, 116, 139, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [5, 5],
+                                    label: {
+                                        content: 'Neutral (0)',
+                                        enabled: false,
+                                        position: 'end'
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: -30,
+                            suggestedMax: 40,
+                            grid: {
+                                color: '#e2e8f0'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Net Percent',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12
+                                },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Initialize Sub-Charts (using filtered rangeData)
+            const empData = rangeData.map(d => d.employment !== undefined ? d.employment : null);
+            const expandData = rangeData.map(d => d.expand !== undefined ? d.expand : null);
+            const invData = rangeData.map(d => d.inventory !== undefined ? d.inventory : null);
+            const economyData = rangeData.map(d => d.economy !== undefined ? d.economy : null);
+            const salesData = rangeData.map(d => d.sales !== undefined ? d.sales : null);
+
+            if (employmentChart) employmentChart.destroy();
+            if (expandChart) expandChart.destroy();
+            if (inventoryChart) inventoryChart.destroy();
+            if (economyChart) economyChart.destroy();
+            if (salesChart) salesChart.destroy();
+
+            employmentChart = createSubChart('employmentChart', 'Employment Plans', labels, empData, '#8b5cf6');
+            expandChart = createSubChart('expandChart', 'Good Time to Expand', labels, expandData, '#10b981');
+            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', labels, invData, '#f59e0b');
+            economyChart = createSubChart('economyChart', 'Expect Economy to Improve', labels, economyData, '#3b82f6');
+            salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', labels, salesData, '#ec4899');
+        }
+
+        // 2. Populate Table
+        function populateTable() {
+            const tableBody = document.getElementById('optimismTableBody');
+            tableBody.innerHTML = ''; // Clear existing
+
+            // Reverse order for table (newest first)
+            const reversedData = [...optimismData].reverse();
+
+            reversedData.forEach((item, index) => {
+                const tr = document.createElement('tr');
+
+                // Month
+                const tdMonth = document.createElement('td');
+                tdMonth.textContent = item.month;
+
+                // Index
+                const tdIndex = document.createElement('td');
+                tdIndex.textContent = item.index.toFixed(1);
+                tdIndex.style.fontWeight = 'bold';
+
+                // MoM Change
+                const tdMoM = document.createElement('td');
+                if (index < reversedData.length - 1) {
+                    const prev = reversedData[index + 1].index; const change = item.index - prev;
+                    const changeStr = change > 0 ? `+${change.toFixed(1)}` : change.toFixed(1);
+                    tdMoM.textContent = changeStr;
+                    tdMoM.className = change >= 0 ? 'trend-up' : 'trend-down';
+                } else {
+                    tdMoM.textContent = "-";
+                }
+
+                // YoY Change (12 months back)
+                const tdYoY = document.createElement('td');
+                if (index + 12 < reversedData.length) {
+                    const yearAgo = reversedData[index + 12].index; const change = item.index -
+                        yearAgo; const changePct = ((change / yearAgo) * 100).toFixed(1); const changeStr = change > 0 ? `+${changePct}%`
+                            : `${changePct}%`;
+                    tdYoY.textContent = changeStr;
+                    tdYoY.className = change >= 0 ? 'trend-up' : 'trend-down';
+                } else {
+                    tdYoY.textContent = "-";
+                }
+
+                tr.appendChild(tdMonth);
+                tr.appendChild(tdIndex);
+                tr.appendChild(tdMoM);
+                tr.appendChild(tdYoY);
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // 3. Time Range Button Handlers
+        document.querySelectorAll('.time-range-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Remove active class from all buttons
+                document.querySelectorAll('.time-range-btn').forEach(b => b.classList.remove('active'));
+
+                // Add active class to clicked button
+                this.classList.add('active');
+
+                // Get range and update chart
+                const range = this.dataset.range === 'all' ? 'all' : parseInt(this.dataset.range);
+                initChart(range);
+            });
+        });
+
+        // Initialize on page load
+        initChart('all');
+        populateTable();
+
+    </script>
+</body>
+
+</html>
