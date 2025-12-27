@@ -381,7 +381,14 @@
                     plugins: { legend: { display: false } },
                     scales: {
                         y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                        x: { display: false }
+                        x: {
+                            display: true,
+                            ticks: {
+                                font: { size: 10 },
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
                     }
                 }
             });
@@ -442,7 +449,7 @@
                                     borderDash: [5, 5],
                                     label: {
                                         content: 'Baseline (100)',
-                                        enabled: true,
+                                        enabled: false,
                                         position: 'end'
                                     }
                                 },
@@ -456,7 +463,7 @@
                                     borderDash: [5, 5],
                                     label: {
                                         content: 'Avg Peak (105)',
-                                        enabled: true,
+                                        enabled: false,
                                         position: 'end'
                                     }
                                 },
@@ -470,7 +477,7 @@
                                     borderDash: [5, 5],
                                     label: {
                                         content: 'Avg Trough (90)',
-                                        enabled: true,
+                                        enabled: false,
                                         position: 'end'
                                     }
                                 }
