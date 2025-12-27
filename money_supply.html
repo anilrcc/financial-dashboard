@@ -501,12 +501,14 @@
 
         function initCharts() {
             // Initial render
+            // Always render charts (empty if no data)
+            updateChart('m2', 'All');
             if (m2FullData.length > 0) {
-                updateChart('m2', 'All');
                 document.getElementById('kpi-m2').innerText = '$' + (m2FullData[m2FullData.length - 1].value / 1000).toFixed(2) + 'T';
             }
+
+            updateChart('growth', 'All');
             if (growthFullData.length > 0) {
-                updateChart('growth', 'All');
                 const growthVal = growthFullData[growthFullData.length - 1].value;
                 const el = document.getElementById('kpi-m2-yoy');
                 el.innerText = growthVal.toFixed(2) + '%';
@@ -514,8 +516,9 @@
                 else { el.style.color = '#38a169'; }
 
             }
+
+            updateChart('velocity', 'All');
             if (velocityFullData.length > 0) {
-                updateChart('velocity', 'All');
                 document.getElementById('kpi-velocity').innerText = velocityFullData[velocityFullData.length - 1].value.toFixed(2);
             }
         }
