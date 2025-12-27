@@ -16,9 +16,13 @@ if [ $? -eq 0 ]; then
     echo "--------------------------------------------------"
     echo "✅ Update script completed successfully."
     
+    # Update Executive Summary (Index Page)
+    echo "Updating Executive Summary..."
+    python3 update_executive_summary.py
+
     # Git operations
     echo "Staging changes..."
-    git add corporate_bonds.html
+    git add corporate_bonds.html index.html
     
     echo "Committing changes..."
     git commit -m "Auto-update Corporate Bonds data: $(date +'%Y-%m-%d')"

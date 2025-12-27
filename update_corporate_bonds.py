@@ -104,10 +104,19 @@ def update_html_file(aaa_data, bbb_data, ccc_data):
     )
     
     # Update the deployment version timestamp
-    today = datetime.now().strftime('%Y-%m-%d-%H%M')
+    today_meta = datetime.now().strftime('%Y-%m-%d-%H%M')
     content = re.sub(
         r'<meta name="deployment-version" content="auto-updated-.*?">',
-        f'<meta name="deployment-version" content="auto-updated-{today}">',
+        f'<meta name="deployment-version" content="auto-updated-{today_meta}">',
+        content
+    )
+
+    # Update the visible 'Last Updated' badge
+    # Format: Dec 27, 2025
+    today_display = datetime.now().strftime('%b %d, %Y')
+    content = re.sub(
+        r'(<div class="refresh-badge" id="last-updated">Last Updated: ).*?(</div>)',
+        f'\\1{today_display}\\2',
         content
     )
     
