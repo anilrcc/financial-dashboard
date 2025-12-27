@@ -110,8 +110,8 @@ def update_html_file(oil, brent, spread, copper, lumber, iron):
     display_date = datetime.now().strftime('%b %d, %Y')
     if 'id="last-updated"' in content:
         content = re.sub(
-            r'id="last-updated">Last Updated: .*?</div>',
-            f'id="last-updated">Last Updated: {display_date}</div>',
+            r'(id="last-updated">Last Updated:\s*)(.*?)(</div>)',
+            f'\\g<1>{display_date}\\g<3>',
             content
         )
     
@@ -129,18 +129,20 @@ def update_index_page():
     with open(index_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Updated regex to match "Commodity • <Date>" on many lines
+    # Updated regex to match "Commodity • <Date>" or similar patterns safely
+    # We look for the card then the span containing the bullet point
     pattern = re.compile(
-        r'(class="card commodities".*?<span>)(Commodity\s*•\s*)([^<]*?)(</span>)', 
+        r'(class="card commodities".*?<span>)(.*?•\s*)([^<]*?)(</span>)', 
         re.DOTALL | re.IGNORECASE
     )
     
     if pattern.search(content):
         today_str = datetime.now().strftime("%b %d, %Y")
-        content = pattern.sub(f"\\g<1>{today_str}\\g<3>", content)
+        # Fixed substitution: group 1 (opening), group 2 (label + bullet), new date, group 4 (closing tag)
+        content = pattern.sub(f"\\g<1>\\g<2>{today_str}\\g<4>", content)
         with open(index_file, 'w', encoding='utf-8') as f:
             f.write(content)
-        print("✓ Updated Index Page timestamp for Commodities.")
+        print("✓ Updated Index Page timestamps for Commodities.")
     else:
         print("Warning: Could not find Commodities card in index.html to update timestamp.")
 
