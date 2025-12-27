@@ -214,6 +214,17 @@
     </div>
 
     <!-- Sub-Indices Grid -->
+    <!-- Summary Box -->
+    <div id="optimism-summary-box" class="summary-box">
+        <h3>Key Insights: Nov 2025</h3>
+        <p><strong>Current Index: 99.0 (Below Average)</strong> - The index remains <strong
+                style="color: #ef4444;">below average</strong> relative to the baseline of 100. This represents a rise
+            of 0.8 points from Oct 2025.</p>
+        <p><strong>Historical Context:</strong> Key drivers include: optimism about the economy is net positive (15.0%),
+            sales expectations are improving (15.0%). Inflation and labor quality continue to be cited as persistent
+            headwinds, although recent data suggests some stabilization in sentiment.</p>
+    </div>
+
     <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #334155;">Key Components</h2>
 
     <!-- Time Range Selector for Sub-Charts -->
@@ -271,16 +282,7 @@
         </div>
     </div>
 
-    <!-- Summary Box -->
-    <div id="optimism-summary-box" class="summary-box">
-        <h3>Key Insights: Nov 2025</h3>
-        <p><strong>Current Index: 99.0 (Below Average)</strong> - The index remains <strong
-                style="color: #ef4444;">below average</strong> relative to the baseline of 100. This represents a rise
-            of 0.8 points from Oct 2025.</p>
-        <p><strong>Historical Context:</strong> Key drivers include: optimism about the economy is net positive (15.0%),
-            sales expectations are improving (15.0%). Inflation and labor quality continue to be cited as persistent
-            headwinds, although recent data suggests some stabilization in sentiment.</p>
-    </div>
+
 
     <!-- Data Table -->
     <div class="table-container">
@@ -898,6 +900,29 @@
             });
         }
 
+        // Recession Periods (NBER)
+        const recessionPeriods = [
+            { start: 'Jul 1990', end: 'Mar 1991' },
+            { start: 'Mar 2001', end: 'Nov 2001' },
+            { start: 'Dec 2007', end: 'Jun 2009' },
+            { start: 'Feb 2020', end: 'Apr 2020' }
+        ];
+
+        function getRecessionAnnotations() {
+            const annotations = {};
+            recessionPeriods.forEach((period, index) => {
+                annotations['recession' + index] = {
+                    type: 'box',
+                    xMin: period.start,
+                    xMax: period.end,
+                    backgroundColor: 'rgba(200, 200, 200, 0.4)',
+                    borderWidth: 0,
+                    drawTime: 'beforeDatasetsDraw'
+                };
+            });
+            return annotations;
+        }
+
         // 1. Initialize Chart
         function initChart(months = 60) {
             const ctx = document.getElementById('optimismChart').getContext('2d');
@@ -943,6 +968,7 @@
                         },
                         annotation: {
                             annotations: {
+                                ...getRecessionAnnotations(),
                                 // Baseline Line at 100
                                 avgLine: {
                                     type: 'line',
@@ -1067,6 +1093,7 @@
                         },
                         annotation: {
                             annotations: {
+                                ...getRecessionAnnotations(),
                                 baseline: {
                                     type: 'line',
                                     yMin: 50,

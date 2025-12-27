@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Supply (M2) - Market Pulse</title>
+    <meta name="deployment-version" content="auto-updated-initial">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-secondary: #718096;
+            --accent-teal: #14b8a6;
+            --accent-blue: #3182ce;
+            --accent-purple: #805ad5;
+            --accent-green: #38a169;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+            color: #1a202c;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+
+        .refresh-badge {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Metrics Row */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0 5px 0;
+            color: #1a202c;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .neutral {
+            color: var(--text-secondary);
+        }
+
+        .positive {
+            color: var(--accent-green);
+        }
+
+        .negative {
+            color: #ef4444;
+        }
+
+        /* Chart Section */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            position: relative;
+            height: 450px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        /* Time Period Toggle Buttons */
+        .time-toggle {
+            display: flex;
+            gap: 8px;
+            background: #f7fafc;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .time-btn {
+            padding: 6px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .time-btn:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .time-btn.active {
+            background: var(--accent-teal);
+            color: white;
+        }
+
+        /* Analysis Box */
+        .analysis-box {
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            border-left: 5px solid var(--accent-teal);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            margin-bottom: 30px;
+        }
+
+        .analysis-title {
+            font-weight: 700;
+            color: var(--accent-teal);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .analysis-text {
+            color: #4a5568;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .chart-container {
+                height: 350px;
+                padding: 15px;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .back-nav {
+            margin-bottom: 20px;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-nav a:hover {
+            color: var(--text-main);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="back-nav">
+            <a href="index.html">← Back to Financial Dashboard</a>
+        </div>
+
+        <header>
+            <div>
+                <h1>Money Supply (M2)</h1>
+                <div class="subtitle">Liquidity, Velocity, and Inflation Signals</div>
+            </div>
+            <div class="refresh-badge" id="last-updated">Last Updated: N/A</div>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="metrics-grid">
+            <div class="card">
+                <div class="metric-label">M2 Money Stock</div>
+                <div class="metric-value" id="kpi-m2">$-.--T</div>
+                <div class="metric-change neutral">
+                    <span>Seasonally Adjusted</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="metric-label">M2 YoY Growth</div>
+                <div class="metric-value" id="kpi-m2-yoy">-.--%</div>
+                <div class="metric-change neutral">
+                    <span>Year over Year</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="metric-label">Velocity of M2</div>
+                <div class="metric-value" id="kpi-velocity">-.--</div>
+                <div class="metric-change neutral">
+                    <span>Money Turnover Rate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- M2 Insight -->
+        <div class="analysis-box">
+            <div class="analysis-title">M2 & Liquidity Analysis</div>
+            <div class="analysis-text" id="m2-insight">
+                M2 Money Supply tracks the aggregate money supply including cash, checking deposits, and near money.
+                Trends in M2 growth are critical for understanding inflation potential and liquidity conditions in the
+                economy.
+                M2 Velocity measures how frequently money is changing hands in the economy; higher velocity can signal
+                stronger economic activity or inflation.
+            </div>
+        </div>
+
+        <!-- M2 Level Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">M2 Money Stock (Trillions USD)</div>
+                <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('m2', '1Y')">1Y</button>
+                    <button class="time-btn" onclick="updateChart('m2', '3Y')">3Y</button>
+                    <button class="time-btn" onclick="updateChart('m2', '5Y')">5Y</button>
+                    <button class="time-btn" onclick="updateChart('m2', '10Y')">10Y</button>
+                    <button class="time-btn active" onclick="updateChart('m2', 'All')">All</button>
+                </div>
+            </div>
+            <canvas id="m2Chart"></canvas>
+        </div>
+
+        <!-- M2 YoY Growth Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">M2 Year-over-Year Growth (%)</div>
+                <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('growth', '3Y')">3Y</button>
+                    <button class="time-btn" onclick="updateChart('growth', '5Y')">5Y</button>
+                    <button class="time-btn" onclick="updateChart('growth', '10Y')">10Y</button>
+                    <button class="time-btn active" onclick="updateChart('growth', 'All')">All</button>
+                </div>
+            </div>
+            <canvas id="m2GrowthChart"></canvas>
+        </div>
+
+        <!-- Velocity Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">Velocity of M2 Money Stock</div>
+                <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('velocity', '5Y')">5Y</button>
+                    <button class="time-btn" onclick="updateChart('velocity', '10Y')">10Y</button>
+                    <button class="time-btn active" onclick="updateChart('velocity', 'All')">All</button>
+                </div>
+            </div>
+            <canvas id="velocityChart"></canvas>
+        </div>
+
+    </div>
+
+    <script>
+        // Store chart instances
+        let m2ChartInstance;
+        let growthChartInstance;
+        let velocityChartInstance;
+
+        // --- Data Placeholders to be populated by Python ---
+        const m2FullData = [];
+        const growthFullData = [];
+        const velocityFullData = [];
+
+        function filterData(data, period) {
+            if (!data || data.length === 0) return [];
+            if (period === 'All') return data;
+
+            const now = new Date();
+            let cutoffDate = new Date();
+
+            switch (period) {
+                case '1Y': cutoffDate.setFullYear(now.getFullYear() - 1); break;
+                case '3Y': cutoffDate.setFullYear(now.getFullYear() - 3); break;
+                case '5Y': cutoffDate.setFullYear(now.getFullYear() - 5); break;
+                case '10Y': cutoffDate.setFullYear(now.getFullYear() - 10); break;
+                default: return data;
+            }
+
+            return data.filter(item => new Date(item.date) >= cutoffDate);
+        }
+
+        function createChart(ctx, data, label, color, type = 'line', showZeroLine = false) {
+            const annotations = {};
+            if (showZeroLine) {
+                annotations.zeroLine = {
+                    type: 'line',
+                    yMin: 0,
+                    yMax: 0,
+                    borderColor: 'rgba(0,0,0,0.5)',
+                    borderWidth: 1,
+                    borderDash: [5, 5]
+                };
+            }
+
+            return new Chart(ctx, {
+                type: type,
+                data: {
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        fill: false,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 10,
+                            callbacks: {
+                                label: function (context) {
+                                    return context.dataset.label + ': ' + context.parsed.y;
+                                }
+                            }
+                        },
+                        annotation: {
+                            annotations: annotations
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'year',
+                                displayFormats: { year: 'yyyy' }
+                            },
+                            grid: { display: false },
+                            ticks: { maxRotation: 0, autoSkip: true }
+                        },
+                        y: {
+                            grid: { color: '#f1f5f9' },
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(chartType, period) {
+            // Update buttons
+            const btnGroup = event.target.parentElement;
+            btnGroup.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let chartInstance, data, label, color, ctx, showZeroLine;
+
+            if (chartType === 'm2') {
+                if (m2ChartInstance) m2ChartInstance.destroy();
+                data = filterData(m2FullData, period);
+                label = 'M2 Money Stock';
+                color = '#3182ce'; // Blue
+                ctx = document.getElementById('m2Chart').getContext('2d');
+                m2ChartInstance = createChart(ctx, data, label, color, 'line', false);
+            } else if (chartType === 'growth') {
+                if (growthChartInstance) growthChartInstance.destroy();
+                data = filterData(growthFullData, period);
+                label = 'YoY Growth (%)';
+                color = '#38a169'; // Green
+                ctx = document.getElementById('m2GrowthChart').getContext('2d');
+                growthChartInstance = createChart(ctx, data, label, color, 'line', true);
+            } else if (chartType === 'velocity') {
+                if (velocityChartInstance) velocityChartInstance.destroy();
+                data = filterData(velocityFullData, period);
+                label = 'M2 Velocity';
+                color = '#805ad5'; // Purple
+                ctx = document.getElementById('velocityChart').getContext('2d');
+                velocityChartInstance = createChart(ctx, data, label, color, 'line', false);
+            }
+        }
+
+        function initCharts() {
+            // Initial render
+            if (m2FullData.length > 0) {
+                updateChart('m2', 'All');
+                document.getElementById('kpi-m2').innerText = '$' + (m2FullData[m2FullData.length - 1].value / 1000).toFixed(2) + 'T';
+            }
+            if (growthFullData.length > 0) {
+                updateChart('growth', 'All');
+                const growthVal = growthFullData[growthFullData.length - 1].value;
+                const el = document.getElementById('kpi-m2-yoy');
+                el.innerText = growthVal.toFixed(2) + '%';
+                if (growthVal < 0) { el.style.color = '#ef4444'; }
+                else { el.style.color = '#38a169'; }
+
+            }
+            if (velocityFullData.length > 0) {
+                updateChart('velocity', 'All');
+                document.getElementById('kpi-velocity').innerText = velocityFullData[velocityFullData.length - 1].value.toFixed(2);
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initCharts);
+
+    </script>
+</body>
+
+</html>
