@@ -462,10 +462,8 @@
                 const lastDate = new Date(filtered[filtered.length - 1].date);
                 const daysDiff = (lastDate - firstDate) / (1000 * 60 * 60 * 24);
 
-                if (period === '1Y' || daysDiff < 365) {
+                if (period === '1Y' || daysDiff < 730) {
                     timeUnit = 'month';
-                } else if (daysDiff < 730) {
-                    timeUnit = 'quarter';
                 } else {
                     timeUnit = 'year';
                 }
@@ -548,7 +546,6 @@
                                 unit: timeUnit,
                                 displayFormats: {
                                     month: 'MMM yyyy',
-                                    quarter: 'QQQ yyyy',
                                     year: 'yyyy'
                                 }
                             },
