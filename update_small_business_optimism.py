@@ -10,9 +10,48 @@ HTML_FILE = os.path.join(os.getcwd(), 'small_business_optimism.html')
 INDEX_FILE = os.path.join(os.getcwd(), 'index.html')
 DATA_URL = 'https://www.nfib.com/news/monthly_report/sbet/'
 
-# Initial "Seed" Data (since we don't have a full full history file yet)
-# This replaces the dummy placeholders.
+# Initial "Seed" Data (Derived from public reports for 2021-2025)
 INITIAL_HISTORY = [
+    # 2021
+    {"month": "Jan 2021", "index": 95.0},
+    {"month": "Feb 2021", "index": 95.8},
+    {"month": "Mar 2021", "index": 98.2},
+    {"month": "Apr 2021", "index": 99.8},
+    {"month": "May 2021", "index": 99.6},
+    {"month": "Jun 2021", "index": 102.5},
+    {"month": "Jul 2021", "index": 99.7},
+    {"month": "Aug 2021", "index": 100.1},
+    {"month": "Sep 2021", "index": 99.1},
+    {"month": "Oct 2021", "index": 98.2},
+    {"month": "Nov 2021", "index": 98.4},
+    {"month": "Dec 2021", "index": 98.9},
+    # 2022
+    {"month": "Jan 2022", "index": 97.1},
+    {"month": "Feb 2022", "index": 95.7},
+    {"month": "Mar 2022", "index": 93.2},
+    {"month": "Apr 2022", "index": 93.2},
+    {"month": "May 2022", "index": 93.1},
+    {"month": "Jun 2022", "index": 89.5},
+    {"month": "Jul 2022", "index": 89.9},
+    {"month": "Aug 2022", "index": 91.8},
+    {"month": "Sep 2022", "index": 92.1},
+    {"month": "Oct 2022", "index": 91.3},
+    {"month": "Nov 2022", "index": 91.9},
+    {"month": "Dec 2022", "index": 89.8},
+    # 2023
+    {"month": "Jan 2023", "index": 90.3},
+    {"month": "Feb 2023", "index": 90.9},
+    {"month": "Mar 2023", "index": 90.1},
+    {"month": "Apr 2023", "index": 89.0},
+    {"month": "May 2023", "index": 89.4},
+    {"month": "Jun 2023", "index": 91.0},
+    {"month": "Jul 2023", "index": 91.9},
+    {"month": "Aug 2023", "index": 91.3},
+    {"month": "Sep 2023", "index": 90.8},
+    {"month": "Oct 2023", "index": 90.7},
+    {"month": "Nov 2023", "index": 90.6},
+    {"month": "Dec 2023", "index": 91.9},
+    # 2024
     {"month": "Jan 2024", "index": 89.9},
     {"month": "Feb 2024", "index": 89.4},
     {"month": "Mar 2024", "index": 88.5},
@@ -23,18 +62,20 @@ INITIAL_HISTORY = [
     {"month": "Aug 2024", "index": 91.2},
     {"month": "Sep 2024", "index": 91.5}, 
     {"month": "Oct 2024", "index": 93.7},
-    {"month": "Nov 2024", "index": 92.5}, # est
-    {"month": "Dec 2024", "index": 91.9}, # est
+    {"month": "Nov 2024", "index": 101.7}, # Revised based on search
+    {"month": "Dec 2024", "index": 105.1}, # Revised based on search
+    # 2025
     {"month": "Jan 2025", "index": 102.8},
     {"month": "Feb 2025", "index": 100.7},
-    {"month": "Mar 2025", "index": 99.5}, # est
-    {"month": "Apr 2025", "index": 99.0}, # est
+    {"month": "Mar 2025", "index": 97.4},
+    {"month": "Apr 2025", "index": 95.8},
     {"month": "May 2025", "index": 98.8},
     {"month": "Jun 2025", "index": 98.6},
     {"month": "Jul 2025", "index": 100.3},
     {"month": "Aug 2025", "index": 100.8},
     {"month": "Sep 2025", "index": 98.8},
-    {"month": "Oct 2025", "index": 98.2}
+    {"month": "Oct 2025", "index": 98.2},
+    {"month": "Nov 2025", "index": 99.0}
 ]
 
 def fetch_latest_data():
@@ -69,22 +110,60 @@ def fetch_latest_data():
                 return None
         
         # 2. Extract Index Value
-        # Pattern: "rose X points ... to 99.0" or "Index ... to 99.0"
-        # Look for "to (\d+\.?\d*)" near "Optimism Index"
-        # Simplistic regex: "Optimism Index.*?to (\d+\.?\d+)"
-        # Note: HTML might have tags.
-        
-        # Isolate the first paragraph or section content
-        # We can search in the whole text but need to be careful.
+        optimism_val = None
+        employment_val = None
+        expand_val = None
+        inventory_val = None
+        capex_val = None
+
+        # -- Main Index --
         val_match = re.search(r'Optimism Index.*?to\s+(\d+\.?\d*)', content, re.DOTALL | re.IGNORECASE)
         if not val_match:
-             # Fallback: look for just the number if it says "stood at X.X" or similar
              val_match = re.search(r'Index.*?at\s+(\d+\.?\d*)', content, re.DOTALL | re.IGNORECASE)
-        
         if val_match:
-            value = float(val_match.group(1))
-            print(f"Found Latest Data: {report_month} -> {value}")
-            return {"month": report_month, "index": value}
+            optimism_val = float(val_match.group(1))
+
+        # -- Employment Plans --
+        # Pattern: "net 19% of owners plan to create new jobs"
+        emp_match = re.search(r'net\s+(-?\d+)%.*?plan to create new jobs', content, re.IGNORECASE)
+        if not emp_match:
+             # Fallback: "hiring plans ... net X%"
+             emp_match = re.search(r'hiring plans.*?net\s+(-?\d+)%', content, re.IGNORECASE)
+        if emp_match:
+            employment_val = float(emp_match.group(1))
+
+        # -- Good Time to Expand --
+        # Usually implies finding "good time to expand" followed by net percent
+        # This is harder to find in the provided snippet. If not found, leave None.
+        # Often phrasing is "net X% reported it was a good time to expand"
+        expand_match = re.search(r'net\s+(-?\d+)%.*?good time to expand', content, re.IGNORECASE)
+        if expand_match:
+            expand_val = float(expand_match.group(1))
+
+        # -- Inventory Plans --
+        # Pattern: "net negative 1% ... plan inventory investment"
+        # Handling "net negative 1%" -> "-1"
+        inv_match = re.search(r'net\s+(negative\s+)?(\d+)%.*?plan inventory investment', content, re.IGNORECASE)
+        if inv_match:
+            sign = -1 if inv_match.group(1) else 1
+            inventory_val = float(inv_match.group(2)) * sign
+
+        # -- Capex Plans --
+        # Pattern: "Twenty percent (seasonally adjusted) plan capital outlays"
+        capex_match = re.search(r'(\d+)%.*?plan capital outlays', content, re.IGNORECASE)
+        if capex_match:
+            capex_val = float(capex_match.group(1))
+
+        if optimism_val is not None:
+            print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Cap: {capex_val}")
+            return {
+                "month": report_month, 
+                "index": optimism_val,
+                "employment": employment_val,
+                "expand": expand_val,
+                "inventory": inventory_val,
+                "capex": capex_val
+            }
         else:
             print("Could not find index value in text.")
             return None
@@ -93,75 +172,85 @@ def fetch_latest_data():
         print(f"Error fetching data: {e}")
         return None
 
-def read_existing_data(file_path):
-    """Parse the existing JS array from the HTML file."""
-    if not os.path.exists(file_path):
+def load_historical_csv():
+    """Load historical data from 'nfib_history.csv' if it exists."""
+    csv_path = os.path.join(os.getcwd(), 'nfib_history.csv')
+    if not os.path.exists(csv_path):
         return []
+    
+    csv_data = []
+    try:
+        with open(csv_path, 'r') as f:
+            # Assume header: Month, Index
+            # Format: "Jan 1990", 100.0 or similar
+            lines = f.readlines()[1:] # Skip header
+            for line in lines:
+                parts = line.strip().split(',')
+                if len(parts) >= 2:
+                    month_str = parts[0].strip()
+                    try:
+                        val = float(parts[1].strip())
+                        csv_data.append({"month": month_str, "index": val})
+                    except ValueError:
+                        continue
+    except Exception as e:
+        print(f"Error reading nfib_history.csv: {e}")
         
-    with open(file_path, 'r') as f:
-        content = f.read()
-        
-    match = re.search(r'const optimismData = \[\s*(.*?)\s*\];', content, re.DOTALL)
-    if match:
-        # data_str looks like: { month: "Jan 2020", index: 104.3 }, ...
-        # We need to parse this effectively.
-        # Quick and dirty: use Regex to find all objects
-        items = []
-        entry_pattern = re.compile(r'{\s*month:\s*"([^"]+)",\s*index:\s*([\d\.]+)\s*}')
-        for m in entry_pattern.finditer(match.group(1)):
-            items.append({"month": m.group(1), "index": float(m.group(2))})
-        return items
-    return []
+    return csv_data
 
 def update_html_file(new_data_point):
     if not os.path.exists(HTML_FILE):
         print(f"Error: {HTML_FILE} not found.")
         return
 
-    # Read current data
-    current_data = read_existing_data(HTML_FILE)
+    # 1. Combine Data Sources
+    # Priority: 
+    #   1. New Scraped Data (most recent)
+    #   2. Local CSV History (if provided by user)
+    #   3. Initial Hardcoded Seed (fallback/recent history)
     
-    # Check if current_data is placeholder (heuristic: check if it contains the dummy 'Dec 2025' with 90.0 value which we put there)
-    # The dummy data had 'Dec 2025' : 90.0. 
-    # If we are effectively in Nov 2025, Dec 2025 shouldn't exist or be real.
-    # We will replace the list with INITIAL_HISTORY if it looks like the placeholder list.
+    # Start with seed
+    combined_data = {item['month']: item for item in INITIAL_HISTORY}
     
-    is_placeholder = False
-    if len(current_data) > 0:
-        if current_data[-1]['month'] == "Dec 2025" and current_data[-1]['index'] == 90.0:
-            is_placeholder = True
-    
-    final_data = []
-    
-    if is_placeholder:
-        print("Detected placeholder data. replacing with Seed Data.")
-        final_data = list(INITIAL_HISTORY)
-    else:
-        final_data = current_data
-
-    # Append or Update Latest
-    if new_data_point:
-        # Check if already exists
-        exists = False
-        for item in final_data:
-            if item['month'] == new_data_point['month']:
-                item['index'] = new_data_point['index'] # Update if exists
-                exists = True
-                break
-        if not exists:
-            final_data.append(new_data_point)
+    # Load CSV and overwrite/append
+    csv_history = load_historical_csv()
+    if csv_history:
+        print(f"Loaded {len(csv_history)} points from nfib_history.csv")
+        for item in csv_history:
+            combined_data[item['month']] = item
             
-    # Sort by date? 
-    # Current format "Month YYYY". Use datetime to sort.
+    # Add/Update Scraping Result
+    if new_data_point:
+        combined_data[new_data_point['month']] = new_data_point
+    
+    # Convert back to list and sort
+    final_data = list(combined_data.values())
+    
+    # Sort by date
     def parse_date(d):
-        return datetime.datetime.strptime(d['month'], "%b %Y")
+        try:
+            return datetime.datetime.strptime(d['month'], "%b %Y")
+        except ValueError:
+            # Fallback for weird formats? Return min date
+            return datetime.datetime(1900, 1, 1)
     
     final_data.sort(key=parse_date)
     
     # 3. Generate JS Array String
     js_lines = []
     for item in final_data:
-        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]} }}')
+        emp = item.get('employment', 'null')
+        exp = item.get('expand', 'null')
+        inv = item.get('inventory', 'null')
+        cap = item.get('capex', 'null')
+        
+        # Handle None in string formatting
+        emp = emp if emp is not None else 'null'
+        exp = exp if exp is not None else 'null'
+        inv = inv if inv is not None else 'null'
+        cap = cap if cap is not None else 'null'
+
+        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {emp}, expand: {exp}, inventory: {inv}, capex: {cap} }}')
     
     js_array_str = ",\n            ".join(js_lines)
     
@@ -177,11 +266,12 @@ def update_html_file(new_data_point):
     if final_data:
         latest = final_data[-1]
         val = latest['index']
+        # Find prev month in sorted list
         prev = final_data[-2] if len(final_data) > 1 else None
         
         # Logic for insights
         status = "Above Average" if val >= 98 else "Below Average"
-        color = "#10b981" if val >= 98 else "#ef4444" # Green if >= 98 (avg), Red if < 98
+        color = "#10b981" if val >= 98 else "#ef4444" 
         
         change_text = ""
         if prev:
@@ -196,9 +286,6 @@ def update_html_file(new_data_point):
         <p><strong>Historical Context:</strong> The index is currently {"recovering" if val > 95 else "depressed"}, sitting {"above" if val > 98 else "below"} the historical average. Inflation and labor quality continue to be key headwinds for small business owners.</p>
         '''
         
-        # Replace Summary Box
-        # Look for <div id="optimism-summary-box" ...> ... </div>
-        # Use a non-greedy regex inside the div
         sum_pattern = re.compile(r'(<div id="optimism-summary-box"[^>]*>)(.*?)(</div>)', re.DOTALL)
         content = sum_pattern.sub(f'\\1{summary_html}\\3', content)
 
