@@ -1108,12 +1108,19 @@
                 }
             });
 
-            // Initialize Sub-Charts (using filtered rangeData)
-            const empData = rangeData.map(d => d.employment !== undefined ? d.employment : null);
-            const expandData = rangeData.map(d => d.expand !== undefined ? d.expand : null);
-            const invData = rangeData.map(d => d.inventory !== undefined ? d.inventory : null);
-            const economyData = rangeData.map(d => d.economy !== undefined ? d.economy : null);
-            const salesData = rangeData.map(d => d.sales !== undefined ? d.sales : null);
+            // Initialize Sub-Charts (filter to only show months with sub-component data)
+            // Sub-component data only exists from 2021 onwards
+            const subComponentData = rangeData.filter(d =>
+                d.employment !== null || d.expand !== null || d.inventory !== null ||
+                d.economy !== null || d.sales !== null
+            );
+            const subLabels = subComponentData.map(d => d.month);
+
+            const empData = subComponentData.map(d => d.employment !== undefined ? d.employment : null);
+            const expandData = subComponentData.map(d => d.expand !== undefined ? d.expand : null);
+            const invData = subComponentData.map(d => d.inventory !== undefined ? d.inventory : null);
+            const economyData = subComponentData.map(d => d.economy !== undefined ? d.economy : null);
+            const salesData = subComponentData.map(d => d.sales !== undefined ? d.sales : null);
 
             if (employmentChart) employmentChart.destroy();
             if (expandChart) expandChart.destroy();
@@ -1121,11 +1128,11 @@
             if (economyChart) economyChart.destroy();
             if (salesChart) salesChart.destroy();
 
-            employmentChart = createSubChart('employmentChart', 'Employment Plans', labels, empData, '#8b5cf6');
-            expandChart = createSubChart('expandChart', 'Good Time to Expand', labels, expandData, '#10b981');
-            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', labels, invData, '#f59e0b');
-            economyChart = createSubChart('economyChart', 'Expect Economy to Improve', labels, economyData, '#3b82f6');
-            salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', labels, salesData, '#ec4899');
+            employmentChart = createSubChart('employmentChart', 'Employment Plans', subLabels, empData, '#8b5cf6');
+            expandChart = createSubChart('expandChart', 'Good Time to Expand', subLabels, expandData, '#10b981');
+            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', subLabels, invData, '#f59e0b');
+            economyChart = createSubChart('economyChart', 'Expect Economy to Improve', subLabels, economyData, '#3b82f6');
+            salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', subLabels, salesData, '#ec4899');
         }
 
         // 2. Populate Table
