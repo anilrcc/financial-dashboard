@@ -555,12 +555,12 @@
 
             // Define configs
             const configs = {
-                'oil': { id: 'oilChart', data: oilData, label: 'WTI ($)', color: '#1e3a8a' },
-                'brent': { id: 'brentChart', data: brentData, label: 'Brent ($)', color: '#2b6cb0' },
-                'spread': { id: 'spreadChart', data: spreadData, label: 'Spread ($)', color: '#71717a' },
-                'copper': { id: 'copperChart', data: copperData, label: 'Copper ($/MT)', color: '#b45309' },
-                'lumber': { id: 'lumberChart', data: lumberData, label: 'Lumber Index', color: '#15803d' },
-                'iron': { id: 'ironChart', data: ironData, label: 'Iron Ore ($/MT)', color: '#71717a' }
+                'oil': { id: 'oilChart', data: oilData, label: 'WTI ($)', color: '#2563eb' },
+                'brent': { id: 'brentChart', data: brentData, label: 'Brent ($)', color: '#2563eb' },
+                'spread': { id: 'spreadChart', data: spreadData, label: 'Spread ($)', color: '#2563eb' },
+                'copper': { id: 'copperChart', data: copperData, label: 'Copper ($/MT)', color: '#2563eb' },
+                'lumber': { id: 'lumberChart', data: lumberData, label: 'Lumber Index', color: '#2563eb' },
+                'iron': { id: 'ironChart', data: ironData, label: 'Iron Ore ($/MT)', color: '#2563eb' }
             };
 
             const cfg = configs[type];
@@ -579,27 +579,27 @@
             // Initialize all charts
             // Initial Render 5Y
             if (oilData.length > 0) {
-                charts['oil'] = createChart('oilChart', oilData, 'WTI ($)', '#1e3a8a', '5Y');
+                charts['oil'] = createChart('oilChart', oilData, 'WTI ($)', '#2563eb', '5Y');
                 const kpi = document.getElementById('kpi-oil'); if (kpi) kpi.innerText = '$' + oilData[oilData.length - 1].value.toFixed(2);
             }
             if (brentData.length > 0) {
-                charts['brent'] = createChart('brentChart', brentData, 'Brent ($)', '#2b6cb0', '5Y');
+                charts['brent'] = createChart('brentChart', brentData, 'Brent ($)', '#2563eb', '5Y');
                 const kpi = document.getElementById('kpi-brent'); if (kpi) kpi.innerText = '$' + brentData[brentData.length - 1].value.toFixed(2);
             }
             if (spreadData.length > 0) {
-                charts['spread'] = createChart('spreadChart', spreadData, 'Spread ($)', '#71717a', '5Y');
+                charts['spread'] = createChart('spreadChart', spreadData, 'Spread ($)', '#2563eb', '5Y');
                 const kpi = document.getElementById('kpi-spread'); if (kpi) kpi.innerText = '$' + spreadData[spreadData.length - 1].value.toFixed(2);
             }
             if (copperData.length > 0) {
-                charts['copper'] = createChart('copperChart', copperData, 'Copper ($/MT)', '#b45309', 'All');
+                charts['copper'] = createChart('copperChart', copperData, 'Copper ($/MT)', '#2563eb', 'All');
                 const kpi = document.getElementById('kpi-copper'); if (kpi) kpi.innerText = '$' + copperData[copperData.length - 1].value.toLocaleString();
             }
             if (lumberData.length > 0) {
-                charts['lumber'] = createChart('lumberChart', lumberData, 'Lumber Index', '#15803d', 'All');
+                charts['lumber'] = createChart('lumberChart', lumberData, 'Lumber Index', '#2563eb', 'All');
                 const kpi = document.getElementById('kpi-lumber'); if (kpi) kpi.innerText = lumberData[lumberData.length - 1].value.toFixed(1);
             }
             if (ironData.length > 0) {
-                charts['iron'] = createChart('ironChart', ironData, 'Iron Ore ($/MT)', '#71717a', 'All');
+                charts['iron'] = createChart('ironChart', ironData, 'Iron Ore ($/MT)', '#2563eb', 'All');
                 const kpi = document.getElementById('kpi-iron'); if (kpi) kpi.innerText = '$' + ironData[ironData.length - 1].value.toFixed(2);
             }
         }
