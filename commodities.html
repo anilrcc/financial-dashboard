@@ -455,6 +455,22 @@
             const filteredSMA50 = filterData(sma50Full, period);
             const filteredSMA200 = filterData(sma200Full, period);
 
+            // Determine appropriate time unit based on data range
+            let timeUnit = 'year';
+            if (filtered.length > 0) {
+                const firstDate = new Date(filtered[0].date);
+                const lastDate = new Date(filtered[filtered.length - 1].date);
+                const daysDiff = (lastDate - firstDate) / (1000 * 60 * 60 * 24);
+
+                if (period === '1Y' || daysDiff < 365) {
+                    timeUnit = 'month';
+                } else if (daysDiff < 730) {
+                    timeUnit = 'quarter';
+                } else {
+                    timeUnit = 'year';
+                }
+            }
+
             return new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -529,9 +545,10 @@
                         x: {
                             type: 'time',
                             time: {
-                                unit: period === '1Y' ? 'month' : 'year',
+                                unit: timeUnit,
                                 displayFormats: {
                                     month: 'MMM yyyy',
+                                    quarter: 'QQQ yyyy',
                                     year: 'yyyy'
                                 }
                             },
