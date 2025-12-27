@@ -804,25 +804,26 @@
             "Jul 2019": 88.0, "Aug 2019": 72.0, "Sep 2019": 60.0, "Oct 2019": 65.0, "Nov 2019": 77.0, "Dec 2019": 75.0,
             "Jan 2020": 78.0, "Feb 2020": 93.0, "Mar 2020": 30.0, "Apr 2020": 59.0, "May 2020": 81.0, "Jun 2020": 114.0,
             "Jul 2020": 81.0, "Aug 2020": 87.0, "Sep 2020": 112.0, "Oct 2020": 96.0, "Nov 2020": 52.0, "Dec 2020": -5.0
+        };
 
-    // Calculate Leading Index (use historical data if available, otherwise sum components)
-    function calculateLeadingIndex(data) {
-                return data.map(d => {
-                    // Check if we have historical data for this month
-                    if (historicalLeadingIndex[d.month]) {
-                        return historicalLeadingIndex[d.month];
-                    }
+        // Calculate Leading Index (use historical data if available, otherwise sum components)
+        function calculateLeadingIndex(data) {
+            return data.map(d => {
+                // Check if we have historical data for this month
+                if (historicalLeadingIndex[d.month]) {
+                    return historicalLeadingIndex[d.month];
+                }
 
-                    // Otherwise sum the components (not average)
-                    const components = [d.employment, d.expand, d.inventory, d.economy, d.sales];
-                    const validComponents = components.filter(c => c !== null && c !== undefined);
+                // Otherwise sum the components (not average)
+                const components = [d.employment, d.expand, d.inventory, d.economy, d.sales];
+                const validComponents = components.filter(c => c !== null && c !== undefined);
 
-                    if (validComponents.length === 0) return null;
+                if (validComponents.length === 0) return null;
 
-                    const total = validComponents.reduce((sum, val) => sum + val, 0);
-                    return Math.round(total * 10) / 10; // Round to 1 decimal
-                });
-    }
+                const total = validComponents.reduce((sum, val) => sum + val, 0);
+                return Math.round(total * 10) / 10; // Round to 1 decimal
+            });
+        }
 
         // Helper to create small charts
         function createSubChart(ctxId, label, labels, data, color) {
