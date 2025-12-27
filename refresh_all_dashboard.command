@@ -34,8 +34,22 @@ echo "[6/7] Refreshing Building Permits..."
 python3 update_building_permits.py
 
 echo ""
-echo "[7/7] Regenerating Executive Summary & Index..."
+echo "[7/7] Refreshing Small Business Optimism..."
+python3 update_small_business_optimism.py
+
+echo ""
+echo "[8/8] Regenerating Executive Summary & Index..."
 python3 update_executive_summary.py
+
+echo ""
+echo "========================================="
+echo "        Refresh Complete! 🚀             "
+echo "========================================="
+echo "Pushing changes to GitHub..."
+git add .
+git commit -m "Automated dashboard refresh - $(date +'%Y-%m-%d')"
+git push
+echo "Done!"
 
 echo ""
 echo "========================================="

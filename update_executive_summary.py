@@ -18,6 +18,7 @@ YIELDS_FILE = os.path.join(BASE_DIR, 'yield_curve.html')
 SENTIMENT_FILE = os.path.join(BASE_DIR, 'consumer_sentiment.html')
 BONDS_FILE = os.path.join(BASE_DIR, 'corporate_bonds.html')
 PERMITS_FILE = os.path.join(BASE_DIR, 'building_permits.html')
+OPTIMISM_FILE = os.path.join(BASE_DIR, 'small_business_optimism.html')
 
 def get_market_data():
     data = {
@@ -27,6 +28,7 @@ def get_market_data():
         'consumer_sentiment': None,
         'credit_spread_bbb_aaa': None,
         'housing_permits': None,
+        'sb_optimism': None,
         'regime': 'Unknown'
     }
 
@@ -106,6 +108,15 @@ def get_market_data():
             match = re.search(r'id="kpi-total">\s*([\d.]+)k</div>', content)
             if match:
                 data['housing_permits'] = float(match.group(1))
+
+    # 7. Small Business Optimism
+    if os.path.exists(OPTIMISM_FILE):
+        with open(OPTIMISM_FILE, 'r') as f:
+            content = f.read()
+            # Matches { month: "...", index: ... }
+            matches = re.findall(r'index:\s*([0-9.]+)', content)
+            if matches:
+                data['sb_optimism'] = float(matches[-1])
     return data
 
 def determine_regime(data):
@@ -202,6 +213,7 @@ def generate_summary_html(data):
     sent_val, sent_col = fmt(data['consumer_sentiment'], "sentiment")
     credit_val, credit_col = fmt(data['credit_spread_bbb_aaa'], "credit")
     house_val, house_col = fmt(data['housing_permits'], "housing")
+    sb_val, sb_col = fmt(data['sb_optimism'], "sentiment") # Use sentiment formatting for SBAC
 
     # Generate Dynamic Description
     desc_parts = []
@@ -210,18 +222,21 @@ def generate_summary_html(data):
     if data['svc_pmi']:
         desc_parts.append(f"Services are <strong>{'expanding' if data['svc_pmi'] >= 50 else 'contracting'}</strong> ({svc_val})")
     
-    housing_desc = ""
     if data['housing_permits']:
         h_trends = "robust" if data['housing_permits'] >= 1500 else "soft"
         housing_desc = f", and housing activity is <strong>{h_trends}</strong> ({house_val})"
     
+    sb_desc = ""
+    if data['sb_optimism']:
+        sb_desc = f", Small Business Optimism is <strong>{'strong' if data['sb_optimism'] >= 98 else 'weak'}</strong> ({sb_val})"
+
     curve_desc = "inverted" if data['yield_spread_10y2y'] and data['yield_spread_10y2y'] < 0 else "normal"
     sent_desc = "Bearish"
     if data['consumer_sentiment']:
         if data['consumer_sentiment'] >= 80: sent_desc = "Bullish"
         elif data['consumer_sentiment'] >= 70: sent_desc = "Neutral"
     
-    full_desc = f"The economy shows {', while '.join(desc_parts)}. The yield curve is <strong>{curve_desc}</strong>, consumer sentiment is <strong>{sent_desc}</strong> ({sent_val}){housing_desc}."
+    full_desc = f"The economy shows {', while '.join(desc_parts)}. The yield curve is <strong>{curve_desc}</strong>, consumer sentiment is <strong>{sent_desc}</strong> ({sent_val}){housing_desc}{sb_desc}."
 
     current_date = datetime.datetime.now().strftime('%b %d, %Y')
     
@@ -265,9 +280,13 @@ def generate_summary_html(data):
                         <div style="font-size: 1.4rem; font-weight: 700; color: {credit_col};">{credit_val}</div>
                     </a>
 
-                    <a href="building_permits.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Housing Permits</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {house_col};">{house_val}</div>
+                    </a>
+
+                    <a href="small_business_optimism.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">SB Optimism</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: {sb_col};">{sb_val}</div>
                     </a>
 
                 </div>

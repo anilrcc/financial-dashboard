@@ -124,56 +124,66 @@ def fetch_latest_data():
             optimism_val = float(val_match.group(1))
 
         # -- Employment Plans --
-        # Pattern: "net 19% of owners plan to create new jobs"
-        emp_match = re.search(r'net\s+(-?\d+)%.*?plan to create new jobs', content, re.IGNORECASE)
+        # Pattern: "net 19% of owners plan to create new jobs" or "seasonally adjusted net 19%..."
+        # Limit the search window to avoid matching distant numbers
+        emp_match = re.search(r'net\s+(-?\d+)%.{0,100}?plan to create new jobs', content, re.IGNORECASE | re.DOTALL)
         if not emp_match:
-             # Fallback: "hiring plans ... net X%"
-             emp_match = re.search(r'hiring plans.*?net\s+(-?\d+)%', content, re.IGNORECASE)
+             emp_match = re.search(r'hiring plans.*?net\s+(-?\d+)%', content, re.IGNORECASE | re.DOTALL)
         if emp_match:
             employment_val = float(emp_match.group(1))
 
         # -- Good Time to Expand --
-        # Usually implies finding "good time to expand" followed by net percent
-        # This is harder to find in the provided snippet. If not found, leave None.
-        # Often phrasing is "net X% reported it was a good time to expand"
-        expand_match = re.search(r'net\s+(-?\d+)%.*?good time to expand', content, re.IGNORECASE)
+        # "net 6% reported it was a good time to expand"
+        expand_match = re.search(r'net\s+(-?\d+)%.{0,100}?good time to expand', content, re.IGNORECASE | re.DOTALL)
         if expand_match:
             expand_val = float(expand_match.group(1))
 
         # -- Inventory Plans --
-        # Pattern: "net negative 1% ... plan inventory investment"
-        # Handling "net negative 1%" -> "-1"
-        inv_match = re.search(r'net\s+(negative\s+)?(\d+)%.*?plan inventory investment', content, re.IGNORECASE)
+        # "net negative 1% ... plan inventory investment"
+        inv_match = None
+        # Try specific pattern first
+        inv_match = re.search(r'net\s+(negative\s+)?(\d+)%.{0,100}?plan inventory investment', content, re.IGNORECASE | re.DOTALL)
+        
         if inv_match:
-            sign = -1 if inv_match.group(1) else 1
-            inventory_val = float(inv_match.group(2)) * sign
+             sign = -1 if inv_match.group(1) else 1
+             inventory_val = float(inv_match.group(2)) * sign
 
         # -- Capex Plans --
-        # Pattern: "Twenty percent (seasonally adjusted) plan capital outlays"
-        capex_match = re.search(r'(\d+)%.*?plan capital outlays', content, re.IGNORECASE)
+        # "Twenty percent ... plan capital outlays" -> Need to handle words if possible, or look for digits
+        # Try finding digit first
+        capex_match = re.search(r'(\d+)%.{0,50}?plan capital outlays', content, re.IGNORECASE | re.DOTALL)
         if capex_match:
             capex_val = float(capex_match.group(1))
+        else:
+            # Try word mapping for common cases
+            word_map = {'twenty': 20, 'twenty-one': 21, 'nineteen': 19, 'eighteen': 18, 'twenty-two': 22}
+            capex_word = re.search(r'(twenty|nineteen|twenty-one|twenty-two).{0,50}?plan capital outlays', content, re.IGNORECASE | re.DOTALL)
+            if capex_word:
+                word = capex_word.group(1).lower()
+                capex_val = float(word_map.get(word, 0))
 
         if optimism_val is not None:
-            print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Cap: {capex_val}")
-            return {
-                "month": report_month, 
-                "index": optimism_val,
-                "employment": employment_val,
-                "expand": expand_val,
-                "inventory": inventory_val,
-                "capex": capex_val
-            }
+             print(f"Found Data: {report_month} -> Opt: {optimism_val}, Emp: {employment_val}, Exp: {expand_val}, Inv: {inventory_val}, Cap: {capex_val}")
+             return {
+                 "month": report_month, 
+                 "index": optimism_val,
+                 "employment": employment_val,
+                 "expand": expand_val,
+                 "inventory": inventory_val,
+                 "capex": capex_val
+             }
         else:
-            print("Could not find index value in text.")
-            return None
+             print("Could not find index value in text.")
+             return None
 
     except Exception as e:
         print(f"Error fetching data: {e}")
         return None
 
 def load_historical_csv():
-    """Load historical data from 'nfib_history.csv' if it exists."""
+    """Load historical data from 'nfib_history.csv' if it exists.
+    Expected Format: Month, Index, Employment, Expand, Inventory, Capex
+    """
     csv_path = os.path.join(os.getcwd(), 'nfib_history.csv')
     if not os.path.exists(csv_path):
         return []
@@ -181,8 +191,6 @@ def load_historical_csv():
     csv_data = []
     try:
         with open(csv_path, 'r') as f:
-            # Assume header: Month, Index
-            # Format: "Jan 1990", 100.0 or similar
             lines = f.readlines()[1:] # Skip header
             for line in lines:
                 parts = line.strip().split(',')
@@ -190,7 +198,22 @@ def load_historical_csv():
                     month_str = parts[0].strip()
                     try:
                         val = float(parts[1].strip())
-                        csv_data.append({"month": month_str, "index": val})
+                        item = {"month": month_str, "index": val}
+                        
+                        # Helpers to parse optional extras
+                        def parse_float(s):
+                            try:
+                                v = s.strip()
+                                return float(v) if v else None
+                            except:
+                                return None
+
+                        if len(parts) > 2: item['employment'] = parse_float(parts[2])
+                        if len(parts) > 3: item['expand'] = parse_float(parts[3])
+                        if len(parts) > 4: item['inventory'] = parse_float(parts[4])
+                        if len(parts) > 5: item['capex'] = parse_float(parts[5])
+                        
+                        csv_data.append(item)
                     except ValueError:
                         continue
     except Exception as e:
