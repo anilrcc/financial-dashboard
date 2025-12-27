@@ -215,6 +215,13 @@
 
     <!-- Sub-Indices Grid -->
     <h2 style="text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #334155;">Key Components</h2>
+
+    <!-- Time Range Selector for Sub-Charts -->
+    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <button onclick="initSubCharts(6)" class="range-btn">6M</button>
+        <button onclick="initSubCharts(12)" class="range-btn">1Y</button>
+        <button onclick="initSubCharts('all')" class="range-btn active">ALL</button>
+    </div>
     <div
         style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; max-width: 1200px; width: 100%; margin-bottom: 40px;">
 
@@ -1140,12 +1147,20 @@
                 }
             });
 
-            // Initialize Sub-Charts (filter to only show months with sub-component data)
-            // Sub-component data only exists from 2021 onwards
-            const subComponentData = rangeData.filter(d =>
+            // Initialize Sub-Charts with default range
+            initSubCharts('all');
+        }
+
+        // Separate function to initialize sub-charts with time range filtering
+        function initSubCharts(months = 'all') {
+            // Get all data with sub-components (2021 onwards)
+            const allSubData = optimismData.filter(d =>
                 d.employment !== null || d.expand !== null || d.inventory !== null ||
                 d.economy !== null || d.sales !== null
             );
+
+            // Apply time range filter
+            const subComponentData = months === 'all' ? allSubData : allSubData.slice(-months);
             const subLabels = subComponentData.map(d => d.month);
 
             const empData = subComponentData.map(d => d.employment !== undefined ? d.employment : null);
@@ -1172,6 +1187,21 @@
             inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', subLabels, invDataFilled, '#f59e0b');
             economyChart = createSubChart('economyChart', 'Expect Economy to Improve', subLabels, economyDataFilled, '#3b82f6');
             salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', subLabels, salesDataFilled, '#ec4899');
+
+            // Update button active states
+            document.querySelectorAll('.range-btn').forEach((btn, idx) => {
+                const parentDiv = btn.parentElement;
+                // Check if this is the sub-chart button group (has 3 buttons)
+                if (parentDiv && parentDiv.querySelectorAll('.range-btn').length === 3) {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Set active button for sub-charts
+            const subChartButtons = document.querySelectorAll('.range-btn');
+            if (months === 6 && subChartButtons[5]) subChartButtons[5].classList.add('active');
+            else if (months === 12 && subChartButtons[6]) subChartButtons[6].classList.add('active');
+            else if (months === 'all' && subChartButtons[7]) subChartButtons[7].classList.add('active');
         }
 
         // 2. Populate Table
