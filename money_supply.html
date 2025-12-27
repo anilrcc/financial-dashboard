@@ -396,7 +396,7 @@
             return data.filter(item => new Date(item.date) >= cutoffDate);
         }
 
-        function createChart(ctx, data, label, color, type = 'line', showZeroLine = false) {
+        function createChart(ctx, data, label, color, type = 'line', showZeroLine = false, period = 'All') {
             const annotations = getRecessionAnnotations();
             if (showZeroLine) {
                 annotations.zeroLine = {
@@ -454,8 +454,11 @@
                         x: {
                             type: 'time',
                             time: {
-                                unit: 'year',
-                                displayFormats: { year: 'yyyy' }
+                                unit: (period === '1Y' || period === '3Y') ? 'month' : 'year',
+                                displayFormats: {
+                                    month: 'MMM yyyy',
+                                    year: 'yyyy'
+                                }
                             },
                             grid: { display: false },
                             ticks: { maxRotation: 0, autoSkip: true }
@@ -487,21 +490,21 @@
                 label = 'M2 Money Stock';
                 color = '#3182ce'; // Blue
                 ctx = document.getElementById('m2Chart').getContext('2d');
-                m2ChartInstance = createChart(ctx, data, label, color, 'line', false);
+                m2ChartInstance = createChart(ctx, data, label, color, 'line', false, period);
             } else if (chartType === 'growth') {
                 if (growthChartInstance) growthChartInstance.destroy();
                 data = filterData(growthFullData, period);
                 label = 'YoY Growth (%)';
                 color = '#38a169'; // Green
                 ctx = document.getElementById('m2GrowthChart').getContext('2d');
-                growthChartInstance = createChart(ctx, data, label, color, 'line', true);
+                growthChartInstance = createChart(ctx, data, label, color, 'line', true, period);
             } else if (chartType === 'velocity') {
                 if (velocityChartInstance) velocityChartInstance.destroy();
                 data = filterData(velocityFullData, period);
                 label = 'M2 Velocity';
                 color = '#805ad5'; // Purple
                 ctx = document.getElementById('velocityChart').getContext('2d');
-                velocityChartInstance = createChart(ctx, data, label, color, 'line', false);
+                velocityChartInstance = createChart(ctx, data, label, color, 'line', false, period);
             }
         }
 
