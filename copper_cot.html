@@ -142,130 +142,126 @@
         </div>
     </div>
 
+    <!-- Embedded COT Data -->
+    <script src="copper_cot_embedded.js"></script>
+
     <script>
-        // Load and chart the data
-        fetch('copper_cot_data.json')
-            .then(response => response.json())
-            .then(data => {
-                // Calculate statistics
-                const latestData = data[data.length - 1];
-                const values = data.map(d => d.net_pct_oi);
-                const maxValue = Math.max(...values);
-                const minValue = Math.min(...values);
-                const avgValue = values.reduce((a, b) => a + b, 0) / values.length;
+        // Use embedded data instead of fetch
+        const data = cotData;
 
-                // Update stats
-                document.getElementById('stats-grid').innerHTML = `
-                    <div class="stat-box">
-                        <div class="stat-label">Current Net %</div>
-                        <div class="stat-value">${latestData.net_pct_oi.toFixed(2)}%</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Max (Since 2015)</div>
-                        <div class="stat-value">${maxValue.toFixed(2)}%</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Min (Since 2015)</div>
-                        <div class="stat-value">${minValue.toFixed(2)}%</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Average</div>
-                        <div class="stat-value">${avgValue.toFixed(2)}%</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Open Interest</div>
-                        <div class="stat-value">${(latestData.open_interest / 1000).toFixed(0)}k</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">As of</div>
-                        <div class="stat-value" style="font-size: 1.2rem;">${latestData.date}</div>
-                    </div>
-                `;
+        // Calculate statistics
+        const latestData = data[data.length - 1];
+        const values = data.map(d => d.net_pct_oi);
+        const maxValue = Math.max(...values);
+        const minValue = Math.min(...values);
+        const avgValue = values.reduce((a, b) => a + b, 0) / values.length;
 
-                // Create chart
-                const ctx = document.getElementById('cotChart').getContext('2d');
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: data.map(d => d.date),
-                        datasets: [{
-                            label: 'Managed Money Net % OI',
-                            data: data.map(d => d.net_pct_oi),
-                            borderColor: '#667eea',
-                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.1,
-                            pointRadius: 0,
-                            pointHoverRadius: 5
-                        }]
+        // Update stats
+        document.getElementById('stats-grid').innerHTML = `
+            <div class="stat-box">
+                <div class="stat-label">Current Net %</div>
+                <div class="stat-value">${latestData.net_pct_oi.toFixed(2)}%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Max (Since 2015)</div>
+                <div class="stat-value">${maxValue.toFixed(2)}%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Min (Since 2015)</div>
+                <div class="stat-value">${minValue.toFixed(2)}%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Average</div>
+                <div class="stat-value">${avgValue.toFixed(2)}%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Open Interest</div>
+                <div class="stat-value">${(latestData.open_interest / 1000).toFixed(0)}k</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">As of</div>
+                <div class="stat-value" style="font-size: 1.2rem;">${latestData.date}</div>
+            </div>
+        `;
+
+        // Create chart
+        const ctx = document.getElementById('cotChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.date),
+                datasets: [{
+                    label: 'Managed Money Net % OI',
+                    data: data.map(d => d.net_pct_oi),
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1,
+                    pointRadius: 0,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            intersect: false,
-                            mode: 'index'
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const dataPoint = data[context.dataIndex];
-                                        return [
-                                            `Net % OI: ${dataPoint.net_pct_oi.toFixed(2)}%`,
-                                            `Long: ${dataPoint.mm_long.toLocaleString()}`,
-                                            `Short: ${dataPoint.mm_short.toLocaleString()}`,
-                                            `Open Interest: ${dataPoint.open_interest.toLocaleString()}`
-                                        ];
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'year',
-                                    displayFormats: {
-                                        year: 'yyyy'
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Date'
-                                },
-                                grid: {
-                                    display: false
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Net Position (% of Open Interest)'
-                                },
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.05)'
-                                },
-                                ticks: {
-                                    callback: function (value) {
-                                        return value.toFixed(0) + '%';
-                                    }
-                                }
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const dataPoint = data[context.dataIndex];
+                                return [
+                                    `Net % OI: ${dataPoint.net_pct_oi.toFixed(2)}%`,
+                                    `Long: ${dataPoint.mm_long.toLocaleString()}`,
+                                    `Short: ${dataPoint.mm_short.toLocaleString()}`,
+                                    `Open Interest: ${dataPoint.open_interest.toLocaleString()}`
+                                ];
                             }
                         }
                     }
-                });
-            })
-            .catch(error => {
-                console.error('Error loading data:', error);
-                document.getElementById('stats-grid').innerHTML =
-                    '<p style="color: red;">Error loading COT data. Please ensure copper_cot_data.json exists.</p>';
-            });
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'year',
+                            displayFormats: {
+                                year: 'yyyy'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Net Position (% of Open Interest)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            callback: function (value) {
+                                return value.toFixed(0) + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 
