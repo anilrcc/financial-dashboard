@@ -433,6 +433,21 @@
             { month: "Nov 2025", index: 99.0, employment: 19.0, expand: null, inventory: -1.0, economy: 15.0, sales: 15.0 }
         ];
 
+        // Register Chart.js components
+        Chart.register(
+            Chart.LineController,
+            Chart.BarController,
+            Chart.CategoryScale,
+            Chart.LinearScale,
+            Chart.PointElement,
+            Chart.LineElement,
+            Chart.BarElement,
+            Chart.Title,
+            Chart.Tooltip,
+            Chart.Legend,
+            window['chartjs-plugin-annotation']
+        );
+
         // Chart instances
         let optimismChart;
         let employmentChart, expandChart, inventoryChart, economyChart, salesChart;
