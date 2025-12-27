@@ -9,7 +9,7 @@
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script
-        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0/dist/chartjs-plugin-annotation.min.js"></script>
     <style>
         :root {
             --primary-bg: #f8fafc;
@@ -513,7 +513,8 @@
                             }
                         }
                     }
-                });
+                }
+            });
 
             // Initialize Sub-Charts (using filtered rangeData)
             const empData = rangeData.map(d => d.employment !== undefined ? d.employment : null);
