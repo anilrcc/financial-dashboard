@@ -496,7 +496,18 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            align: 'end',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 6,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
                         tooltip: {
                             intersect: false,
                             mode: 'index',
