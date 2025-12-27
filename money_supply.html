@@ -353,6 +353,29 @@
         const growthFullData = [];
         const velocityFullData = [];
 
+        // Recession Periods (NBER)
+        const recessionPeriods = [
+            { start: '1990-07-01', end: '1991-03-01' },
+            { start: '2001-03-01', end: '2001-11-01' },
+            { start: '2007-12-01', end: '2009-06-01' },
+            { start: '2020-02-01', end: '2020-04-01' }
+        ];
+
+        function getRecessionAnnotations() {
+            const annotations = {};
+            recessionPeriods.forEach((period, index) => {
+                annotations['recession' + index] = {
+                    type: 'box',
+                    xMin: period.start,
+                    xMax: period.end,
+                    backgroundColor: 'rgba(200, 200, 200, 0.4)',
+                    borderWidth: 0,
+                    drawTime: 'beforeDatasetsDraw'
+                };
+            });
+            return annotations;
+        }
+
         function filterData(data, period) {
             if (!data || data.length === 0) return [];
             if (period === 'All') return data;
@@ -372,7 +395,7 @@
         }
 
         function createChart(ctx, data, label, color, type = 'line', showZeroLine = false) {
-            const annotations = {};
+            const annotations = getRecessionAnnotations();
             if (showZeroLine) {
                 annotations.zeroLine = {
                     type: 'line',
