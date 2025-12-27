@@ -824,6 +824,39 @@
             });
         }
 
+        // Helper to fill gaps in data with linear interpolation
+        function fillGaps(data) {
+            const filled = [...data];
+            for (let i = 0; i < filled.length; i++) {
+                if (filled[i] === null || filled[i] === undefined) {
+                    // Find previous non-null value
+                    let prevIdx = i - 1;
+                    while (prevIdx >= 0 && (filled[prevIdx] === null || filled[prevIdx] === undefined)) {
+                        prevIdx--;
+                    }
+                    // Find next non-null value
+                    let nextIdx = i + 1;
+                    while (nextIdx < filled.length && (filled[nextIdx] === null || filled[nextIdx] === undefined)) {
+                        nextIdx++;
+                    }
+
+                    // Interpolate
+                    if (prevIdx >= 0 && nextIdx < filled.length) {
+                        const prevVal = filled[prevIdx];
+                        const nextVal = filled[nextIdx];
+                        const steps = nextIdx - prevIdx;
+                        const step = i - prevIdx;
+                        filled[i] = prevVal + (nextVal - prevVal) * (step / steps);
+                    } else if (prevIdx >= 0) {
+                        filled[i] = filled[prevIdx]; // Use previous value
+                    } else if (nextIdx < filled.length) {
+                        filled[i] = filled[nextIdx]; // Use next value
+                    }
+                }
+            }
+            return filled;
+        }
+
         // Helper to create small charts
         function createSubChart(ctxId, label, labels, data, color) {
             const ctx = document.getElementById(ctxId).getContext('2d');
@@ -1121,17 +1154,24 @@
             const economyData = subComponentData.map(d => d.economy !== undefined ? d.economy : null);
             const salesData = subComponentData.map(d => d.sales !== undefined ? d.sales : null);
 
+            // Fill gaps in data with interpolation
+            const empDataFilled = fillGaps(empData);
+            const expandDataFilled = fillGaps(expandData);
+            const invDataFilled = fillGaps(invData);
+            const economyDataFilled = fillGaps(economyData);
+            const salesDataFilled = fillGaps(salesData);
+
             if (employmentChart) employmentChart.destroy();
             if (expandChart) expandChart.destroy();
             if (inventoryChart) inventoryChart.destroy();
             if (economyChart) economyChart.destroy();
             if (salesChart) salesChart.destroy();
 
-            employmentChart = createSubChart('employmentChart', 'Employment Plans', subLabels, empData, '#8b5cf6');
-            expandChart = createSubChart('expandChart', 'Good Time to Expand', subLabels, expandData, '#10b981');
-            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', subLabels, invData, '#f59e0b');
-            economyChart = createSubChart('economyChart', 'Expect Economy to Improve', subLabels, economyData, '#3b82f6');
-            salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', subLabels, salesData, '#ec4899');
+            employmentChart = createSubChart('employmentChart', 'Employment Plans', subLabels, empDataFilled, '#8b5cf6');
+            expandChart = createSubChart('expandChart', 'Good Time to Expand', subLabels, expandDataFilled, '#10b981');
+            inventoryChart = createSubChart('inventoryChart', 'Inventory Plans', subLabels, invDataFilled, '#f59e0b');
+            economyChart = createSubChart('economyChart', 'Expect Economy to Improve', subLabels, economyDataFilled, '#3b82f6');
+            salesChart = createSubChart('salesChart', 'Expect Real Sales Higher', subLabels, salesDataFilled, '#ec4899');
         }
 
         // 2. Populate Table
