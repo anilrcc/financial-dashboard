@@ -14,11 +14,12 @@ import csv
 import io
 
 # FRED Direct CSV URLs
-# Using Global Price Index for Copper/Iron/Oil if available, or Spot Prices
 CSV_URLS = {
     'oil': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO',      # WTI Crude Oil Prices (Daily)
     'brent': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU',  # Brent Crude Oil Prices (Daily)
-    'copper': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCOPPUSDM'     # Global Price of Copper (Monthly)
+    'copper': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCOPPUSDM',    # Global Price of Copper (Monthly)
+    'lumber': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=WPU0811',      # PPI: Lumber & Wood Products
+    'iron': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PIORECRUSDM'     # Global Price of Iron Ore
 }
 
 def fetch_csv_data(url):
@@ -66,7 +67,7 @@ def fetch_csv_data(url):
         print(f"  ✗ Error fetching CSV: {e}")
         return []
 
-def update_html_file(oil, brent, spread, copper):
+def update_html_file(oil, brent, spread, copper, lumber, iron):
     """Update the commodities.html file with new data"""
     html_file = 'commodities.html'
     
@@ -82,11 +83,6 @@ def update_html_file(oil, brent, spread, copper):
     def insert_data(var_name, data_list):
         js_str = json.dumps(data_list, separators=(',', ': '))
         nonlocal content
-        # Check if variable exists, if not we might need to be careful, but assuming HTML is updated
-        # We'll use a generic replacement for the JS const definitions
-        # If the regex doesn't match (because variable name changed), it simply won't replace.
-        # So we need to ensure HTML is updated first or concurrently.
-        # But 'commodities.html' will be rewritten next step.
         content = re.sub(
             f'const {var_name} = \[.*?\];',
             f'const {var_name} = {js_str};',
@@ -99,6 +95,8 @@ def update_html_file(oil, brent, spread, copper):
     insert_data('brentData', brent)
     insert_data('spreadData', spread)
     insert_data('copperData', copper)
+    insert_data('lumberData', lumber)
+    insert_data('ironData', iron)
     
     # Update the deployment version timestamp
     today = datetime.now().strftime('%Y-%m-%d-%H%M')
@@ -165,31 +163,30 @@ def calculate_spread(series_a, series_b):
 def main():
     """Main function"""
     print("==================================================")
-    print("   Fetching Oil (WTI/Brent) & Copper Data")
+    print("   Fetching All Benchmark Commodities Data")
     print("   (CSV Download Method)")
     print("==================================================")
     
     oil = fetch_csv_data(CSV_URLS['oil'])
     brent = fetch_csv_data(CSV_URLS['brent'])
     copper = fetch_csv_data(CSV_URLS['copper'])
+    lumber = fetch_csv_data(CSV_URLS['lumber'])
+    iron = fetch_csv_data(CSV_URLS['iron'])
     
     if not oil or not brent:
         print("❌ Critical: Failed to download Oil data.")
         return
 
     # Calculate Spread: WTI - Brent
-    # Usually WTI trades at a discount to Brent, so this will be negative.
-    # The user asked for "WTI-Brent spread".
     spread = calculate_spread(oil, brent)
 
     print("\nUpdating commodities.html...")
-    if update_html_file(oil, brent, spread, copper):
+    if update_html_file(oil, brent, spread, copper, lumber, iron):
         print("✓ Successfully updated commodities.html")
         update_index_page()
         
         if oil: print(f"Latest WTI: ${oil[-1]['value']}")
         if brent: print(f"Latest Brent: ${brent[-1]['value']}")
-        if spread: print(f"Latest Spread: ${spread[-1]['value']}")
     else:
         print("✗ Failed to update HTML file")
 
