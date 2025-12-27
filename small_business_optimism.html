@@ -7,8 +7,9 @@
     <title>Small Business Optimism Index</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <style>
         :root {
             --primary-bg: #f8fafc;
@@ -74,113 +75,190 @@
             border: 1px solid var(--border-color);
         }
 
-        .summary-box {
-            width: 100%;
-            max-width: 800px;
-            background-color: #e0f2fe;
-            /* Light Sky */
-            border-left: 5px solid var(--accent-color);
-            padding: 20px;
-            margin-bottom: 40px;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-
-        .summary-box h3 {
-            margin-top: 0;
-            color: #0369a1;
-            /* Dark Sky */
-        }
-
-        .summary-box p {
-            margin: 0;
-            line-height: 1.6;
-            color: #0c4a6e;
-        }
-
-        .table-container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-bottom: 40px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th,
-        td {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: #f1f5f9;
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .trend-up {
-            color: #10b981;
-            font-weight: 600;
-        }
-
-        .trend-down {
-            color: #ef4444;
-            font-weight: 600;
-        }
-
-        .footer {
-            margin-top: 40px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        .time-range-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .time-range-btn {
-            padding: 8px 16px;
-            border: 2px solid var(--border-color);
-            background: white;
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .time-range-btn:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .time-range-btn.active {
-            background: var(--accent-color);
-            color: white;
-            border-color: var(--accent-color);
-        }
+        /* ... styles ... */
     </style>
+</head>
+
+<body>
+    <!-- ... body content ... -->
+    <script>
+        // ... data ...
+    </script>
+</body>
+
+</html>
+<style>
+    :root {
+        --primary-bg: #f8fafc;
+        --text-main: #1e293b;
+        --text-secondary: #64748b;
+        --card-bg: #ffffff;
+        --border-color: #e2e8f0;
+        --accent-color: #0ea5e9;
+        /* Sky Blue */
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--primary-bg);
+        color: var(--text-main);
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+    }
+
+    .back-nav {
+        width: 100%;
+        max-width: 1000px;
+        margin-bottom: 20px;
+    }
+
+    .back-nav a {
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.2s;
+    }
+
+    .back-nav a:hover {
+        color: var(--accent-color);
+    }
+
+    .chart-container {
+        width: 100%;
+        max-width: 1200px;
+        height: 600px;
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin-bottom: 40px;
+        border: 1px solid var(--border-color);
+    }
+
+    .summary-box {
+        width: 100%;
+        max-width: 800px;
+        background-color: #e0f2fe;
+        /* Light Sky */
+        border-left: 5px solid var(--accent-color);
+        padding: 20px;
+        margin-bottom: 40px;
+        border-radius: 8px;
+        box-sizing: border-box;
+    }
+
+    .summary-box h3 {
+        margin-top: 0;
+        color: #0369a1;
+        /* Dark Sky */
+    }
+
+    .summary-box p {
+        margin: 0;
+        line-height: 1.6;
+        color: #0c4a6e;
+    }
+
+    .table-container {
+        width: 100%;
+        max-width: 800px;
+        background: var(--card-bg);
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        margin-bottom: 40px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    th,
+    td {
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+        background-color: #f1f5f9;
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .trend-up {
+        color: #10b981;
+        font-weight: 600;
+    }
+
+    .trend-down {
+        color: #ef4444;
+        font-weight: 600;
+    }
+
+    .footer {
+        margin-top: 40px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .time-range-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .time-range-btn {
+        padding: 8px 16px;
+        border: 2px solid var(--border-color);
+        background: white;
+        color: var(--text-secondary);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    .time-range-btn:hover {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+    }
+
+    .time-range-btn.active {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+</style>
 </head>
 
 <body>
@@ -260,9 +338,13 @@
     <!-- Summary Box -->
     <div id="optimism-summary-box" class="summary-box">
         <h3>Key Insights: Nov 2025</h3>
-        <p><strong>Current Index: 99.0 (Below Average)</strong> - The index remains <strong style="color: #ef4444;">below average</strong> relative to the baseline of 100. This represents a rise of 0.8 points from Oct 2025.</p>
-        <p><strong>Historical Context:</strong> Key drivers include: optimism about the economy is net positive (15.0%), sales expectations are improving (15.0%). Inflation and labor quality continue to be cited as persistent headwinds, although recent data suggests some stabilization in sentiment.</p>
-        </div>
+        <p><strong>Current Index: 99.0 (Below Average)</strong> - The index remains <strong
+                style="color: #ef4444;">below average</strong> relative to the baseline of 100. This represents a rise
+            of 0.8 points from Oct 2025.</p>
+        <p><strong>Historical Context:</strong> Key drivers include: optimism about the economy is net positive (15.0%),
+            sales expectations are improving (15.0%). Inflation and labor quality continue to be cited as persistent
+            headwinds, although recent data suggests some stabilization in sentiment.</p>
+    </div>
 
     <!-- Data Table -->
     <div class="table-container">
@@ -473,9 +555,8 @@
                         },
                         scales: {
                             y: {
-                                // Dynamically scale
-                                min: Math.floor(Math.min(...dataPoints) / 5) * 5 - 5,
-                                max: Math.ceil(Math.max(...dataPoints) / 5) * 5 + 5,
+                                suggestedMin: 85,
+                                suggestedMax: 110,
                                 grid: {
                                     color: '#e2e8f0'
                                 },
