@@ -300,21 +300,6 @@
             </div>
         </div>
 
-        <!-- M2 Level Chart -->
-        <div class="chart-container">
-            <div class="chart-header">
-                <div class="chart-title">M2 Money Stock (Billions USD)</div>
-                <div class="time-toggle">
-                    <button class="time-btn" onclick="updateChart('m2', '1Y')">1Y</button>
-                    <button class="time-btn" onclick="updateChart('m2', '3Y')">3Y</button>
-                    <button class="time-btn" onclick="updateChart('m2', '5Y')">5Y</button>
-                    <button class="time-btn" onclick="updateChart('m2', '10Y')">10Y</button>
-                    <button class="time-btn active" onclick="updateChart('m2', 'All')">All</button>
-                </div>
-            </div>
-            <canvas id="m2Chart"></canvas>
-        </div>
-
         <!-- M2 YoY Growth Chart -->
         <div class="chart-container">
             <div class="chart-header">
@@ -340,6 +325,21 @@
                 </div>
             </div>
             <canvas id="velocityChart"></canvas>
+        </div>
+
+        <!-- M2 Level Chart -->
+        <div class="chart-container">
+            <div class="chart-header">
+                <div class="chart-title">M2 Money Stock (Billions USD)</div>
+                <div class="time-toggle">
+                    <button class="time-btn" onclick="updateChart('m2', '1Y')">1Y</button>
+                    <button class="time-btn" onclick="updateChart('m2', '3Y')">3Y</button>
+                    <button class="time-btn" onclick="updateChart('m2', '5Y')">5Y</button>
+                    <button class="time-btn" onclick="updateChart('m2', '10Y')">10Y</button>
+                    <button class="time-btn active" onclick="updateChart('m2', 'All')">All</button>
+                </div>
+            </div>
+            <canvas id="m2Chart"></canvas>
         </div>
 
     </div>
