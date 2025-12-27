@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Create a unified COT page with tabs for all commodities
+Congruent with the website's clean, professional aesthetic.
 """
 
 import json
@@ -24,10 +25,22 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Commitment of Traders - Market Pulse</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
+        :root {{
+            --primary-bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-blue: #3b82f6;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }}
+
         * {{
             margin: 0;
             padding: 0;
@@ -36,125 +49,182 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
 
         body {{
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
             min-height: 100vh;
-            padding: 40px 20px;
         }}
 
         .container {{
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 40px 20px;
         }}
 
-        .header {{
+        .header-section {{
+            width: 100%;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 60px 20px;
             text-align: center;
-            color: white;
             margin-bottom: 40px;
         }}
 
-        .header h1 {{
+        h1 {{
             font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0 0 10px 0;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }}
 
-        .header p {{
+        .subtitle {{
             font-size: 1.1rem;
-            opacity: 0.9;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }}
+
+        .back-nav {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
         }}
 
         .back-link {{
-            display: inline-block;
-            color: white;
+            color: var(--accent-blue);
             text-decoration: none;
             font-weight: 600;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
         }}
 
         .back-link:hover {{
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateX(-5px);
+            transform: translateX(-4px);
+        }}
+
+        .tabs-container {{
+            background: white;
+            padding: 10px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            overflow-x: auto;
         }}
 
         .tabs {{
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
+            gap: 8px;
+            min-width: max-content;
         }}
 
         .tab {{
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
             font-size: 0.95rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }}
 
         .tab:hover {{
-            background: rgba(255, 255, 255, 0.3);
+            background: #f1f5f9;
+            color: var(--text-main);
         }}
 
         .tab.active {{
-            background: white;
-            color: #667eea;
-            border-color: white;
+            background: #eff6ff;
+            color: var(--accent-blue);
         }}
 
         .card {{
-            background: white;
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             margin-bottom: 30px;
+        }}
+
+        .card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }}
+
+        .card-title {{
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }}
+
+        .time-filters {{
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
+            gap: 4px;
+        }}
+
+        .time-btn {{
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }}
+
+        .time-btn:hover {{
+            color: var(--text-main);
+        }}
+
+        .time-btn.active {{
+            background: white;
+            color: var(--accent-blue);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }}
 
         .chart-container {{
             position: relative;
-            height: 500px;
-            margin-top: 20px;
+            height: 550px;
+            width: 100%;
         }}
 
-        .info-text {{
-            color: #64748b;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-top: 20px;
-            padding: 15px;
+        .info-box {{
+            margin-top: 30px;
+            padding: 20px;
             background: #f8fafc;
+            border-left: 4px solid var(--accent-blue);
             border-radius: 8px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }}
 
-        .time-btn {{
-            background: white;
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 8px 20px;
-            margin: 0 5px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }}
-
-        .time-btn:hover {{
-            background: #f0f4ff;
-        }}
-
-        .time-btn.active {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-color: transparent;
+        .info-box strong {{
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 5px;
         }}
 
         .commodity-view {{
@@ -164,26 +234,40 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         .commodity-view.active {{
             display: block;
         }}
+
+        @media (max-width: 768px) {{
+            .card-header {{
+                flex-direction: column;
+                align-items: flex-start;
+            }}
+            .time-filters {{
+                width: 100%;
+                justify-content: center;
+            }}
+        }}
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <a href="index.html" class="back-link">← Back to Financial Dashboard</a>
-
-        <div class="header">
-            <h1>📊 Commitment of Traders</h1>
-            <p>Managed Money Net Position (% of Open Interest)</p>
+    <header class="header-section">
+        <div class="container" style="padding: 0;">
+            <a href="index.html" class="back-link" style="margin-bottom: 30px;">← Back to Financial Dashboard</a>
+            <h1>Commitment of Traders</h1>
+            <p class="subtitle">Institutional sentiment analysis of commodity futures through Managed Money net positioning.</p>
         </div>
+    </header>
 
+    <main class="container">
         <!-- Commodity Tabs -->
-        <div class="tabs">
+        <div class="tabs-container">
+            <div class="tabs">
 {tabs}
+            </div>
         </div>
 
         <!-- Commodity Views -->
 {views}
-    </div>
+    </main>
 
     <!-- Load all commodity data -->
 {scripts}
@@ -200,13 +284,24 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
             }});
 
             // Show selected view
-            document.getElementById(commodityId + '-view').classList.add('active');
+            const selectedView = document.getElementById(commodityId + '-view');
+            if (selectedView) {{
+                selectedView.classList.add('active');
+            }}
 
             // Update tab states
             document.querySelectorAll('.tab').forEach(tab => {{
                 tab.classList.remove('active');
             }});
-            document.querySelector(`[data-commodity="${{commodityId}}"]`).classList.add('active');
+            const activeTab = document.querySelector(`[data-commodity="${{commodityId}}"]`);
+            if (activeTab) {{
+                activeTab.classList.add('active');
+            }}
+
+            // Scroll tab into view if needed
+            if (activeTab) {{
+                activeTab.scrollIntoView({{ behavior: 'smooth', block: 'nearest', inline: 'center' }});
+            }}
 
             // Update current commodity and recreate chart
             currentCommodity = commodityId;
@@ -231,7 +326,9 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         }}
 
         function createChart(data, canvasId) {{
-            const ctx = document.getElementById(canvasId).getContext('2d');
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
 
             if (currentChart) {{
                 currentChart.destroy();
@@ -251,7 +348,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                             }},
                             backgroundColor: ctx => {{
                                 const value = ctx.p1.parsed.y;
-                                return value >= 0 ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                                return value >= 0 ? 'rgba(34, 197, 94, 0.08)' : 'rgba(239, 68, 68, 0.08)';
                             }}
                         }},
                         borderWidth: 2,
@@ -270,18 +367,27 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                     }},
                     plugins: {{
                         legend: {{
-                            display: true,
-                            position: 'top'
+                            display: false
                         }},
                         tooltip: {{
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
                             callbacks: {{
+                                title: function(context) {{
+                                    return new Date(context[0].label).toLocaleDateString(undefined, {{ year: 'numeric', month: 'long', day: 'numeric' }});
+                                }},
                                 label: function (context) {{
                                     const dataPoint = data[context.dataIndex];
                                     return [
                                         `Net % OI: ${{dataPoint.net_pct_oi.toFixed(2)}}%`,
-                                        `Long: ${{dataPoint.mm_long.toLocaleString()}}`,
-                                        `Short: ${{dataPoint.mm_short.toLocaleString()}}`,
-                                        `Open Interest: ${{dataPoint.open_interest.toLocaleString()}}`
+                                        `Long Positions: ${{dataPoint.mm_long.toLocaleString()}}`,
+                                        `Short Positions: ${{dataPoint.mm_short.toLocaleString()}}`,
+                                        `Total Open Interest: ${{dataPoint.open_interest.toLocaleString()}}`
                                     ];
                                 }}
                             }}
@@ -291,28 +397,27 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                         x: {{
                             type: 'time',
                             time: {{
-                                unit: 'year',
+                                unit: data.length > 500 ? 'year' : 'month',
                                 displayFormats: {{
+                                    month: 'MMM yyyy',
                                     year: 'yyyy'
                                 }}
                             }},
-                            title: {{
-                                display: true,
-                                text: 'Date'
-                            }},
                             grid: {{
                                 display: false
+                            }},
+                            ticks: {{
+                                color: '#94a3b8',
+                                font: {{ size: 11 }}
                             }}
                         }},
                         y: {{
-                            title: {{
-                                display: true,
-                                text: 'Net Position (% of Open Interest)'
-                            }},
                             grid: {{
-                                color: 'rgba(0, 0, 0, 0.05)'
+                                color: '#f1f5f9'
                             }},
                             ticks: {{
+                                color: '#94a3b8',
+                                font: {{ size: 11 }},
                                 callback: function (value) {{
                                     return value.toFixed(0) + '%';
                                 }}
@@ -326,14 +431,18 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
         function updateChart(period) {{
             currentPeriod = period;
 
-            // Update button states
+            // Update button states in all views (to keep them in sync or just the active one)
             document.querySelectorAll('.time-btn').forEach(btn => {{
                 btn.classList.remove('active');
+                if (btn.getAttribute('data-period') === period) {{
+                    btn.classList.add('active');
+                }}
             }});
-            event.target.classList.add('active');
 
             // Get data for current commodity
             const data = window[currentCommodity + 'Data'];
+            if (!data) return;
+
             const filteredData = filterDataByPeriod(data, period);
             const canvasId = currentCommodity + '-chart';
             
@@ -357,7 +466,7 @@ def generate_unified_page():
         data_file = f"{commodity['id']}_cot_data.json"
         if os.path.exists(data_file):
             tabs_html.append(
-                f'            <div class="tab" data-commodity="{commodity["id"]}" onclick="showCommodity(\'{commodity["id"]}\')">'
+                f'                <div class="tab" data-commodity="{commodity["id"]}" onclick="showCommodity(\'{commodity["id"]}\')">'
                 f'{commodity["icon"]} {commodity["name"]}</div>'
             )
     
@@ -366,47 +475,51 @@ def generate_unified_page():
     for commodity in COMMODITIES:
         data_file = f"{commodity['id']}_cot_data.json"
         if os.path.exists(data_file):
-            with open(data_file, 'r') as f:
-                data = json.load(f)
-            
-            start_year = data[0]['date'][:4]
-            
-            view_html = f'''        <div id="{commodity['id']}-view" class="commodity-view">
-            <div class="card">
-                <h2 style="text-align: center; margin-bottom: 20px; color: #1e293b;">
-                    {commodity['icon']} {commodity['name']} | {start_year} - Present
-                </h2>
+            try:
+                with open(data_file, 'r') as f:
+                    data = json.load(f)
                 
-                <!-- Time Period Buttons -->
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <button class="time-btn active" onclick="updateChart('ALL')">ALL</button>
-                    <button class="time-btn" onclick="updateChart('5Y')">5Y</button>
-                    <button class="time-btn" onclick="updateChart('1Y')">1Y</button>
+                start_year = data[0]['date'][:4]
+                
+                view_html = f'''        <div id="{commodity['id']}-view" class="commodity-view">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">{commodity['icon']} {commodity['name']} Sentiment <span style="font-weight: 400; color: var(--text-secondary); font-size: 0.9rem; margin-left: 10px;">({start_year} - Present)</span></h2>
+                    <div class="time-filters">
+                        <button class="time-btn" data-period="ALL" onclick="updateChart('ALL')">ALL</button>
+                        <button class="time-btn" data-period="5Y" onclick="updateChart('5Y')">5Y</button>
+                        <button class="time-btn" data-period="1Y" onclick="updateChart('1Y')">1Y</button>
+                    </div>
                 </div>
 
                 <div class="chart-container">
                     <canvas id="{commodity['id']}-chart"></canvas>
                 </div>
 
-                <div class="info-text">
-                    <strong>About this chart:</strong> This shows the net position of Managed Money traders (hedge funds,
-                    CTAs, etc.) as a percentage of total open interest in {commodity['name'].lower()} futures.
-                    Positive values indicate net long positions (bullish), while negative values indicate net short
-                    positions (bearish). Data source: CFTC Disaggregated Commitments of Traders Report.
+                <div class="info-box">
+                    <strong>About Managed Money Net Position</strong>
+                    This indicator calculates the net position (Longs minus Shorts) of "Managed Money" traders as a percentage of total open interest. 
+                    Managed Money includes hedge funds and commodity trading advisors whose positioning often drives momentum. 
+                    <span style="color: var(--accent-green); font-weight: 600;">Positive values</span> indicate a net long (bullish) positioning, while 
+                    <span style="color: var(--accent-red); font-weight: 600;">negative values</span> show a net short (bearish) positioning.
                 </div>
             </div>
         </div>'''
-            
-            views_html.append(view_html)
+                views_html.append(view_html)
+            except Exception as e:
+                print(f"Error processing {commodity['id']}: {e}")
     
     # Generate script tags
     scripts_html = []
     for commodity in COMMODITIES:
         data_file = f"{commodity['id']}_cot_data.json"
         if os.path.exists(data_file):
-            with open(data_file, 'r') as f:
-                data = json.load(f)
-            scripts_html.append(f'    <script>const {commodity["id"]}Data = {json.dumps(data)};</script>')
+            try:
+                with open(data_file, 'r') as f:
+                    data = json.load(f)
+                scripts_html.append(f'    <script>window.{commodity["id"]}Data = {json.dumps(data)};</script>')
+            except Exception as e:
+                print(f"Error loading data for script {commodity['id']}: {e}")
     
     # Generate final HTML
     html = HTML_TEMPLATE.format(
@@ -419,11 +532,11 @@ def generate_unified_page():
     with open('cot_reports.html', 'w') as f:
         f.write(html)
     
-    print("✓ Generated cot_reports.html with tabs for all commodities")
+    print("✓ Generated premium cot_reports.html with unified design")
 
 if __name__ == '__main__':
     print("\n" + "="*80)
-    print("GENERATING UNIFIED COT PAGE")
+    print("GENERATING PREMIUM UNIFIED COT PAGE")
     print("="*80)
     print()
     
