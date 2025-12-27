@@ -234,8 +234,8 @@ def main():
         print("❌ Critical: Failed to download Oil data.")
         return
 
-    # Calculate Spread: WTI - Brent
-    spread = calculate_spread(oil, brent)
+    # Calculate Spread: Brent - WTI
+    spread = calculate_spread(brent, oil)
 
     print("\nUpdating commodities.html...")
     if update_html_file(oil, brent, spread, copper, lumber, iron):
