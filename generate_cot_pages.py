@@ -1,63 +1,80 @@
-<!DOCTYPE html>
+#!/usr/bin/env python3
+"""
+Generate COT chart HTML pages for all commodities
+"""
+
+import json
+import os
+
+COMMODITIES = {
+    'copper': {'name': 'Copper', 'icon': '🔩'},
+    'gold': {'name': 'Gold', 'icon': '🥇'},
+    'silver': {'name': 'Silver', 'icon': '🥈'},
+    'platinum': {'name': 'Platinum', 'icon': '⚪'},
+    'palladium': {'name': 'Palladium', 'icon': '⚫'},
+    'aluminum': {'name': 'Aluminum', 'icon': '🔘'},
+}
+
+HTML_TEMPLATE = '''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copper COT - Managed Money Net Position</title>
+    <title>{name} COT - Managed Money Net Position</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <style>
-        * {
+        * {{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
+        }}
 
-        body {
+        body {{
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
-        }
+        }}
 
-        .container {
+        .container {{
             max-width: 1400px;
             margin: 0 auto;
-        }
+        }}
 
-        .header {
+        .header {{
             text-align: center;
             color: white;
             margin-bottom: 40px;
-        }
+        }}
 
-        .header h1 {
+        .header h1 {{
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 10px;
-        }
+        }}
 
-        .header p {
+        .header p {{
             font-size: 1.1rem;
             opacity: 0.9;
-        }
+        }}
 
-        .card {
+        .card {{
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             margin-bottom: 30px;
-        }
+        }}
 
-        .chart-container {
+        .chart-container {{
             position: relative;
             height: 500px;
             margin-top: 20px;
-        }
+        }}
 
-        .back-link {
+        .back-link {{
             display: inline-block;
             color: white;
             text-decoration: none;
@@ -67,14 +84,14 @@
             background: rgba(255, 255, 255, 0.2);
             border-radius: 8px;
             transition: all 0.3s;
-        }
+        }}
 
-        .back-link:hover {
+        .back-link:hover {{
             background: rgba(255, 255, 255, 0.3);
             transform: translateX(-5px);
-        }
+        }}
 
-        .info-text {
+        .info-text {{
             color: #64748b;
             font-size: 0.95rem;
             line-height: 1.6;
@@ -82,9 +99,9 @@
             padding: 15px;
             background: #f8fafc;
             border-radius: 8px;
-        }
+        }}
 
-        .time-btn {
+        .time-btn {{
             background: white;
             border: 2px solid #667eea;
             color: #667eea;
@@ -95,17 +112,17 @@
             cursor: pointer;
             transition: all 0.3s;
             font-size: 0.9rem;
-        }
+        }}
 
-        .time-btn:hover {
+        .time-btn:hover {{
             background: #f0f4ff;
-        }
+        }}
 
-        .time-btn.active {
+        .time-btn.active {{
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-color: transparent;
-        }
+        }}
     </style>
 </head>
 
@@ -114,8 +131,8 @@
         <a href="index.html" class="back-link">← Back to Financial Dashboard</a>
 
         <div class="header">
-            <h1>🔩 Copper - Commitment of Traders</h1>
-            <p>Managed Money Net Position (% of Open Interest) | 2006 - Present</p>
+            <h1>{icon} {name} - Commitment of Traders</h1>
+            <p>Managed Money Net Position (% of Open Interest) | {date_range}</p>
         </div>
 
         <div class="card">
@@ -132,7 +149,7 @@
 
             <div class="info-text">
                 <strong>About this chart:</strong> This shows the net position of Managed Money traders (hedge funds,
-                CTAs, etc.) as a percentage of total open interest in copper futures.
+                CTAs, etc.) as a percentage of total open interest in {name_lower} futures.
                 Positive values indicate net long positions (bullish), while negative values indicate net short
                 positions (bearish).
                 Data source: CFTC Disaggregated Commitments of Traders Report.
@@ -141,142 +158,194 @@
     </div>
 
     <!-- Embedded COT Data -->
-    <script src="copper_cot_embedded.js"></script>
+    <script src="{commodity_id}_cot_embedded.js"></script>
 
     <script>
         // Use embedded data instead of fetch
         const allData = cotData;
         let currentChart = null;
 
-        function filterDataByPeriod(period) {
-            if (period === 'ALL') {
+        function filterDataByPeriod(period) {{
+            if (period === 'ALL') {{
                 return allData;
-            }
+            }}
 
             const now = new Date(allData[allData.length - 1].date);
             const cutoffDate = new Date(now);
 
-            if (period === '1Y') {
+            if (period === '1Y') {{
                 cutoffDate.setFullYear(now.getFullYear() - 1);
-            } else if (period === '5Y') {
+            }} else if (period === '5Y') {{
                 cutoffDate.setFullYear(now.getFullYear() - 5);
-            }
+            }}
 
             return allData.filter(d => new Date(d.date) >= cutoffDate);
-        }
+        }}
 
-        function createChart(data) {
+        function createChart(data) {{
             const ctx = document.getElementById('cotChart').getContext('2d');
 
-            if (currentChart) {
+            if (currentChart) {{
                 currentChart.destroy();
-            }
+            }}
 
-            currentChart = new Chart(ctx, {
+            currentChart = new Chart(ctx, {{
                 type: 'line',
-                data: {
+                data: {{
                     labels: data.map(d => d.date),
-                    datasets: [{
+                    datasets: [{{
                         label: 'Managed Money Net % OI',
                         data: data.map(d => d.net_pct_oi),
-                        segment: {
-                            borderColor: ctx => {
+                        segment: {{
+                            borderColor: ctx => {{
                                 const value = ctx.p1.parsed.y;
                                 const prevValue = ctx.p0.parsed.y;
-                                if ((prevValue < 0 && value >= 0) || (prevValue >= 0 && value < 0)) {
+                                if ((prevValue < 0 && value >= 0) || (prevValue >= 0 && value < 0)) {{
                                     return value >= 0 ? '#22c55e' : '#ef4444';
-                                }
+                                }}
                                 return value >= 0 ? '#22c55e' : '#ef4444';
-                            },
-                            backgroundColor: ctx => {
+                            }},
+                            backgroundColor: ctx => {{
                                 const value = ctx.p1.parsed.y;
                                 return value >= 0 ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)';
-                            }
-                        },
+                            }}
+                        }},
                         borderWidth: 2,
                         fill: true,
                         tension: 0.1,
                         pointRadius: 0,
                         pointHoverRadius: 5
-                    }]
-                },
-                options: {
+                    }}]
+                }},
+                options: {{
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
+                    interaction: {{
                         intersect: false,
                         mode: 'index'
-                    },
-                    plugins: {
-                        legend: {
+                    }},
+                    plugins: {{
+                        legend: {{
                             display: true,
                             position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
+                        }},
+                        tooltip: {{
+                            callbacks: {{
+                                label: function (context) {{
                                     const dataPoint = data[context.dataIndex];
                                     return [
-                                        `Net % OI: ${dataPoint.net_pct_oi.toFixed(2)}%`,
-                                        `Long: ${dataPoint.mm_long.toLocaleString()}`,
-                                        `Short: ${dataPoint.mm_short.toLocaleString()}`,
-                                        `Open Interest: ${dataPoint.open_interest.toLocaleString()}`
+                                        `Net % OI: ${{dataPoint.net_pct_oi.toFixed(2)}}%`,
+                                        `Long: ${{dataPoint.mm_long.toLocaleString()}}`,
+                                        `Short: ${{dataPoint.mm_short.toLocaleString()}}`,
+                                        `Open Interest: ${{dataPoint.open_interest.toLocaleString()}}`
                                     ];
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
+                                }}
+                            }}
+                        }}
+                    }},
+                    scales: {{
+                        x: {{
                             type: 'time',
-                            time: {
+                            time: {{
                                 unit: 'year',
-                                displayFormats: {
+                                displayFormats: {{
                                     year: 'yyyy'
-                                }
-                            },
-                            title: {
+                                }}
+                            }},
+                            title: {{
                                 display: true,
                                 text: 'Date'
-                            },
-                            grid: {
+                            }},
+                            grid: {{
                                 display: false
-                            }
-                        },
-                        y: {
-                            title: {
+                            }}
+                        }},
+                        y: {{
+                            title: {{
                                 display: true,
                                 text: 'Net Position (% of Open Interest)'
-                            },
-                            grid: {
+                            }},
+                            grid: {{
                                 color: 'rgba(0, 0, 0, 0.05)'
-                            },
-                            ticks: {
-                                callback: function (value) {
+                            }},
+                            ticks: {{
+                                callback: function (value) {{
                                     return value.toFixed(0) + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+                                }}
+                            }}
+                        }}
+                    }}
+                }}
+            }});
+        }}
 
-        function updatePeriod(period) {
+        function updatePeriod(period) {{
             // Update button states
-            document.querySelectorAll('.time-btn').forEach(btn => {
+            document.querySelectorAll('.time-btn').forEach(btn => {{
                 btn.classList.remove('active');
-            });
+            }});
             event.target.classList.add('active');
 
             // Filter data and update chart
             const filteredData = filterDataByPeriod(period);
             createChart(filteredData);
-        }
+        }}
 
         // Initialize chart with all data
         createChart(allData);
     </script>
 </body>
 
-</html>
+</html>'''
+
+def generate_commodity_page(commodity_id, commodity_info):
+    """Generate HTML page for a commodity"""
+    
+    # Load data to get date range
+    data_file = f'{commodity_id}_cot_data.json'
+    if not os.path.exists(data_file):
+        print(f"  ✗ Data file not found: {data_file}")
+        return False
+    
+    with open(data_file, 'r') as f:
+        data = json.load(f)
+    
+    start_year = data[0]['date'][:4]
+    end_year = data[-1]['date'][:4]
+    date_range = f"{start_year} - Present"
+    
+    # Generate HTML
+    html = HTML_TEMPLATE.format(
+        name=commodity_info['name'],
+        icon=commodity_info['icon'],
+        name_lower=commodity_info['name'].lower(),
+        date_range=date_range,
+        commodity_id=commodity_id
+    )
+    
+    # Save HTML file
+    html_file = f'{commodity_id}_cot.html'
+    with open(html_file, 'w') as f:
+        f.write(html)
+    
+    # Generate embedded JS file
+    js_content = f"const cotData = {json.dumps(data, indent=2)};"
+    js_file = f'{commodity_id}_cot_embedded.js'
+    with open(js_file, 'w') as f:
+        f.write(js_content)
+    
+    print(f"  ✓ Generated {html_file} and {js_file}")
+    return True
+
+if __name__ == '__main__':
+    print("\n" + "="*80)
+    print("GENERATING COT CHART PAGES")
+    print("="*80)
+    
+    for commodity_id, commodity_info in COMMODITIES.items():
+        print(f"\n{commodity_info['name']}:")
+        generate_commodity_page(commodity_id, commodity_info)
+    
+    print("\n" + "="*80)
+    print("COMPLETE")
+    print("="*80)
