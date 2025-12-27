@@ -126,6 +126,28 @@ def update_html_file(aaa_data, bbb_data, ccc_data):
     
     return True
 
+def update_index_page():
+    """Update the date on the main index.html dashboard card"""
+    index_file = 'index.html'
+    if not os.path.exists(index_file): return
+    
+    with open(index_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Regex to find the Corporate Bonds card and its date
+    # We look for the href, then scan forward to the Date span
+    # Pattern: href="corporate_bonds.html" ... class="card-meta"><span>Macro Indicator • Dec 23, 2025</span>
+    pattern = re.compile(r'(href="corporate_bonds.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
+    
+    if pattern.search(content):
+        today_str = datetime.now().strftime("%b %d, %Y")
+        content = pattern.sub(f"\\g<1>{today_str}\\g<3>", content)
+        with open(index_file, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print("✓ Updated Index Page timestamp for Corporate Bonds.")
+    else:
+        print("Warning: Could not find Corporate Bonds card in index.html to update timestamp.")
+
 def main():
     """Main function to update corporate bonds data"""
     print("Fetching corporate bond yield data from FRED...")
@@ -149,6 +171,10 @@ def main():
             print("\nUpdating corporate_bonds.html...")
             if update_html_file(aaa_data, bbb_data, ccc_data):
                 print("✓ Successfully updated corporate_bonds.html")
+                
+                # Also update the index page card
+                update_index_page()
+                
                 print(f"\nLatest data points:")
                 print(f"  AAA: {aaa_data[-1]['value']}% on {aaa_data[-1]['date']}")
                 print(f"  BBB: {bbb_data[-1]['value']}% on {bbb_data[-1]['date']}")

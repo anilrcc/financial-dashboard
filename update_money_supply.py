@@ -170,11 +170,31 @@ def update_html_file(m2_data, growth_data, mom_data, velocity_data):
             content
         )
     
-    # Write the updated content back
     with open(html_file, 'w', encoding='utf-8') as f:
         f.write(content)
     
     return True
+
+def update_index_page():
+    """Update the date on the main index.html dashboard card"""
+    index_file = 'index.html'
+    if not os.path.exists(index_file): return
+    
+    with open(index_file, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Regex to find the Money Supply card and its date
+    # Pattern: href="money_supply.html" ... class="card-meta"><span>Macro Indicator • Dec 23, 2025</span>
+    pattern = re.compile(r'(href="money_supply.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
+    
+    if pattern.search(content):
+        today_str = datetime.now().strftime("%b %d, %Y")
+        content = pattern.sub(f"\\g<1>{today_str}\\g<3>", content)
+        with open(index_file, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print("✓ Updated Index Page timestamp for Money Supply.")
+    else:
+        print("Warning: Could not find Money Supply card in index.html to update timestamp.")
 
 def main():
     """Main function to update money supply data"""
@@ -203,6 +223,10 @@ def main():
     print("\nUpdating money_supply.html...")
     if update_html_file(m2_data, growth_data, mom_data, velocity_data):
         print("✓ Successfully updated money_supply.html")
+        
+        # Also update the index page card
+        update_index_page()
+        
         if m2_data:
             latest = m2_data[-1]
             print(f"\nLatest M2 Data: ${latest['value']/1000:.2f}T on {latest['date']}")
