@@ -205,6 +205,25 @@
             background: linear-gradient(135deg, #10b981, #047857);
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
+
+        /* Responsive commodity grid */
+        @media (max-width: 1200px) {
+            .grid-container[style*="repeat(5"] {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container[style*="repeat(5"] {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container[style*="repeat(5"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 
@@ -336,7 +355,7 @@
         <h2>Cyclical Commodities</h2>
     </div>
 
-    <div class="grid-container">
+    <div class="grid-container" style="grid-template-columns: repeat(5, 1fr); gap: 20px;">
         <!-- WTI & Brent Oil Card -->
         <a href="commodities.html?view=oil" class="card commodities" style="text-decoration: none;">
             <div class="card-icon"
