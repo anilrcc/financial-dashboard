@@ -19,6 +19,7 @@ SENTIMENT_FILE = os.path.join(BASE_DIR, 'consumer_sentiment.html')
 BONDS_FILE = os.path.join(BASE_DIR, 'corporate_bonds.html')
 PERMITS_FILE = os.path.join(BASE_DIR, 'building_permits.html')
 OPTIMISM_FILE = os.path.join(BASE_DIR, 'small_business_optimism.html')
+MONEY_SUPPLY_FILE = os.path.join(BASE_DIR, 'money_supply.html')
 
 def get_market_data():
     data = {
@@ -29,6 +30,7 @@ def get_market_data():
         'credit_spread_bbb_aaa': None,
         'housing_permits': None,
         'sb_optimism': None,
+        'm2_growth': None,
         'regime': 'Unknown'
     }
 
@@ -117,6 +119,20 @@ def get_market_data():
             matches = re.findall(r'index:\s*([0-9.]+)', content)
             if matches:
                 data['sb_optimism'] = float(matches[-1])
+
+    # 8. Money Supply (M2 Growth YoY)
+    if os.path.exists(MONEY_SUPPLY_FILE):
+        with open(MONEY_SUPPLY_FILE, 'r') as f:
+            content = f.read()
+            match = re.search(r'const growthFullData = (\[.*?\]);', content, re.DOTALL)
+            if match:
+                try:
+                    growth_list = json.loads(match.group(1))
+                    if growth_list:
+                        data['m2_growth'] = growth_list[-1].get('value')
+                except Exception as e:
+                    print(f"Error parsing M2 data: {e}")
+
     return data
 
 def determine_regime(data):
@@ -218,6 +234,19 @@ def generate_summary_html(data):
              else:
                  color = "#ef4444" # Red
              
+        elif type_fmt == "m2":
+             # M2 YoY Growth
+             # Healthy: 2-8% (Green)
+             # Negative: Tight/Deflationary Risk (Red)
+             # Excessive: >12% (Orange/Red)
+             display_val = f"{val:.1f}%"
+             if 2.0 <= val <= 8.0:
+                 color = "#22c55e" # Green
+             elif val < 0 or val > 15:
+                 color = "#ef4444" # Red
+             else:
+                 color = "#eab308" # Yellow
+
         return display_val, color
 
     mfg_val, mfg_col = fmt(data['mfg_pmi'], "pmi")
@@ -227,6 +256,7 @@ def generate_summary_html(data):
     credit_val, credit_col = fmt(data['credit_spread_bbb_aaa'], "credit")
     house_val, house_col = fmt(data['housing_permits'], "housing")
     sb_val, sb_col = fmt(data['sb_optimism'], "sb_optimism")
+    m2_val, m2_col = fmt(data['m2_growth'], "m2")
 
     # Generate Dynamic Description
     desc_parts = []
@@ -234,6 +264,10 @@ def generate_summary_html(data):
         desc_parts.append(f"Manufacturing is <strong>{'expanding' if data['mfg_pmi'] >= 50 else 'contracting'}</strong> ({mfg_val})")
     if data['svc_pmi']:
         desc_parts.append(f"Services are <strong>{'expanding' if data['svc_pmi'] >= 50 else 'contracting'}</strong> ({svc_val})")
+    
+    if data['m2_growth']:
+        m2_state = "expanding" if data['m2_growth'] > 0 else "contracting"
+        desc_parts.append(f"money supply is <strong>{m2_state}</strong> ({m2_val})")
     
     if data['housing_permits']:
         h_trends = "robust" if data['housing_permits'] >= 1500 else "soft"
@@ -292,6 +326,11 @@ def generate_summary_html(data):
                     <a href="corporate_bonds.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
                         <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Credit Premium</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {credit_col};">{credit_val}</div>
+                    </a>
+
+                    <a href="money_supply.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Money Supply</div>
+                        <div style="font-size: 1.4rem; font-weight: 700; color: {m2_col};">{m2_val}</div>
                     </a>
 
                     <a href="building_permits.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
