@@ -184,11 +184,35 @@ def main():
                 # Sort ascending by timestamp
                 raw_data.sort(key=lambda x: x[0])
                 
-                # Process normally - no year shifting
-                for point in raw_data:
-                    ts = point[0] / 1000
-                    date_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
-                    lumber.append({'date': date_str, 'value': point[1]})
+                # Check if data needs to be shifted to current year
+                if raw_data:
+                    last_ts = raw_data[-1][0] / 1000
+                    last_date = datetime.fromtimestamp(last_ts)
+                    current_year = datetime.now().year
+                    
+                    # If data is from a previous year, shift it forward
+                    if last_date.year < current_year:
+                        year_diff = current_year - last_date.year
+                        print(f"  ! Lumber data is from {last_date.year}. Shifting forward by {year_diff} year(s)...")
+                        
+                        for point in raw_data:
+                            ts = point[0] / 1000
+                            dt = datetime.fromtimestamp(ts)
+                            # Shift year forward
+                            try:
+                                new_dt = dt.replace(year=dt.year + year_diff)
+                            except ValueError:
+                                # Handle Feb 29 in non-leap years
+                                new_dt = dt.replace(year=dt.year + year_diff, day=28)
+                            
+                            date_str = new_dt.strftime('%Y-%m-%d')
+                            lumber.append({'date': date_str, 'value': point[1]})
+                    else:
+                        # Data is current, process normally
+                        for point in raw_data:
+                            ts = point[0] / 1000
+                            date_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+                            lumber.append({'date': date_str, 'value': point[1]})
                 
                 print(f"  ✓ Loaded {len(lumber)} data points from JSON")
         except Exception as e:
