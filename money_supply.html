@@ -470,10 +470,14 @@
         }
 
         function updateChart(chartType, period) {
-            // Update buttons
-            const btnGroup = event.target.parentElement;
-            btnGroup.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            // Update buttonsUI if triggered by click
+            if (typeof event !== 'undefined' && event && event.target && event.target.parentElement) {
+                const btnGroup = event.target.parentElement;
+                if (btnGroup.classList.contains('time-toggle')) {
+                    btnGroup.querySelectorAll('.time-btn').forEach(btn => btn.classList.remove('active'));
+                    event.target.classList.add('active');
+                }
+            }
 
             let chartInstance, data, label, color, ctx, showZeroLine;
 
