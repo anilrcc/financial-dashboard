@@ -38,17 +38,16 @@ def update_index_timestamp():
             content = f.read()
             
         import re
-        # Look for the Commitment of Traders card meta
-        pattern = re.compile(r'(class="card commodities".*?📊.*?class="card-meta"[^>]*?>\s*)(Market Data • Weekly)(</span>)', re.DOTALL | re.IGNORECASE)
+        # Look for the Commitment of Traders card meta specifically
+        pattern = re.compile(
+            r'(class="card commodities".*?📊.*?<span>)(Market Data\s*•\s*)([^<]*?)(</span>)', 
+            re.DOTALL | re.IGNORECASE
+        )
         
         if pattern.search(content):
             today_str = datetime.now().strftime("%b %d, %Y")
-            # We refresh the cards description or meta to show last updated
-            # Instead of changing "Market Data • Weekly", let's append the date or replace if preferred.
-            # Mirroring update_commodities.py style:
-            pattern_with_date = re.compile(r'(class="card commodities".*?📊.*?class="card-meta"[^>]*?>\s*)([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
-            today_str = datetime.now().strftime("%b %d, %Y")
-            content = pattern_with_date.sub(f"\\g<1>Market Data • {today_str}\\g<3>", content)
+            # Replacement: capture group 1 + constant label + group 3
+            content = pattern.sub(f"\\g<1>Market Data • {today_str}\\g<4>", content)
             
             with open(index_file, 'w', encoding='utf-8') as f:
                 f.write(content)
