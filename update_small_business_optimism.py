@@ -251,23 +251,39 @@ def update_html_file(new_data_point):
     # 1. Combine Data Sources
     # Priority: 
     #   1. New Scraped Data (most recent)
-    #   2. Local CSV History (if provided by user)
-    #   3. Initial Hardcoded Seed (fallback/recent history)
+    #   2. Local CSV History (Primary Source of Truth)
     
-    # Start with seed
-    combined_data = {item['month']: item for item in INITIAL_HISTORY}
+    combined_data = {}
     
-    # Load CSV and overwrite/append
+    # Load CSV (Primary DB)
     csv_history = load_historical_csv()
     if csv_history:
         print(f"Loaded {len(csv_history)} points from nfib_history.csv")
         for item in csv_history:
             combined_data[item['month']] = item
+    else:
+        print("Warning: nfib_history.csv empty or missing. Using Initial Seed.")
+        combined_data = {item['month']: item for item in INITIAL_HISTORY}
             
-    # Add/Update Scraping Result
+    # Add/Update Scraping Result and Persist to CSV
     if new_data_point:
-        combined_data[new_data_point['month']] = new_data_point
-    
+        month = new_data_point['month']
+        if month not in combined_data:
+             print(f"New data found for {month}. Appending to nfib_history.csv...")
+             # Update in-memory
+             combined_data[month] = new_data_point
+             
+             # Append to CSV
+             csv_path = os.path.join(os.getcwd(), 'nfib_history.csv')
+             with open(csv_path, 'a') as f:
+                 # Format: Month, Index, Employment, Expand, Inventory, Economy, Sales, Uncertainty
+                 item = new_data_point
+                 line = f"\n{item['month']},{item['index']},{item.get('employment', '')},{item.get('expand', '')},{item.get('inventory', '')},{item.get('economy', '')},{item.get('sales', '')},{item.get('uncertainty', '')}"
+                 f.write(line)
+        else:
+             # Update standard fields just in case (e.g. revisions), but don't append line
+             combined_data[month] = new_data_point
+
     # Convert back to list and sort
     final_data = list(combined_data.values())
     
@@ -276,7 +292,6 @@ def update_html_file(new_data_point):
         try:
             return datetime.datetime.strptime(d['month'], "%b %Y")
         except ValueError:
-            # Fallback for weird formats? Return min date
             return datetime.datetime(1900, 1, 1)
     
     final_data.sort(key=parse_date)
@@ -291,15 +306,10 @@ def update_html_file(new_data_point):
         sal = item.get('sales', 'null')
         unc = item.get('uncertainty', 'null')
         
-        # Handle None in string formatting
-        emp = emp if emp is not None else 'null'
-        exp = exp if exp is not None else 'null'
-        inv = inv if inv is not None else 'null'
-        eco = eco if eco is not None else 'null'
-        sal = sal if sal is not None else 'null'
-        unc = unc if unc is not None else 'null'
-
-        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {emp}, expand: {exp}, inventory: {inv}, economy: {eco}, sales: {sal}, uncertainty: {unc} }}')
+        # Handle None/Text
+        def fmt(x): return x if x is not None and x != '' else 'null'
+        
+        js_lines.append(f'{{ month: "{item["month"]}", index: {item["index"]}, employment: {fmt(emp)}, expand: {fmt(exp)}, inventory: {fmt(inv)}, economy: {fmt(eco)}, sales: {fmt(sal)}, uncertainty: {fmt(unc)} }}')
     
     js_array_str = ",\n            ".join(js_lines)
     

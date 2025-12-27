@@ -319,7 +319,7 @@ def generate_summary_html(data):
                     </a>
 
                     <a href="consumer_sentiment.html" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; text-decoration: none; display: block; color: inherit; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
-                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Sentiment</div>
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600; margin-bottom: 5px;">Consumer Sentiment</div>
                         <div style="font-size: 1.4rem; font-weight: 700; color: {sent_col};">{sent_val}</div>
                     </a>
 
