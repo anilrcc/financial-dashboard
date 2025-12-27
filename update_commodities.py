@@ -171,7 +171,32 @@ def main():
     oil = fetch_csv_data(CSV_URLS['oil'])
     brent = fetch_csv_data(CSV_URLS['brent'])
     copper = fetch_csv_data(CSV_URLS['copper'])
-    lumber = fetch_csv_data(CSV_URLS['lumber'])
+    
+    # Fetch Lumber: Try local JSON first (TradingEconomics Scraping), else FRED
+    lumber = []
+    lumber_json_path = 'lumber_data.json'
+    if os.path.exists(lumber_json_path):
+        print(f"Loading Lumber data from {lumber_json_path}...")
+        try:
+            with open(lumber_json_path, 'r') as f:
+                raw_data = json.load(f)
+                # Raw data is [[timestamp_ms, value], ...]
+                # Convert to [{'date': 'YYYY-MM-DD', 'value': val}]
+                for point in raw_data:
+                    ts = point[0] / 1000 # Convert ms to seconds
+                    val = point[1]
+                    date_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+                    lumber.append({'date': date_str, 'value': val})
+                # Sort by date
+                lumber.sort(key=lambda x: x['date'])
+                print(f"  ✓ Loaded {len(lumber)} data points from JSON")
+        except Exception as e:
+            print(f"  ✗ Error loading JSON: {e}")
+            lumber = []
+    
+    if not lumber:
+        lumber = fetch_csv_data(CSV_URLS['lumber'])
+    
     iron = fetch_csv_data(CSV_URLS['iron'])
     
     if not oil or not brent:
