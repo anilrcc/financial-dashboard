@@ -124,10 +124,6 @@
         </div>
 
         <div class="card">
-            <div class="stats-grid" id="stats-grid">
-                <!-- Stats will be populated by JavaScript -->
-            </div>
-
             <div class="chart-container">
                 <canvas id="cotChart"></canvas>
             </div>
@@ -148,41 +144,6 @@
     <script>
         // Use embedded data instead of fetch
         const data = cotData;
-
-        // Calculate statistics
-        const latestData = data[data.length - 1];
-        const values = data.map(d => d.net_pct_oi);
-        const maxValue = Math.max(...values);
-        const minValue = Math.min(...values);
-        const avgValue = values.reduce((a, b) => a + b, 0) / values.length;
-
-        // Update stats
-        document.getElementById('stats-grid').innerHTML = `
-            <div class="stat-box">
-                <div class="stat-label">Current Net %</div>
-                <div class="stat-value">${latestData.net_pct_oi.toFixed(2)}%</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Max (Since 2015)</div>
-                <div class="stat-value">${maxValue.toFixed(2)}%</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Min (Since 2015)</div>
-                <div class="stat-value">${minValue.toFixed(2)}%</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Average</div>
-                <div class="stat-value">${avgValue.toFixed(2)}%</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Open Interest</div>
-                <div class="stat-value">${(latestData.open_interest / 1000).toFixed(0)}k</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">As of</div>
-                <div class="stat-value" style="font-size: 1.2rem;">${latestData.date}</div>
-            </div>
-        `;
 
         // Create chart
         const ctx = document.getElementById('cotChart').getContext('2d');
