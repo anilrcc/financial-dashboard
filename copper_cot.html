@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copper COT - Managed Money Net Position</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 500px;
+            margin-top: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .info-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="commodities.html" class="back-link">← Back to Commodities</a>
+
+        <div class="header">
+            <h1>🔩 Copper - Commitment of Traders</h1>
+            <p>Managed Money Net Position (% of Open Interest) | 2015 - Present</p>
+        </div>
+
+        <div class="card">
+            <div class="stats-grid" id="stats-grid">
+                <!-- Stats will be populated by JavaScript -->
+            </div>
+
+            <div class="chart-container">
+                <canvas id="cotChart"></canvas>
+            </div>
+
+            <div class="info-text">
+                <strong>About this chart:</strong> This shows the net position of Managed Money traders (hedge funds,
+                CTAs, etc.) as a percentage of total open interest in copper futures.
+                Positive values indicate net long positions (bullish), while negative values indicate net short
+                positions (bearish).
+                Data source: CFTC Disaggregated Commitments of Traders Report.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load and chart the data
+        fetch('copper_cot_data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Calculate statistics
+                const latestData = data[data.length - 1];
+                const values = data.map(d => d.net_pct_oi);
+                const maxValue = Math.max(...values);
+                const minValue = Math.min(...values);
+                const avgValue = values.reduce((a, b) => a + b, 0) / values.length;
+
+                // Update stats
+                document.getElementById('stats-grid').innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-label">Current Net %</div>
+                        <div class="stat-value">${latestData.net_pct_oi.toFixed(2)}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Max (Since 2015)</div>
+                        <div class="stat-value">${maxValue.toFixed(2)}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Min (Since 2015)</div>
+                        <div class="stat-value">${minValue.toFixed(2)}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Average</div>
+                        <div class="stat-value">${avgValue.toFixed(2)}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Open Interest</div>
+                        <div class="stat-value">${(latestData.open_interest / 1000).toFixed(0)}k</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">As of</div>
+                        <div class="stat-value" style="font-size: 1.2rem;">${latestData.date}</div>
+                    </div>
+                `;
+
+                // Create chart
+                const ctx = document.getElementById('cotChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.map(d => d.date),
+                        datasets: [{
+                            label: 'Managed Money Net % OI',
+                            data: data.map(d => d.net_pct_oi),
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.1,
+                            pointRadius: 0,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const dataPoint = data[context.dataIndex];
+                                        return [
+                                            `Net % OI: ${dataPoint.net_pct_oi.toFixed(2)}%`,
+                                            `Long: ${dataPoint.mm_long.toLocaleString()}`,
+                                            `Short: ${dataPoint.mm_short.toLocaleString()}`,
+                                            `Open Interest: ${dataPoint.open_interest.toLocaleString()}`
+                                        ];
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'year',
+                                    displayFormats: {
+                                        year: 'yyyy'
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Net Position (% of Open Interest)'
+                                },
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    callback: function (value) {
+                                        return value.toFixed(0) + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                document.getElementById('stats-grid').innerHTML =
+                    '<p style="color: red;">Error loading COT data. Please ensure copper_cot_data.json exists.</p>';
+            });
+    </script>
+</body>
+
+</html>
