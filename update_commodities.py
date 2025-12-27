@@ -130,8 +130,9 @@ def update_index_page():
         content = f.read()
     
     # Regex to find the Commodities card and its date
-    # href="commodities.html" ... class="card-meta"><span>Macro Indicator • Dec 23, 2025</span>
-    pattern = re.compile(r'(href="commodities.html".*?class="card-meta">\s*<span>Macro Indicator • )([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
+    # Valid for new structure where card is a div and meta is a span
+    # Handles potential newlines in text (Macro \n Indicator)
+    pattern = re.compile(r'(class="card commodities".*?class="card-meta"[^>]*?>\s*Macro\s+Indicator\s+•\s+)([^<]*?)(</span>)', re.DOTALL | re.IGNORECASE)
     
     if pattern.search(content):
         today_str = datetime.now().strftime("%b %d, %Y")
