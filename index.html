@@ -206,6 +206,21 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
+        .card.china .card-icon {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .card.euro .card-icon {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .card.global .card-icon {
+            background: linear-gradient(135deg, #0e7490, #155e75);
+            box-shadow: 0 4px 12px rgba(14, 116, 144, 0.3);
+        }
+
         /* Responsive commodity grid */
         @media (max-width: 1200px) {
             .grid-container[style*="repeat(5"] {
@@ -367,7 +382,7 @@
             </div>
             <div class="card-meta">
                 <span>Dec 27, 2025Dec 27, 2025
-                <span class="arrow-icon">→</span>
+                    <span class="arrow-icon">→</span>
             </div>
         </a>
 
@@ -382,7 +397,7 @@
             </div>
             <div class="card-meta">
                 <span>Dec 27, 2025Dec 27, 2025
-                <span class="arrow-icon">→</span>
+                    <span class="arrow-icon">→</span>
             </div>
         </a>
 
@@ -397,7 +412,7 @@
             </div>
             <div class="card-meta">
                 <span>Dec 27, 2025Dec 27, 2025
-                <span class="arrow-icon">→</span>
+                    <span class="arrow-icon">→</span>
             </div>
         </a>
 
@@ -412,7 +427,7 @@
             </div>
             <div class="card-meta">
                 <span>Dec 27, 2025Dec 27, 2025
-                <span class="arrow-icon">→</span>
+                    <span class="arrow-icon">→</span>
             </div>
         </a>
 
@@ -563,14 +578,54 @@
     <!-- Section Divider -->
     <div style="border-top: 1px solid #e2e8f0; margin: 40px auto; max-width: 1200px;"></div>
 
+    <!-- Section: International Indicators -->
+    <div class="section-header">
+        <h2>International Indicators</h2>
+    </div>
 
+    <div class="grid-container">
+        <!-- China PMI Card -->
+        <a href="#" class="card china" style="opacity: 0.8;">
+            <div class="card-icon">CN</div>
+            <div class="card-title">China Manufacturing PMI</div>
+            <div class="card-desc">
+                Caixin and Official PMI data tracking the health of the world's second-largest economy and global
+                manufacturing hub.
+            </div>
+            <div class="card-meta">
+                <span>International • Coming Soon</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
 
+        <!-- Eurozone Card -->
+        <a href="eurozone_pmi.html" class="card euro">
+            <div class="card-icon">EU</div>
+            <div class="card-title">All Eurozone</div>
+            <div class="card-desc">
+                Comprehensive economic indicators including ESI, EEI, and sector confidence for Eurozone and key member
+                states.
+            </div>
+            <div class="card-meta">
+                <span>International • Updated</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
 
-
-
-
-
-
+        <!-- Global PMI Card -->
+        <a href="#" class="card global" style="opacity: 0.8;">
+            <div class="card-icon">GL</div>
+            <div class="card-title">Global Manufacturing PMI</div>
+            <div class="card-desc">
+                J.P. Morgan & S&P Global index synthesizing data from over 40 nations to provide a global growth
+                outlook.
+            </div>
+            <div class="card-meta">
+                <span>International • Coming Soon</span>
+                <span class="arrow-icon">→</span>
+            </div>
+        </a>
+    </div>
 
     <!-- Section Divider -->
     <div style="border-top: 1px solid #e2e8f0; margin: 40px auto; max-width: 1200px;"></div>
