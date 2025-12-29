@@ -88,8 +88,10 @@ html_template = """<!DOCTYPE html>
         .summary-box {{ background: white; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }}
         .summary-box h3 {{ margin-top: 0; font-size: 1.1rem; color: #334155; margin-bottom: 15px; font-weight: 700; }}
         .summary-box p {{ margin: 0 0 10px 0; color: #475569; line-height: 1.6; }}
-        .charts-section {{ display: grid; grid-template-columns: 1fr; gap: 25px; margin-bottom: 50px; }}
-        .chart-card {{ background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); height: 450px; position: relative; }}
+        .charts-section {{ display: grid; grid-template-columns: 1fr; gap: 25px; margin-bottom: 25px; }}
+        .charts-grid {{ display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; margin-bottom: 50px; }}
+        @media (max-width: 768px) {{ .charts-grid {{ grid-template-columns: 1fr; }} }}
+        .chart-card {{ background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); height: 400px; position: relative; }}
         canvas {{ width: 100% !important; height: 100% !important; }}
         .table-container {{ overflow-x: auto; background: white; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 50px; }}
         table {{ width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.9rem; }}
@@ -125,10 +127,20 @@ html_template = """<!DOCTYPE html>
         {insight}
     </div>
 
-    <!-- Main Chart -->
+    <!-- Main Comparison Chart -->
     <div class="charts-section">
         <div class="chart-card">
             <canvas id="mainChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Individual Charts -->
+    <div class="charts-grid">
+        <div class="chart-card">
+            <canvas id="nbsChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <canvas id="caixinChart"></canvas>
         </div>
     </div>
 
@@ -156,9 +168,26 @@ html_template = """<!DOCTYPE html>
         const dates = {dates_json};
         const nbsData = {nbs_json};
         const caixinData = {caixin_json};
+        const neutralLine = Array(dates.length).fill(50);
 
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        new Chart(ctx, {{
+        // Common Options
+        const commonOptions = (title, color) => ({{
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {{ mode: 'index', intersect: false }},
+            plugins: {{
+                title: {{ display: true, text: title }},
+                legend: {{ position: 'top' }},
+                tooltip: {{ callbacks: {{ label: (c) => c.dataset.label + ': ' + c.parsed.y }} }}
+            }},
+            scales: {{
+                y: {{ min: 30, max: 60, grid: {{ color: '#f1f5f9' }} }},
+                x: {{ grid: {{ display: false }} }}
+            }}
+        }});
+
+        // 1. Comparison Chart
+        new Chart(document.getElementById('mainChart').getContext('2d'), {{
             type: 'line',
             data: {{
                 labels: dates,
@@ -182,8 +211,8 @@ html_template = """<!DOCTYPE html>
                         pointRadius: 2
                     }},
                     {{
-                        label: 'Expansion/Contraction Line',
-                        data: Array(dates.length).fill(50),
+                        label: '50 Neutral',
+                        data: neutralLine,
                         borderColor: '#94a3b8',
                         borderWidth: 1,
                         borderDash: [4, 4],
@@ -192,32 +221,65 @@ html_template = """<!DOCTYPE html>
                     }}
                 ]
             }},
-            options: {{
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {{ mode: 'index', intersect: false }},
-                plugins: {{
-                    title: {{ display: true, text: 'China Manufacturing PMI History (2020-2025)' }},
-                    legend: {{ position: 'top' }},
-                    tooltip: {{ 
-                        callbacks: {{
-                            label: function(context) {{
-                                return context.dataset.label + ': ' + context.parsed.y;
-                            }}
-                        }}
-                    }}
-                }},
-                scales: {{
-                    y: {{
-                        min: 30,
-                        max: 60,
-                        grid: {{ color: '#f1f5f9' }}
+            options: commonOptions('Comparison: NBS vs Caixin (2020-2025)')
+        }});
+
+        // 2. Official NBS Chart
+        new Chart(document.getElementById('nbsChart').getContext('2d'), {{
+            type: 'line',
+            data: {{
+                labels: dates,
+                datasets: [
+                    {{
+                        label: 'Official NBS PMI',
+                        data: nbsData,
+                        borderColor: '#ef4444', 
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 2,
+                        fill: true
                     }},
-                    x: {{
-                        grid: {{ display: false }}
+                    {{
+                        label: '50 Neutral',
+                        data: neutralLine,
+                        borderColor: '#94a3b8',
+                        borderWidth: 1,
+                        borderDash: [4, 4],
+                        pointRadius: 0
                     }}
-                }}
-            }}
+                ]
+            }},
+            options: commonOptions('Official NBS Manufacturing PMI')
+        }});
+
+        // 3. Caixin Chart
+        new Chart(document.getElementById('caixinChart').getContext('2d'), {{
+            type: 'line',
+            data: {{
+                labels: dates,
+                datasets: [
+                    {{
+                        label: 'Caixin PMI',
+                        data: caixinData,
+                        borderColor: '#f59e0b', 
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 2,
+                        fill: true
+                    }},
+                    {{
+                        label: '50 Neutral',
+                        data: neutralLine,
+                        borderColor: '#94a3b8',
+                        borderWidth: 1,
+                        borderDash: [4, 4],
+                        pointRadius: 0
+                    }}
+                ]
+            }},
+            options: commonOptions('Caixin China General Manufacturing PMI')
         }});
     </script>
 </body>
