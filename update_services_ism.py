@@ -303,6 +303,35 @@ def update_comments_block(updates):
 
     with open(COMMENTS_FILE, 'w') as f: f.write(content)
 
+def update_index_timestamp():
+    """Update the 'Last Updated' timestamp for Services PMI in index.html"""
+    if not os.path.exists(INDEX_FILE): return
+    
+    try:
+        with open(INDEX_FILE, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        import re
+        # Look for the Services PMI card meta specifically
+        # <a href="services_pmi.html" class="card services">
+        # ...
+        # <span>Macro Indicator • Dec 20, 2025</span>
+        pattern = re.compile(
+            r'(class="card services".*?<span>)(Macro Indicator\s*•\s*)([^<]*?)(</span>)', 
+            re.DOTALL | re.IGNORECASE
+        )
+        
+        if pattern.search(content):
+            today_str = datetime.date.today().strftime("%b %d, %Y")
+            # Replacement: capture group 1 + constant label + group 3
+            content = pattern.sub(f"\\g<1>Macro Indicator • {today_str}\\g<4>", content)
+            
+            with open(INDEX_FILE, 'w', encoding='utf-8') as f:
+                f.write(content)
+            print("✓ Updated Index Page timestamp for Services PMI.")
+    except Exception as e:
+        print(f"Error updating index timestamp: {e}")
+
 def main():
     dates = get_last_n_months(6)
     all_updates = {}
@@ -313,6 +342,7 @@ def main():
     if all_updates:
         update_html_with_revisions(all_updates)
         update_comments_block(all_updates)
+        update_index_timestamp()
 
 if __name__ == "__main__":
     main()

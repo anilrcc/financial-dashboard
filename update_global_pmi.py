@@ -275,14 +275,12 @@ html_content = f"""<!DOCTYPE html>
 </head>
 <body>
 
-<body>
-
     <div class="container">
         <!-- Header -->
         <div class="header-section">
             <div style="flex: 1;">
                 <a href="index.html" class="back-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="feather"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Back to Dashboard
                 </a>
             </div>
@@ -435,8 +433,6 @@ html_content = f"""<!DOCTYPE html>
             </div>
         </div>
 
-
-
     </div>
 
     <script>
@@ -449,10 +445,10 @@ html_content = f"""<!DOCTYPE html>
                 tooltip: {{
                     mode: 'index',
                     intersect: false,
-                    backgroundColor: '#1e293b',
-                    titleColor: '#f8fafc',
-                    bodyColor: '#cbd5e1',
-                    borderColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: 'white',
+                    titleColor: '#1e293b',
+                    bodyColor: '#64748b',
+                    borderColor: '#e2e8f0',
                     borderWidth: 1,
                     padding: 10,
                     displayColors: false
@@ -471,7 +467,7 @@ html_content = f"""<!DOCTYPE html>
                                 enabled: true,
                                 position: 'start',
                                 color: '#94a3b8',
-                                backgroundColor: 'rgba(0,0,0,0)',
+                                backgroundColor: 'rgba(255,255,255,0.8)',
                                 font: {{ size: 10 }}
                             }}
                         }}
@@ -480,7 +476,7 @@ html_content = f"""<!DOCTYPE html>
             }},
             scales: {{
                 x: {{ grid: {{ display: false }}, ticks: {{ color: '#64748b' }} }},
-                y: {{ grid: {{ color: '#334155', borderDash: [5, 5] }}, ticks: {{ color: '#64748b' }} }}
+                y: {{ grid: {{ color: '#f1f5f9', borderDash: [5, 5] }}, ticks: {{ color: '#64748b' }} }}
             }},
             interaction: {{ mode: 'nearest', axis: 'x', intersect: false }}
         }};
@@ -488,10 +484,9 @@ html_content = f"""<!DOCTYPE html>
         // --- Japan Chart ---
         const ctxJp = document.getElementById('japanChart').getContext('2d');
         const gradJp = ctxJp.createLinearGradient(0, 0, 0, 400);
-        gradJp.addColorStop(0, 'rgba(239, 68, 68, 0.5)'); // Red/White for Japan theme? Or just sticking to consistent colors
+        gradJp.addColorStop(0, 'rgba(239, 68, 68, 0.2)');
         gradJp.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
         
-        // Let's use Red for Japan to match flag
         new Chart(ctxJp, {{
             type: 'line',
             data: {{
@@ -502,7 +497,7 @@ html_content = f"""<!DOCTYPE html>
                     borderColor: '#ef4444',
                     backgroundColor: gradJp,
                     borderWidth: 3,
-                    pointBackgroundColor: '#1e293b',
+                    pointBackgroundColor: 'white',
                     pointBorderColor: '#ef4444',
                     pointBorderWidth: 2,
                     pointRadius: 4,
@@ -516,7 +511,7 @@ html_content = f"""<!DOCTYPE html>
         // --- India Chart ---
         const ctxInd = document.getElementById('indiaChart').getContext('2d');
         const gradInd = ctxInd.createLinearGradient(0, 0, 0, 400);
-        gradInd.addColorStop(0, 'rgba(249, 115, 22, 0.5)'); // Orange for India
+        gradInd.addColorStop(0, 'rgba(249, 115, 22, 0.2)');
         gradInd.addColorStop(1, 'rgba(249, 115, 22, 0.0)');
 
         new Chart(ctxInd, {{
@@ -529,7 +524,7 @@ html_content = f"""<!DOCTYPE html>
                     borderColor: '#f97316',
                     backgroundColor: gradInd,
                     borderWidth: 3,
-                    pointBackgroundColor: '#1e293b',
+                    pointBackgroundColor: 'white',
                     pointBorderColor: '#f97316',
                     pointBorderWidth: 2,
                     pointRadius: 4,
@@ -543,7 +538,7 @@ html_content = f"""<!DOCTYPE html>
         // --- UK Chart ---
         const ctxUK = document.getElementById('ukChart').getContext('2d');
         const gradUK = ctxUK.createLinearGradient(0, 0, 0, 400);
-        gradUK.addColorStop(0, 'rgba(37, 99, 235, 0.5)'); // Blue for UK
+        gradUK.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
         gradUK.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
 
         new Chart(ctxUK, {{
@@ -556,7 +551,7 @@ html_content = f"""<!DOCTYPE html>
                     borderColor: '#2563eb',
                     backgroundColor: gradUK,
                     borderWidth: 3,
-                    pointBackgroundColor: '#1e293b',
+                    pointBackgroundColor: 'white',
                     pointBorderColor: '#2563eb',
                     pointBorderWidth: 2,
                     pointRadius: 4,
@@ -570,7 +565,7 @@ html_content = f"""<!DOCTYPE html>
         // --- Brazil Chart ---
         const ctxBR = document.getElementById('brazilChart').getContext('2d');
         const gradBR = ctxBR.createLinearGradient(0, 0, 0, 400);
-        gradBR.addColorStop(0, 'rgba(34, 197, 94, 0.5)'); // Green for Brazil
+        gradBR.addColorStop(0, 'rgba(34, 197, 94, 0.2)');
         gradBR.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
 
         new Chart(ctxBR, {{
@@ -583,7 +578,7 @@ html_content = f"""<!DOCTYPE html>
                     borderColor: '#22c55e',
                     backgroundColor: gradBR,
                     borderWidth: 3,
-                    pointBackgroundColor: '#1e293b',
+                    pointBackgroundColor: 'white',
                     pointBorderColor: '#22c55e',
                     pointBorderWidth: 2,
                     pointRadius: 4,
@@ -593,7 +588,6 @@ html_content = f"""<!DOCTYPE html>
             }},
             options: commonOptions
         }});
-
 
     </script>
 </body>
