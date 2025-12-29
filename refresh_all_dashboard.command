@@ -48,11 +48,15 @@ echo "[9/11] Refreshing Commodities and COT Reports..."
 python3 refresh_all_commodities.py
 
 echo ""
-echo "[10/11] Refreshing Eurozone PMI Data..."
+echo "[10/12] Refreshing China PMI Data..."
+python3 update_china_data.py
+
+echo ""
+echo "[11/12] Refreshing Eurozone PMI Data..."
 python3 update_eurozone_data.py
 
 echo ""
-echo "[11/11] Regenerating Executive Summary & Index..."
+echo "[12/12] Regenerating Executive Summary & Index..."
 python3 update_executive_summary.py
 
 echo ""
