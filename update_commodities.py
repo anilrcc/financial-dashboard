@@ -1,71 +1,180 @@
 #!/usr/bin/env python3
 """
-Update Cyclical Commodities data from FRED Website (CSV Download)
-Fetches WTI Oil, Global Copper, Lumber PPI, and Iron Ore data directly from FRED and updates commodities.html.
-No API Key required.
+Hybrid Commodities Update Script
+- Uses FRED for historical data (1990-present)
+- Uses Trading Economics for latest updates on ALL commodities
+- Merges data intelligently, preferring TE for recent dates
 """
 
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 import os
 import csv
 import io
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time
 
 # FRED Direct CSV URLs
 CSV_URLS = {
-    'oil': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO',      # WTI Crude Oil Prices (Daily)
-    'brent': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU',  # Brent Crude Oil Prices (Daily)
-    'copper': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCOPPUSDM',    # Global Price of Copper (Monthly)
-    'lumber': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=WPU0811',      # PPI: Lumber & Wood Products
-    'iron': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PIORECRUSDM'     # Global Price of Iron Ore
+    'oil': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILWTICO',      # WTI Crude Oil
+    'brent': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU',  # Brent Crude Oil
+    'copper': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCOPPUSDM',    # Copper
+    'lumber': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=WPU0811',      # Lumber
+    'iron': 'https://fred.stlouisfed.org/graph/fredgraph.csv?id=PIORECRUSDM'     # Iron Ore
 }
 
-def fetch_csv_data(url):
+# Trading Economics URLs
+TE_URLS = {
+    'oil': 'https://tradingeconomics.com/commodity/crude-oil',
+    'brent': 'https://tradingeconomics.com/commodity/brent-crude-oil',
+    'copper': 'https://tradingeconomics.com/commodity/copper',
+    'lumber': 'https://tradingeconomics.com/commodity/lumber',
+    'iron': 'https://tradingeconomics.com/commodity/iron-ore'
+}
+
+def fetch_csv_data(url, name):
     """Fetch and parse CSV data from FRED website"""
-    print(f"Downloading data from: {url}")
+    print(f"  FRED {name}: ", end='')
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
     }
     
     try:
         response = requests.get(url, headers=headers, timeout=30)
         response.raise_for_status()
         
-        # Parse CSV content
         csv_text = response.text
         f = io.StringIO(csv_text)
         reader = csv.reader(f)
-        
-        # Skip header
-        header = next(reader, None)
+        next(reader, None)  # Skip header
         
         formatted_data = []
         for row in reader:
-            if len(row) >= 2:
-                date_str = row[0]
-                val_str = row[1]
-                
-                # Validation
-                if val_str and val_str != '.':
-                    try:
-                        val = float(val_str)
-                        # Filter out very old data to keep file size small (e.g. from 2000)
-                        if date_str >= '1990-01-01':
-                            formatted_data.append({
-                                'date': date_str,
-                                'value': val
-                            })
-                    except ValueError:
-                        continue
-                        
-        print(f"  ✓ Parsed {len(formatted_data)} data points")
+            if len(row) >= 2 and row[1] and row[1] != '.':
+                try:
+                    val = float(row[1])
+                    if row[0] >= '1990-01-01':
+                        formatted_data.append({'date': row[0], 'value': val})
+                except ValueError:
+                    continue
+                    
+        print(f"{len(formatted_data)} points ✓")
         return formatted_data
 
     except Exception as e:
-        print(f"  ✗ Error fetching CSV: {e}")
+        print(f"Error: {e}")
         return []
+
+def fetch_te_commodity(url, name):
+    """Fetch latest commodity data from Trading Economics"""
+    print(f"  TE {name}: ", end='', flush=True)
+    
+    chrome_options = Options()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_argument('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36')
+    
+    driver = None
+    try:
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+        driver.get(url)
+        time.sleep(5)  # Wait for page load
+        
+        # Extract Highcharts data
+        chart_data = driver.execute_script("""
+            if (typeof Highcharts !== 'undefined' && Highcharts.charts) {
+                for (let chart of Highcharts.charts) {
+                    if (chart && chart.series && chart.series[0]) {
+                        return chart.series[0].data.map(point => [point.x, point.y]);
+                    }
+                }
+            }
+            return null;
+        """)
+        
+        if not chart_data:
+            print("No data found")
+            return []
+        
+        # Convert to our format
+        formatted_data = []
+        for item in chart_data:
+            if isinstance(item, list) and len(item) >= 2:
+                timestamp, value = item[0], item[1]
+                if value is not None:
+                    if timestamp > 10000000000:
+                        dt = datetime.fromtimestamp(timestamp / 1000)
+                    else:
+                        dt = datetime.fromtimestamp(timestamp)
+                    
+                    formatted_data.append({
+                        'date': dt.strftime('%Y-%m-%d'),
+                        'value': float(value)
+                    })
+        
+        formatted_data.sort(key=lambda x: x['date'])
+        
+        if formatted_data:
+            print(f"{len(formatted_data)} points | Latest: ${formatted_data[-1]['value']:.2f} ✓")
+        else:
+            print("No valid data")
+        
+        return formatted_data
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        return []
+    finally:
+        if driver:
+            driver.quit()
+
+def merge_data(fred_data, te_data, name):
+    """
+    Merge FRED historical data with Trading Economics latest data
+    TE data takes precedence for overlapping dates
+    """
+    if not te_data:
+        return fred_data
+    
+    # Create dict from FRED data
+    merged = {item['date']: item['value'] for item in fred_data}
+    
+    # Overlay TE data (overwrites FRED for same dates)
+    te_count = 0
+    for item in te_data:
+        if item['date'] not in merged or merged[item['date']] != item['value']:
+            te_count += 1
+        merged[item['date']] = item['value']
+    
+    # Convert back to list and sort
+    result = [{'date': k, 'value': v} for k, v in sorted(merged.items())]
+    
+    if te_count > 0:
+        print(f"  → Merged {name}: {len(result)} total ({te_count} from TE)")
+    
+    return result
+
+def calculate_spread(series_a, series_b):
+    """Calculate Spread (A - B) for matching dates"""
+    dict_b = {d['date']: d['value'] for d in series_b}
+    spread = []
+    for item in series_a:
+        date = item['date']
+        val_a = item['value']
+        if date in dict_b:
+            spread.append({
+                'date': date,
+                'value': round(val_a - dict_b[date], 4)
+            })
+    return spread
 
 def update_html_file(oil, brent, spread, copper, lumber, iron):
     """Update the commodities.html file with new data"""
@@ -75,22 +184,19 @@ def update_html_file(oil, brent, spread, copper, lumber, iron):
         print(f"Error: {html_file} not found!")
         return False
     
-    # Read the current HTML file
     with open(html_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Helper to clean/insert data
     def insert_data(var_name, data_list):
         js_str = json.dumps(data_list, separators=(',', ': '))
         nonlocal content
         content = re.sub(
-            f'const {var_name} = \[.*?\];',
+            f'const {var_name} = \\[.*?\\];',
             f'const {var_name} = {js_str};',
             content,
             flags=re.DOTALL
         )
 
-    # Insert Data Arrays
     insert_data('oilData', oil)
     insert_data('brentData', brent)
     insert_data('spreadData', spread)
@@ -98,7 +204,7 @@ def update_html_file(oil, brent, spread, copper, lumber, iron):
     insert_data('lumberData', lumber)
     insert_data('ironData', iron)
     
-    # Update the deployment version timestamp
+    # Update timestamps
     today = datetime.now().strftime('%Y-%m-%d-%H%M')
     content = re.sub(
         r'<meta name="deployment-version" content="auto-updated-.*?">',
@@ -106,7 +212,6 @@ def update_html_file(oil, brent, spread, copper, lumber, iron):
         content
     )
     
-    # Update displayed Last Updated text
     display_date = datetime.now().strftime('%b %d, %Y')
     if 'id="last-updated"' in content:
         content = re.sub(
@@ -115,7 +220,6 @@ def update_html_file(oil, brent, spread, copper, lumber, iron):
             content
         )
     
-    # Write the updated content back
     with open(html_file, 'w', encoding='utf-8') as f:
         f.write(content)
     
@@ -124,16 +228,12 @@ def update_html_file(oil, brent, spread, copper, lumber, iron):
 def update_index_page():
     """Update the date on the main index.html dashboard card"""
     index_file = 'index.html'
-    if not os.path.exists(index_file): return
+    if not os.path.exists(index_file): 
+        return
     
     with open(index_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Robust Pattern:
-    # 1. Match card start: (class="card commodities".*?<span>)
-    # 2. Match Optional Prefix (Label + Bullet): (?:(.*?•\s*))?
-    # 3. Match Date Content (to be replaced): ([^<]*)
-    # 4. Match End Span: (</span>)
     pattern = re.compile(
         r'(class="card commodities".*?<span>)(?:(.*?•\s*))?([^<]*)(</span>)', 
         re.DOTALL | re.IGNORECASE
@@ -142,117 +242,76 @@ def update_index_page():
     today_str = datetime.now().strftime("%b %d, %Y")
     
     def repl_func(m):
-        # m.group(1): Card HTML + <span>
-        # m.group(2): Prefix (e.g. "Market Data • ") or None
-        # m.group(3): Old Date (Discarded)
-        # m.group(4): </span>
         prefix = m.group(2) if m.group(2) else ""
         return f"{m.group(1)}{prefix}{today_str}{m.group(4)}"
         
     if pattern.search(content):
-        # Apply replacement to ALL occurrences
         new_content = pattern.sub(repl_func, content)
         with open(index_file, 'w', encoding='utf-8') as f:
             f.write(new_content)
-        print("✓ Updated Index Page timestamps for Commodities (Self-Healing).")
-    else:
-        print("Warning: Could not find Commodities card in index.html to update timestamp.")
-
-
-def calculate_spread(series_a, series_b):
-    """Calculate Spread (A - B) for matching dates"""
-    # Create lookup dict for series B
-    dict_b = {d['date']: d['value'] for d in series_b}
-    
-    spread = []
-    for item in series_a:
-        date = item['date']
-        val_a = item['value']
-        if date in dict_b:
-            val_b = dict_b[date]
-            spread.append({
-                'date': date,
-                'value': round(val_a - val_b, 4)
-            })
-    return spread
+        print("✓ Updated Index Page timestamps")
 
 def main():
     """Main function"""
-    print("==================================================")
-    print("   Fetching All Benchmark Commodities Data")
-    print("   (CSV Download Method)")
-    print("==================================================")
+    print("=" * 70)
+    print("   Hybrid Commodities Update")
+    print("   FRED (Historical) + Trading Economics (Latest)")
+    print("=" * 70)
     
-    oil = fetch_csv_data(CSV_URLS['oil'])
-    brent = fetch_csv_data(CSV_URLS['brent'])
-    copper = fetch_csv_data(CSV_URLS['copper'])
+    # Step 1: Fetch FRED historical data
+    print("\n[1/3] Fetching FRED Historical Data")
+    print("-" * 70)
+    fred_oil = fetch_csv_data(CSV_URLS['oil'], 'WTI Oil')
+    fred_brent = fetch_csv_data(CSV_URLS['brent'], 'Brent Oil')
+    fred_copper = fetch_csv_data(CSV_URLS['copper'], 'Copper')
+    fred_lumber = fetch_csv_data(CSV_URLS['lumber'], 'Lumber')
+    fred_iron = fetch_csv_data(CSV_URLS['iron'], 'Iron Ore')
     
-    # Fetch Lumber: Try local JSON first (TradingEconomics Scraping), else FRED
-    lumber = []
-    lumber_json_path = 'lumber_data.json'
-    if os.path.exists(lumber_json_path):
-        print(f"Loading Lumber data from {lumber_json_path}...")
-        try:
-            with open(lumber_json_path, 'r') as f:
-                raw_data = json.load(f)
-                # Raw data is [[timestamp_ms, value], ...]
-                # Sort ascending by timestamp
-                raw_data.sort(key=lambda x: x[0])
-                
-                # Check if data needs to be shifted to current year
-                if raw_data:
-                    last_ts = raw_data[-1][0] / 1000
-                    last_date = datetime.fromtimestamp(last_ts)
-                    current_year = datetime.now().year
-                    
-                    # If data is from a previous year, shift it forward
-                    if last_date.year < current_year:
-                        year_diff = current_year - last_date.year
-                        print(f"  ! Lumber data is from {last_date.year}. Shifting forward by {year_diff} year(s)...")
-                        
-                        for point in raw_data:
-                            ts = point[0] / 1000
-                            dt = datetime.fromtimestamp(ts)
-                            # Shift year forward
-                            try:
-                                new_dt = dt.replace(year=dt.year + year_diff)
-                            except ValueError:
-                                # Handle Feb 29 in non-leap years
-                                new_dt = dt.replace(year=dt.year + year_diff, day=28)
-                            
-                            date_str = new_dt.strftime('%Y-%m-%d')
-                            lumber.append({'date': date_str, 'value': point[1]})
-                    else:
-                        # Data is current, process normally
-                        for point in raw_data:
-                            ts = point[0] / 1000
-                            date_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
-                            lumber.append({'date': date_str, 'value': point[1]})
-                
-                print(f"  ✓ Loaded {len(lumber)} data points from JSON")
-        except Exception as e:
-            print(f"  ✗ Error loading JSON: {e}")
-            lumber = []
+    # Step 2: Fetch Trading Economics latest data
+    print("\n[2/3] Fetching Trading Economics Latest Data")
+    print("-" * 70)
+    te_oil = fetch_te_commodity(TE_URLS['oil'], 'WTI Oil')
+    time.sleep(2)  # Brief pause between requests
+    te_brent = fetch_te_commodity(TE_URLS['brent'], 'Brent Oil')
+    time.sleep(2)
+    te_copper = fetch_te_commodity(TE_URLS['copper'], 'Copper')
+    time.sleep(2)
+    te_lumber = fetch_te_commodity(TE_URLS['lumber'], 'Lumber')
+    time.sleep(2)
+    te_iron = fetch_te_commodity(TE_URLS['iron'], 'Iron Ore')
     
-    if not lumber:
-        lumber = fetch_csv_data(CSV_URLS['lumber'])
-    
-    iron = fetch_csv_data(CSV_URLS['iron'])
+    # Step 3: Merge data
+    print("\n[3/3] Merging Data")
+    print("-" * 70)
+    oil = merge_data(fred_oil, te_oil, 'WTI')
+    brent = merge_data(fred_brent, te_brent, 'Brent')
+    copper = merge_data(fred_copper, te_copper, 'Copper')
+    lumber = merge_data(fred_lumber, te_lumber, 'Lumber')
+    iron = merge_data(fred_iron, te_iron, 'Iron Ore')
     
     if not oil or not brent:
-        print("❌ Critical: Failed to download Oil data.")
+        print("\n❌ Critical: Failed to get oil data")
         return
 
-    # Calculate Spread: Brent - WTI
+    # Calculate spread
     spread = calculate_spread(brent, oil)
 
-    print("\nUpdating commodities.html...")
+    # Update HTML files
+    print("\n[4/4] Updating HTML Files")
+    print("-" * 70)
     if update_html_file(oil, brent, spread, copper, lumber, iron):
         print("✓ Successfully updated commodities.html")
         update_index_page()
         
-        if oil: print(f"Latest WTI: ${oil[-1]['value']}")
-        if brent: print(f"Latest Brent: ${brent[-1]['value']}")
+        print("\n" + "=" * 70)
+        print("SUMMARY")
+        print("=" * 70)
+        print(f"WTI Oil:    {len(oil):,} points | Latest: ${oil[-1]['value']:.2f}")
+        print(f"Brent Oil:  {len(brent):,} points | Latest: ${brent[-1]['value']:.2f}")
+        print(f"Copper:     {len(copper):,} points | Latest: ${copper[-1]['value']:.2f}")
+        print(f"Lumber:     {len(lumber):,} points | Latest: ${lumber[-1]['value']:.2f}")
+        print(f"Iron Ore:   {len(iron):,} points | Latest: ${iron[-1]['value']:.2f}")
+        print("=" * 70)
     else:
         print("✗ Failed to update HTML file")
 
