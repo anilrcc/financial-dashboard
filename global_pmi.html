@@ -6,192 +6,214 @@
     <title>Global Manufacturing Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-success: #10b981;
-            --accent-danger: #ef4444;
-            --accent-neutral: #64748b;
-        }
-
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
             margin: 0;
-            padding: 0;
-            min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
         }
 
         /* Header */
-        header {
+        .header-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--bg-card-hover);
-            padding-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
         }
 
-        .back-btn {
+        .back-link {
             text-decoration: none;
-            color: var(--text-secondary);
+            color: #64748b;
             font-weight: 500;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.95rem;
             transition: color 0.2s;
         }
-        .back-btn:hover { color: var(--text-primary); }
+        .back-link:hover { color: #1e293b; }
 
-        h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 900;
             margin: 0;
-            background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+            background-image: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
+        .last-updated {
+            text-align: right;
+        }
 
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .last-updated-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
         }
         
-        .section-title img {
-            width: 30px;
+        .last-updated-date {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #334155;
+        }
+
+        /* Section Styling */
+        .section-wrapper {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .country-flag {
+            width: 32px;
+            height: 24px;
             border-radius: 4px;
+            object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .country-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #334155;
         }
 
         /* KPI Cards */
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
             margin-bottom: 25px;
         }
 
-        .card {
-            background: var(--bg-card);
-            border-radius: 12px;
+        .kpi-card {
+            background: white;
             padding: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
-            position: relative;
-            overflow: hidden;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         }
 
         .kpi-label {
             font-size: 0.8rem;
-            color: var(--text-secondary);
+            color: #64748b;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
             font-weight: 600;
         }
 
         .kpi-value {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
+            color: #1e293b;
+            line-height: 1.2;
         }
 
         .kpi-sub {
             font-size: 0.9rem;
-            margin-top: 5px;
+            margin-top: 6px;
             display: flex;
             align-items: center;
             gap: 6px;
-        }
-
-        /* Chart Section */
-        .chart-container {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 60px;
-            border: 1px solid rgba(255,255,255,0.05);
-            height: 400px;
-            position: relative;
-        }
-
-        .chart-section {
-            margin-bottom: 60px;
+            font-weight: 500;
         }
 
         /* Badge */
         .badge {
             display: inline-block;
             padding: 4px 10px;
-            border-radius: 9999px;
+            border-radius: 6px;
             font-size: 0.75rem;
             font-weight: 600;
         }
         
-        .badge.expansion { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-        .badge.contraction { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-        
+        .badge.expansion { background-color: #dcfce7; color: #166534; }
+        .badge.contraction { background-color: #fee2e2; color: #991b1b; }
+
+        /* Chart Section */
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            height: 400px;
+            position: relative;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .header-section { flex-direction: column; gap: 15px; text-align: center; }
+            .last-updated { text-align: center; }
+        }
     </style>
 </head>
 <body>
 
+<body>
+
     <div class="container">
         <!-- Header -->
-        <header>
-            <a href="index.html" class="back-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Dashboard
-            </a>
-            <h1>Global Manufacturing Dashboard</h1>
-            <div style="text-align: right;">
-                <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text-secondary);">
-                    Updated: Dec 29, 2025
-                </span>
+        <div class="header-section">
+            <div style="flex: 1;">
+                <a href="index.html" class="back-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Back to Dashboard
+                </a>
             </div>
-        </header>
+            <div style="flex: 2; text-align: center;">
+                <h1 class="page-title">Global Manufacturing</h1>
+            </div>
+            <div style="flex: 1;" class="last-updated">
+                <div class="last-updated-label">Last Updated</div>
+                <div class="last-updated-date">Dec 29, 2025</div>
+            </div>
+        </div>
 
         <!-- SECTION 1: JAPAN PMI -->
-        <div class="chart-section">
-            <div class="section-title">
-                <img src="https://flagcdn.com/w80/jp.png" alt="Japan Flag">
-                Japan Composite PMI
+        <div class="section-wrapper">
+            <div class="section-header">
+                <img src="https://flagcdn.com/w80/jp.png" alt="Japan Flag" class="country-flag">
+                <div class="country-name">Japan Composite PMI</div>
             </div>
             
             <div class="kpi-grid">
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Current Reading</div>
                     <div class="kpi-value" style="color: #10b981">51.5</div>
                     <div class="kpi-sub">
                         <span class="badge expansion">EXPANSION</span>
                     </div>
                 </div>
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Month-Over-Month</div>
                     <div class="kpi-value" style="color: #ef4444">-0.5</div>
                     <div class="kpi-sub" style="color: #ef4444">
                         ↓ vs Prev Month
                     </div>
                 </div>
-                 <div class="card">
+                 <div class="kpi-card">
                     <div class="kpi-label">Outlook</div>
-                    <div style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-top: 5px;">
+                    <div style="color: #64748b; font-size: 0.95rem; line-height: 1.5;">
                         Composite index reflects resilient services outweighing manufacturing weakness.
                     </div>
                 </div>
@@ -203,30 +225,30 @@
         </div>
 
         <!-- SECTION 2: INDIA PMI -->
-        <div class="chart-section">
-            <div class="section-title">
-                <img src="https://flagcdn.com/w80/in.png" alt="India Flag">
-                India Manufacturing PMI
+        <div class="section-wrapper">
+            <div class="section-header">
+                <img src="https://flagcdn.com/w80/in.png" alt="India Flag" class="country-flag">
+                <div class="country-name">India Manufacturing PMI</div>
             </div>
             
             <div class="kpi-grid">
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Current Reading</div>
                     <div class="kpi-value" style="color: #10b981">55.7</div>
                     <div class="kpi-sub">
                         <span class="badge expansion">EXPANSION</span>
                     </div>
                 </div>
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Month-Over-Month</div>
                     <div class="kpi-value" style="color: #ef4444">-0.9</div>
                     <div class="kpi-sub" style="color: #ef4444">
                         ↓ vs Prev Month
                     </div>
                 </div>
-                 <div class="card">
+                 <div class="kpi-card">
                     <div class="kpi-label">Outlook</div>
-                    <div style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-top: 5px;">
+                    <div style="color: #64748b; font-size: 0.95rem; line-height: 1.5;">
                         Strong manufacturing growth driven by domestic demand and new orders.
                     </div>
                 </div>
@@ -238,30 +260,30 @@
         </div>
 
         <!-- SECTION 3: UK PMI -->
-        <div class="chart-section">
-            <div class="section-title">
-                <img src="https://flagcdn.com/w80/gb.png" alt="UK Flag">
-                UK Manufacturing PMI
+        <div class="section-wrapper">
+            <div class="section-header">
+                <img src="https://flagcdn.com/w80/gb.png" alt="UK Flag" class="country-flag">
+                <div class="country-name">UK Manufacturing PMI</div>
             </div>
             
             <div class="kpi-grid">
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Current Reading</div>
                     <div class="kpi-value" style="color: #10b981">51.2</div>
                     <div class="kpi-sub">
                         <span class="badge expansion">EXPANSION</span>
                     </div>
                 </div>
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Month-Over-Month</div>
                     <div class="kpi-value" style="color: #10b981">+1.0</div>
                     <div class="kpi-sub" style="color: #10b981">
                         ↑ vs Prev Month
                     </div>
                 </div>
-                 <div class="card">
+                 <div class="kpi-card">
                     <div class="kpi-label">Outlook</div>
-                    <div style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-top: 5px;">
+                    <div style="color: #64748b; font-size: 0.95rem; line-height: 1.5;">
                         Sector returns to growth in late 2025 after a prolonged period of contraction.
                     </div>
                 </div>
@@ -273,30 +295,30 @@
         </div>
 
         <!-- SECTION 4: BRAZIL PMI -->
-        <div class="chart-section">
-            <div class="section-title">
-                <img src="https://flagcdn.com/w80/br.png" alt="Brazil Flag">
-                Brazil Composite PMI
+        <div class="section-wrapper">
+            <div class="section-header">
+                <img src="https://flagcdn.com/w80/br.png" alt="Brazil Flag" class="country-flag">
+                <div class="country-name">Brazil Composite PMI</div>
             </div>
             
             <div class="kpi-grid">
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Current Reading</div>
                     <div class="kpi-value" style="color: #ef4444">49.6</div>
                     <div class="kpi-sub">
                         <span class="badge contraction">CONTRACTION</span>
                     </div>
                 </div>
-                <div class="card">
+                <div class="kpi-card">
                     <div class="kpi-label">Month-Over-Month</div>
                     <div class="kpi-value" style="color: #64748b">+0.0</div>
                     <div class="kpi-sub" style="color: #64748b">
                         → vs Prev Month
                     </div>
                 </div>
-                 <div class="card">
+                 <div class="kpi-card">
                     <div class="kpi-label">Outlook</div>
-                    <div style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-top: 5px;">
+                    <div style="color: #64748b; font-size: 0.95rem; line-height: 1.5;">
                         Mixed signals with contractionary pressures persisting in late 2025.
                     </div>
                 </div>
