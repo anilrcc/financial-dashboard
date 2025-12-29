@@ -129,20 +129,32 @@ def update_index_page():
     with open(index_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Updated regex to match "Commodity • <Date>" or similar patterns safely
-    # We look for the card then the span containing the bullet point
+    # Robust Pattern:
+    # 1. Match card start: (class="card commodities".*?<span>)
+    # 2. Match Optional Prefix (Label + Bullet): (?:(.*?•\s*))?
+    # 3. Match Date Content (to be replaced): ([^<]*)
+    # 4. Match End Span: (</span>)
     pattern = re.compile(
-        r'(class="card commodities".*?<span>)(.*?•\s*)([^<]*?)(</span>)', 
+        r'(class="card commodities".*?<span>)(?:(.*?•\s*))?([^<]*)(</span>)', 
         re.DOTALL | re.IGNORECASE
     )
     
+    today_str = datetime.now().strftime("%b %d, %Y")
+    
+    def repl_func(m):
+        # m.group(1): Card HTML + <span>
+        # m.group(2): Prefix (e.g. "Market Data • ") or None
+        # m.group(3): Old Date (Discarded)
+        # m.group(4): </span>
+        prefix = m.group(2) if m.group(2) else ""
+        return f"{m.group(1)}{prefix}{today_str}{m.group(4)}"
+        
     if pattern.search(content):
-        today_str = datetime.now().strftime("%b %d, %Y")
-        # Fixed substitution: group 1 (opening), group 2 (label + bullet), new date, group 4 (closing tag)
-        content = pattern.sub(f"\\g<1>\\g<2>{today_str}\\g<4>", content)
+        # Apply replacement to ALL occurrences
+        new_content = pattern.sub(repl_func, content)
         with open(index_file, 'w', encoding='utf-8') as f:
-            f.write(content)
-        print("✓ Updated Index Page timestamps for Commodities.")
+            f.write(new_content)
+        print("✓ Updated Index Page timestamps for Commodities (Self-Healing).")
     else:
         print("Warning: Could not find Commodities card in index.html to update timestamp.")
 

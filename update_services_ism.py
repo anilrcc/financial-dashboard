@@ -342,7 +342,8 @@ def main():
     if all_updates:
         update_html_with_revisions(all_updates)
         update_comments_block(all_updates)
-        update_index_timestamp()
+
+    update_index_timestamp()
 
 if __name__ == "__main__":
     main()
