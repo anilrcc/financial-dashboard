@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Manufacturing PMI</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; margin: 0; padding: 20px; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid #f1f5f9; }
+        .back-link { text-decoration: none; color: #64748b; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: color 0.2s; }
+        .back-link:hover { color: #1e293b; }
+        .page-title { font-size: 2.5rem; font-weight: 900; margin: 0; background-image: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .summary-box { background: white; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .summary-box h3 { margin-top: 0; font-size: 1.1rem; color: #334155; margin-bottom: 15px; font-weight: 700; }
+        .summary-box p { margin: 0 0 10px 0; color: #475569; line-height: 1.6; }
+        .charts-section { display: grid; grid-template-columns: 1fr; gap: 25px; margin-bottom: 50px; }
+        .chart-card { background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); height: 500px; position: relative; }
+        canvas { width: 100% !important; height: 100% !important; }
+        .table-container { overflow-x: auto; background: white; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 50px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.9rem; }
+        th, td { padding: 16px 24px; text-align: center; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
+        th { background-color: #f8fafc; font-weight: 600; color: #475569; position: sticky; top: 0; }
+        tbody tr:hover { background-color: #f8fafc; }
+        .footer { text-align: center; margin-top: 50px; font-size: 0.85rem; color: #94a3b8; }
+        .pmi-badge { padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; }
+        .pmi-exp { background-color: #dcfce7; color: #166534; }
+        .pmi-con { background-color: #fee2e2; color: #991b1b; }
+        .pmi-neu { background-color: #f1f5f9; color: #64748b; }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div style="flex: 1;">
+            <a href="index.html" class="back-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="feather"><path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Back to Dashboard
+            </a>
+        </div>
+        <div style="flex: 2; text-align: center;">
+            <h1 class="page-title">Global Manufacturing PMI</h1>
+        </div>
+        <div style="flex: 1; text-align: right;">
+            <div style="font-size: 0.85rem; color: #64748b; font-weight: 500;">Last Updated</div>
+            <div style="font-size: 0.95rem; font-weight: 700; color: #334155;">Dec 29, 2025</div>
+        </div>
+    </div>
+
+    <!-- Insights -->
+    <div class="summary-box">
+        
+<h3>Global Manufacturing Overview</h3>
+<p>The J.P. Morgan Global Manufacturing PMI™ deteriorated to <strong>49.6</strong> in Dec 2024, signaling a slight contraction in operating conditions.</p>
+<p>Key drivers include fluctuations in new orders and output across major industrial nations.</p>
+
+    </div>
+
+    <!-- Main Chart -->
+    <div class="charts-section">
+        <div class="chart-card">
+            <canvas id="mainChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Detailed Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">Date</th>
+                    <th>J.P. Morgan Global Manufacturing PMI</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Dec 2024</td>
+        <td><span class="pmi-badge pmi-con">49.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Nov 2024</td>
+        <td><span class="pmi-badge pmi-neu">50.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Oct 2024</td>
+        <td><span class="pmi-badge pmi-con">49.4</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Sep 2024</td>
+        <td><span class="pmi-badge pmi-con">48.7</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Aug 2024</td>
+        <td><span class="pmi-badge pmi-con">49.5</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jul 2024</td>
+        <td><span class="pmi-badge pmi-con">49.7</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jun 2024</td>
+        <td><span class="pmi-badge pmi-exp">50.9</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">May 2024</td>
+        <td><span class="pmi-badge pmi-exp">50.9</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Apr 2024</td>
+        <td><span class="pmi-badge pmi-exp">50.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Mar 2024</td>
+        <td><span class="pmi-badge pmi-exp">50.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Feb 2024</td>
+        <td><span class="pmi-badge pmi-exp">50.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jan 2024</td>
+        <td><span class="pmi-badge pmi-neu">50.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Dec 2023</td>
+        <td><span class="pmi-badge pmi-con">49.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Nov 2023</td>
+        <td><span class="pmi-badge pmi-con">49.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Oct 2023</td>
+        <td><span class="pmi-badge pmi-con">48.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Sep 2023</td>
+        <td><span class="pmi-badge pmi-con">49.2</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Aug 2023</td>
+        <td><span class="pmi-badge pmi-con">49.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jul 2023</td>
+        <td><span class="pmi-badge pmi-con">48.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jun 2023</td>
+        <td><span class="pmi-badge pmi-con">48.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">May 2023</td>
+        <td><span class="pmi-badge pmi-con">49.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Apr 2023</td>
+        <td><span class="pmi-badge pmi-con">49.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Mar 2023</td>
+        <td><span class="pmi-badge pmi-con">49.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Feb 2023</td>
+        <td><span class="pmi-badge pmi-neu">50.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jan 2023</td>
+        <td><span class="pmi-badge pmi-con">49.1</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Dec 2022</td>
+        <td><span class="pmi-badge pmi-con">48.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Nov 2022</td>
+        <td><span class="pmi-badge pmi-con">48.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Oct 2022</td>
+        <td><span class="pmi-badge pmi-con">49.4</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Sep 2022</td>
+        <td><span class="pmi-badge pmi-con">49.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Aug 2022</td>
+        <td><span class="pmi-badge pmi-exp">50.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jul 2022</td>
+        <td><span class="pmi-badge pmi-exp">51.1</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jun 2022</td>
+        <td><span class="pmi-badge pmi-exp">52.2</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">May 2022</td>
+        <td><span class="pmi-badge pmi-exp">52.4</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Apr 2022</td>
+        <td><span class="pmi-badge pmi-exp">52.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Mar 2022</td>
+        <td><span class="pmi-badge pmi-exp">53.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Feb 2022</td>
+        <td><span class="pmi-badge pmi-exp">53.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jan 2022</td>
+        <td><span class="pmi-badge pmi-exp">53.2</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Dec 2021</td>
+        <td><span class="pmi-badge pmi-exp">54.2</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Nov 2021</td>
+        <td><span class="pmi-badge pmi-exp">54.2</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Oct 2021</td>
+        <td><span class="pmi-badge pmi-exp">54.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Sep 2021</td>
+        <td><span class="pmi-badge pmi-exp">54.1</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Aug 2021</td>
+        <td><span class="pmi-badge pmi-exp">54.1</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jul 2021</td>
+        <td><span class="pmi-badge pmi-exp">55.4</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jun 2021</td>
+        <td><span class="pmi-badge pmi-exp">55.5</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">May 2021</td>
+        <td><span class="pmi-badge pmi-exp">56.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Apr 2021</td>
+        <td><span class="pmi-badge pmi-exp">55.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Mar 2021</td>
+        <td><span class="pmi-badge pmi-exp">55.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Feb 2021</td>
+        <td><span class="pmi-badge pmi-exp">53.9</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jan 2021</td>
+        <td><span class="pmi-badge pmi-exp">54.1</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Dec 2020</td>
+        <td><span class="pmi-badge pmi-exp">53.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Nov 2020</td>
+        <td><span class="pmi-badge pmi-exp">53.7</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Oct 2020</td>
+        <td><span class="pmi-badge pmi-exp">53.0</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Sep 2020</td>
+        <td><span class="pmi-badge pmi-exp">52.4</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Aug 2020</td>
+        <td><span class="pmi-badge pmi-exp">51.8</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jul 2020</td>
+        <td><span class="pmi-badge pmi-exp">50.3</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jun 2020</td>
+        <td><span class="pmi-badge pmi-con">47.9</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">May 2020</td>
+        <td><span class="pmi-badge pmi-con">42.4</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Apr 2020</td>
+        <td><span class="pmi-badge pmi-con">39.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Mar 2020</td>
+        <td><span class="pmi-badge pmi-con">47.6</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Feb 2020</td>
+        <td><span class="pmi-badge pmi-con">47.1</span></td>
+    </tr>
+    
+    <tr>
+        <td style="text-align: left; font-weight: 600;">Jan 2020</td>
+        <td><span class="pmi-badge pmi-exp">52.2</span></td>
+    </tr>
+    
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Data Source: J.P. Morgan / S&P Global</p>
+    </div>
+
+    <script>
+        const dates = ["Jan 2020", "Feb 2020", "Mar 2020", "Apr 2020", "May 2020", "Jun 2020", "Jul 2020", "Aug 2020", "Sep 2020", "Oct 2020", "Nov 2020", "Dec 2020", "Jan 2021", "Feb 2021", "Mar 2021", "Apr 2021", "May 2021", "Jun 2021", "Jul 2021", "Aug 2021", "Sep 2021", "Oct 2021", "Nov 2021", "Dec 2021", "Jan 2022", "Feb 2022", "Mar 2022", "Apr 2022", "May 2022", "Jun 2022", "Jul 2022", "Aug 2022", "Sep 2022", "Oct 2022", "Nov 2022", "Dec 2022", "Jan 2023", "Feb 2023", "Mar 2023", "Apr 2023", "May 2023", "Jun 2023", "Jul 2023", "Aug 2023", "Sep 2023", "Oct 2023", "Nov 2023", "Dec 2023", "Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024", "Jun 2024", "Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024"];
+        const pmiData = [52.2, 47.1, 47.6, 39.6, 42.4, 47.9, 50.3, 51.8, 52.4, 53.0, 53.7, 53.8, 54.1, 53.9, 55.0, 55.8, 56.0, 55.5, 55.4, 54.1, 54.1, 54.3, 54.2, 54.2, 53.2, 53.6, 53.0, 52.3, 52.4, 52.2, 51.1, 50.3, 49.8, 49.4, 48.8, 48.6, 49.1, 50.0, 49.6, 49.6, 49.6, 48.8, 48.6, 49.0, 49.2, 48.8, 49.3, 49.0, 50.0, 50.3, 50.6, 50.3, 50.9, 50.9, 49.7, 49.5, 48.7, 49.4, 50.0, 49.6];
+
+        new Chart(document.getElementById('mainChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'Global Manufacturing PMI',
+                        data: pmiData,
+                        borderColor: '#0284c7', 
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        fill: true
+                    },
+                    {
+                        label: '50 Neutral',
+                        data: Array(dates.length).fill(50),
+                        borderColor: '#94a3b8',
+                        borderWidth: 1,
+                        borderDash: [4, 4],
+                        pointRadius: 0,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    title: { display: true, text: 'Global Manufacturing PMI (2020-2024)' },
+                    legend: { position: 'top' },
+                    tooltip: { callbacks: { label: (c) => c.dataset.label + ': ' + c.parsed.y } }
+                },
+                scales: {
+                    y: { min: minVal, max: maxVal, grid: { color: '#f1f5f9' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+        
+        // Dynamic Y-Axis Calculation
+        const vals = [52.2, 47.1, 47.6, 39.6, 42.4, 47.9, 50.3, 51.8, 52.4, 53.0, 53.7, 53.8, 54.1, 53.9, 55.0, 55.8, 56.0, 55.5, 55.4, 54.1, 54.1, 54.3, 54.2, 54.2, 53.2, 53.6, 53.0, 52.3, 52.4, 52.2, 51.1, 50.3, 49.8, 49.4, 48.8, 48.6, 49.1, 50.0, 49.6, 49.6, 49.6, 48.8, 48.6, 49.0, 49.2, 48.8, 49.3, 49.0, 50.0, 50.3, 50.6, 50.3, 50.9, 50.9, 49.7, 49.5, 48.7, 49.4, 50.0, 49.6];
+        var minVal = Math.floor(Math.min(...vals) - 1);
+        var maxVal = Math.ceil(Math.max(...vals) + 1);
+    </script>
+</body>
+</html>
