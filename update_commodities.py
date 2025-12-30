@@ -234,22 +234,27 @@ def update_index_page():
     with open(index_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
+    # Pattern to match commodity cards (Oil, Copper, Lumber, Iron Ore)
+    # These cards have dates directly in the card-meta div without "Market Data •" prefix
     pattern = re.compile(
-        r'(class="card commodities".*?<span>)(?:(.*?•\s*))?([^<]*)(</span>)', 
+        r'(href="commodities\.html\?view=(?:oil|copper|lumber|iron)".*?<div class="card-meta">.*?<span>)([^<]+)(</span>)', 
         re.DOTALL | re.IGNORECASE
     )
     
     today_str = datetime.now().strftime("%b %d, %Y")
     
     def repl_func(m):
-        prefix = m.group(2) if m.group(2) else ""
-        return f"{m.group(1)}{prefix}{today_str}{m.group(4)}"
-        
-    if pattern.search(content):
+        # Replace the date, keeping the rest of the structure
+        return f"{m.group(1)}{today_str}{m.group(3)}"
+    
+    matches = pattern.findall(content)
+    if matches:
         new_content = pattern.sub(repl_func, content)
         with open(index_file, 'w', encoding='utf-8') as f:
             f.write(new_content)
-        print("✓ Updated Index Page timestamps")
+        print(f"✓ Updated {len(matches)} commodity card timestamp(s) on Index Page")
+    else:
+        print("⚠ Warning: Could not find commodity cards to update in index.html")
 
 def main():
     """Main function"""
