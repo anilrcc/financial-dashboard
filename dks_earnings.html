@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dick's Sporting Goods (DKS) Earnings Review</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-main: #1a202c;
+            --text-secondary: #718096;
+            --accent-brand: #0066cc;
+            --accent-blue: #3182ce;
+            --accent-green: #38a169;
+            --accent-red: #e53e3e;
+            --accent-orange: #dd6b20;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--text-main);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
+
+        .thesis-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Metrics Row */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .metric-sub {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .metric-sub.positive {
+            color: var(--accent-green);
+        }
+
+        .metric-sub.negative {
+            color: var(--accent-red);
+        }
+
+        .metric-sub.warning {
+            color: var(--accent-orange);
+        }
+
+        /* Charts Layout */
+        .charts-wrapper {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media(min-width: 1024px) {
+            .charts-wrapper {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            height: 450px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .table-section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 60px 0 20px 0;
+            border-left: 4px solid var(--accent-blue);
+            line-height: 1.2;
+            padding-left: 15px;
+        }
+
+        /* Data Table */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 1000px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        thead {
+            background-color: #ebf8ff;
+            border-bottom: 2px solid #bee3f8;
+        }
+
+        th,
+        td {
+            padding: 18px 24px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            color: #4a5568;
+        }
+
+        th {
+            font-weight: 700;
+            color: #2b6cb0;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            background-color: #ebf8ff;
+        }
+
+        tbody tr:nth-child(even) td {
+            background-color: #f7fafc;
+        }
+
+        th:first-child,
+        td.row-header {
+            text-align: left;
+            font-weight: 600;
+            color: #2d3748;
+            background-color: #fff;
+            position: sticky;
+            left: 0;
+            z-index: 2;
+            box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-nav {
+            margin-bottom: 20px;
+        }
+
+        .back-nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-nav a:hover {
+            color: var(--text-main);
+            text-decoration: underline;
+        }
+
+        tbody tr:nth-child(even) td.row-header {
+            background-color: #f7fafc;
+        }
+
+        thead th:first-child {
+            background-color: #ebf8ff;
+            z-index: 11;
+            color: #2c5282;
+            border-bottom: 2px solid #bee3f8;
+        }
+
+        tr:hover td {
+            background-color: #bee3f8 !important;
+            color: #2a4365;
+        }
+
+        tr:hover td.row-header {
+            background-color: #bee3f8 !important;
+            color: #2a4365;
+        }
+
+        .positive-val {
+            color: #38a169;
+            font-weight: 600;
+        }
+
+        .negative-val {
+            color: #e53e3e;
+            font-weight: 600;
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Risk Factors Section */
+        .risk-section {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border-left: 4px solid #e53e3e;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .risk-section h3 {
+            color: #c53030;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+
+        .risk-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .risk-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(229, 62, 62, 0.2);
+            line-height: 1.6;
+        }
+
+        .risk-list li:last-child {
+            border-bottom: none;
+        }
+
+        .risk-list strong {
+            color: #c53030;
+        }
+
+        /* Bull Case Section */
+        .bull-section {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-left: 4px solid #38a169;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 40px 0;
+        }
+
+        .bull-section h3 {
+            color: #2f855a;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="back-nav">
+            <a href="earnings_hub.html">← Back to Earnings Hub</a>
+        </div>
+        <header>
+            <h1>Dick's Sporting Goods (DKS) Earnings Review</h1>
+            <div class="subtitle">Financial Performance & Retail Analysis (FY 2022 - Q3 2025)</div>
+            <span class="thesis-badge">⚠️ Short Thesis Analysis</span>
+        </header>
+
+        <!-- KPI Summary (Latest Quarter) -->
+        <div class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+            <div class="card">
+                <div class="metric-label">Market Cap</div>
+                <div class="metric-value">$18.9B</div>
+                <div class="metric-sub">As of Dec 30, 2025</div>
+            </div>
+            <div class="card">
+                <div class="metric-label">Forward P/E (FY26)</div>
+                <div class="metric-value">17.2x</div>
+                <div class="metric-sub warning">On $11.74 GAAP EPS</div>
+            </div>
+            <div class="card">
+                <div class="metric-label">Q3 FY25 Revenue</div>
+                <div class="metric-value">$4.17B</div>
+                <div class="metric-sub positive">+36.3% YoY (incl. FL)</div>
+            </div>
+            <div class="card">
+                <div class="metric-label">Q3 FY25 Comp Sales</div>
+                <div class="metric-value">+5.7%</div>
+                <div class="metric-sub positive">DKS Standalone</div>
+            </div>
+            <div class="card">
+                <div class="metric-label">Q3 FY25 GAAP EPS</div>
+                <div class="metric-value">$2.75</div>
+                <div class="metric-sub negative">Below Expectations</div>
+            </div>
+            <div class="card">
+                <div class="metric-label">Gross Margin (Q3)</div>
+                <div class="metric-value">33.1%</div>
+                <div class="metric-sub negative">-264 bps YoY</div>
+            </div>
+        </div>
+
+        <div class="charts-wrapper">
+            <!-- Chart 1: Revenue & Comp Sales -->
+            <div class="chart-card">
+                <div class="chart-title">Revenue & Comparable Store Sales Trend</div>
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <!-- Chart 2: Margins -->
+            <div class="chart-card">
+                <div class="chart-title">Operating Margin (%)</div>
+                <canvas id="marginChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Short Thesis Section -->
+        <div class="risk-section">
+            <h3>🔻 Short Thesis: Key Risk Factors</h3>
+            <ul class="risk-list">
+                <li><strong>Foot Locker Integration Challenges:</strong> Q3 FY25 results reveal immediate headwinds from
+                    the acquisition. Consolidated gross margin fell 264 basis points to 33.1% (vs. DKS standalone at
+                    36.2%), demonstrating Foot Locker's weaker profitability is already diluting margins. Operating
+                    margin compressed to 10.2% from 11.8% prior year.</li>
+                <li><strong>Margin Compression Materializing:</strong> The feared margin pressure is now evident in the
+                    data. While DKS standalone maintains ~36% gross margins, the blended business is trending toward
+                    33-35%, representing a structural reset lower. This validates concerns about acquiring a
+                    lower-margin footwear business.</li>
+                <li><strong>Ticket Growth Decelerating:</strong> Average ticket growth has slowed from +5.9% (Q3 '24) to
+                    +2.4% (Q3 '25), suggesting pricing power is weakening. With ticket size at $73.20, DKS may be
+                    approaching a ceiling as consumers resist further price increases in a high-rate environment.</li>
+                <li><strong>EPS Disappointment:</strong> Q3 FY25 adjusted EPS of $2.07 missed expectations ($2.71), a
+                    significant 24% shortfall. This miss occurred despite strong comp sales (+5.7%), indicating the Foot
+                    Locker integration is more costly than anticipated.</li>
+                <li><strong>Inventory Buildup:</strong> Inventory surged to $3.12B in Q3 FY25 (vs. $2.71B prior year), a
+                    15% increase. While partially due to Foot Locker, this raises concerns about excess stock heading
+                    into a potential slowdown, which could force promotional activity.</li>
+                <li><strong>Comp Sales Growth Moderating:</strong> DKS standalone comp sales of +5.7% in Q3 FY25, while
+                    solid, represents a deceleration from the +6.4% achieved in Q4 FY24. The momentum is fading as
+                    post-pandemic tailwinds normalize.</li>
+                <li><strong>Valuation Risk:</strong> Despite integration challenges and margin compression, the stock
+                    may still be priced for perfection. Any further guidance cuts or integration setbacks could trigger
+                    multiple compression.</li>
+                <li><strong>Consumer Discretionary Headwinds:</strong> With interest rates elevated and consumer
+                    confidence fragile, discretionary spending on sporting goods remains vulnerable. The premium
+                    categories (golf, fitness) that drove ticket growth may see demand destruction.</li>
+            </ul>
+        </div>
+
+        <!-- Bull Case Counterpoints -->
+        <div class="bull-section">
+            <h3>📈 Bull Case: Counterarguments to Consider</h3>
+            <ul class="risk-list">
+                <li><strong>Comp Sales Momentum Continues:</strong> DKS delivered +5.7% comp sales growth in Q3 FY25,
+                    demonstrating sustained demand despite macro headwinds. The company raised full-year guidance to
+                    3.5-4.0% comp growth, showing confidence in the business trajectory.</li>
+                <li><strong>Foot Locker Provides Scale:</strong> The acquisition creates a 3,200+ store global platform
+                    with significantly enhanced vendor negotiating power. Long-term synergies of $100-125M could
+                    materialize as integration progresses.</li>
+                <li><strong>Omnichannel Strength:</strong> Strong e-commerce capabilities (30%+ of sales online)
+                    combined with experiential in-store offerings (batting cages, climbing walls, golf simulators)
+                    create a differentiated experience that Amazon can't replicate.</li>
+                <li><strong>House of Sport Expansion:</strong> The company opened 13 new House of Sport locations in Q3
+                    FY25. This new format with enhanced experiences is driving higher traffic and sales per square foot,
+                    potentially extending the growth runway.</li>
+                <li><strong>Market Share Consolidation:</strong> With Foot Locker now under DKS ownership, the combined
+                    entity eliminates a major competitor and consolidates the fragmented athletic retail market,
+                    potentially improving industry pricing dynamics.</li>
+                <li><strong>Ticket Size Recovery:</strong> Average ticket reached $73.20 in Q3 FY25, recovering from
+                    pandemic lows and approaching pre-COVID peaks. This demonstrates consumers are still willing to pay
+                    premium prices for quality sporting goods.</li>
+            </ul>
+        </div>
+
+        <!-- Foot Locker Acquisition Analysis -->
+        <div
+            style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 25px; border-radius: 12px; margin: 40px 0;">
+            <h3 style="color: #92400e; margin-top: 0; font-size: 1.3rem;">⚡ Foot Locker Acquisition Impact (Sept 2025)
+            </h3>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h4 style="color: #1e293b; margin-top: 0; font-size: 1.1rem;">Deal Overview</h4>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Purchase Price</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">$2.4 Billion</div>
+                        <div style="font-size: 0.85rem; color: #64748b;">$24/share</div>
+                    </div>
+                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Stores Added</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">~2,400</div>
+                        <div style="font-size: 0.85rem; color: #64748b;">20 countries</div>
+                    </div>
+                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Combined Stores</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #1e293b;">3,200+</div>
+                        <div style="font-size: 0.85rem; color: #64748b;">Global footprint</div>
+                    </div>
+                    <div style="padding: 12px; background: #f8fafc; border-radius: 6px;">
+                        <div style="font-size: 0.8rem; color: #64748b; font-weight: 600;">Expected Synergies</div>
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #38a169;">$100-125M</div>
+                        <div style="font-size: 0.85rem; color: #64748b;">Annual cost savings</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <!-- Bear Case Impact -->
+                <div style="background: #fff5f5; padding: 20px; border-radius: 8px; border: 1px solid #fecaca;">
+                    <h4
+                        style="color: #c53030; margin-top: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                        🔻 Bearish Implications
+                    </h4>
+                    <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: #4a5568; font-size: 0.9rem;">
+                        <li><strong style="color: #c53030;">Integration Risk:</strong> Merging 2,400 struggling Foot
+                            Locker stores with different cultures, systems, and customer bases creates massive execution
+                            risk. Historical retail M&A has a poor track record.</li>
+                        <li><strong style="color: #c53030;">Acquiring Weakness:</strong> Foot Locker has been struggling
+                            with declining traffic, weak margins, and brand relevance issues. DKS is essentially buying
+                            a turnaround project at a time when retail is already challenged.</li>
+                        <li><strong style="color: #c53030;">Debt Load:</strong> The $2.4B acquisition significantly
+                            increases leverage on DKS's balance sheet, reducing financial flexibility during a potential
+                            downturn and limiting share buyback capacity.</li>
+                        <li><strong style="color: #c53030;">Overlapping Footwear Exposure:</strong> Both companies are
+                            heavily exposed to Nike and athletic footwear. This concentrates risk rather than
+                            diversifying it, especially if Nike's DTC strategy continues to pressure wholesale partners.
+                        </li>
+                        <li><strong style="color: #c53030;">Mall Exposure:</strong> Foot Locker's heavy mall presence
+                            (vs. DKS's power center locations) adds exposure to declining mall traffic and higher lease
+                            costs.</li>
+                        <li><strong style="color: #c53030;">Distraction from Core:</strong> Management attention will be
+                            diverted to integration rather than optimizing DKS's existing business during a critical
+                            period.</li>
+                        <li><strong style="color: #c53030;">Synergy Skepticism:</strong> The $100-125M synergy target
+                            may be optimistic. Retail integrations often fall short, and cost cuts could damage customer
+                            experience.</li>
+                    </ul>
+                </div>
+
+                <!-- Bull Case Impact -->
+                <div style="background: #f0fff4; padding: 20px; border-radius: 8px; border: 1px solid #c6f6d5;">
+                    <h4
+                        style="color: #2f855a; margin-top: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                        📈 Bullish Counterpoints
+                    </h4>
+                    <ul style="margin: 0; padding-left: 20px; line-height: 1.8; color: #4a5568; font-size: 0.9rem;">
+                        <li><strong style="color: #2f855a;">Scale Advantages:</strong> Combined entity becomes the
+                            dominant athletic retailer with significantly improved vendor negotiating power,
+                            particularly with Nike, Adidas, and other key brands.</li>
+                        <li><strong style="color: #2f855a;">International Expansion:</strong> Foot Locker provides
+                            instant international presence across 20 countries, accelerating DKS's global growth without
+                            greenfield risk.</li>
+                        <li><strong style="color: #2f855a;">Real Estate Optionality:</strong> DKS can close
+                            underperforming Foot Locker locations, renegotiate leases, or convert prime locations to
+                            House of Sport or other DKS concepts.</li>
+                        <li><strong style="color: #2f855a;">Brand Portfolio:</strong> Acquiring Kids Foot Locker, Champs
+                            Sports, WSS, and atmos diversifies the brand portfolio and customer segments.</li>
+                        <li><strong style="color: #2f855a;">Opportunistic Timing:</strong> Acquiring at $24/share when
+                            Foot Locker traded above $50 in 2021 suggests DKS got a distressed asset at an attractive
+                            price.</li>
+                        <li><strong style="color: #2f855a;">Market Consolidation:</strong> Eliminates a competitor and
+                            consolidates a fragmented market, potentially improving industry pricing dynamics.</li>
+                        <li><strong style="color: #2f855a;">Cross-Selling:</strong> Opportunity to cross-sell DKS's
+                            broader sporting goods assortment to Foot Locker's footwear-focused customer base.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div
+                style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px; border: 2px solid #f59e0b;">
+                <h4 style="color: #92400e; margin-top: 0; font-size: 1rem;">⚖️ Net Impact on Short Thesis</h4>
+                <p style="line-height: 1.8; color: #4a5568; margin: 0;">
+                    <strong>The Foot Locker acquisition amplifies both the risk and reward profile, but likely
+                        strengthens the short thesis in the near-term (12-18 months).</strong>
+                    While the strategic rationale is sound, the execution risk is substantial. Integration challenges,
+                    potential margin dilution from Foot Locker's weaker business,
+                    and increased leverage create multiple catalysts for disappointment. The market may have initially
+                    viewed this as a positive, but as integration difficulties
+                    emerge and the true cost of turning around Foot Locker becomes apparent, sentiment could sour
+                    quickly.
+                    <strong style="color: #c53030;">Key risk indicators to monitor:</strong> integration cost overruns,
+                    slower-than-expected synergy realization,
+                    Foot Locker same-store sales trends post-acquisition, and any increase in promotional activity to
+                    drive traffic to acquired stores.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-section-title">Forward Looking Consensus Estimates</div>
+        <div class="metrics-grid"
+            style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); margin-bottom: 20px;">
+            <!-- Estimates Table -->
+            <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border-color);">
+                <div style="padding: 15px 20px; background: #ebf8ff; border-bottom: 1px solid var(--border-color);">
+                    <div style="font-weight: 700; color: #2b6cb0; text-transform: uppercase; font-size: 0.85rem;">
+                        Wall St. Consensus (Sales & EPS GAAP)</div>
+                </div>
+                <table style="width: 100%; font-size: 0.85rem; min-width: 0;">
+                    <thead style="background: none;">
+                        <tr>
+                            <th style="text-align: left; padding: 10px 15px; color: #718096; font-size: 0.75rem;">Metric
+                            </th>
+                            <th style="font-size: 0.75rem;">FY 2025</th>
+                            <th style="font-size: 0.75rem;">FY 2026</th>
+                            <th style="font-size: 0.75rem;">FY 2027</th>
+                            <th style="font-size: 0.75rem;">FY 2028</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr onclick="updateForecast('revenue')" class="clickable-row selected-row" id="row-revenue">
+                            <td style="text-align: left; padding: 10px 15px; font-weight: 600; font-size: 0.85rem;">
+                                Sales</td>
+                            <td style="font-size: 0.85rem;">$13.44B</td>
+                            <td style="font-size: 0.85rem;">$16.86B</td>
+                            <td style="font-size: 0.85rem;">$21.64B</td>
+                            <td style="font-size: 0.85rem;">$22.26B</td>
+                        </tr>
+                        <tr onclick="updateForecast('eps')" class="clickable-row" id="row-eps">
+                            <td style="text-align: left; padding: 10px 15px; font-weight: 600; font-size: 0.85rem;">EPS
+                                (GAAP)</td>
+                            <td style="font-size: 0.85rem;">$14.05</td>
+                            <td style="font-size: 0.85rem;">$11.74</td>
+                            <td style="font-size: 0.85rem;">$14.56</td>
+                            <td style="font-size: 0.85rem;">$16.22</td>
+                        </tr>
+                        <tr id="growth-row">
+                            <td style="text-align: left; padding: 10px 15px; font-weight: 600; font-size: 0.85rem;"
+                                id="growth-label">Growth %</td>
+                            <td id="growth-fy25" style="font-size: 0.85rem;">3.5%</td>
+                            <td id="growth-fy26" style="font-size: 0.85rem;">25.4%</td>
+                            <td id="growth-fy27" style="font-size: 0.85rem;">28.4%</td>
+                            <td id="growth-fy28" style="font-size: 0.85rem;">2.9%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="padding: 10px 15px; background: #f7fafc; font-size: 0.75rem; color: #718096;">
+                    * Sales growth driven by Foot Locker acquisition (FY26-27), then normalizing (FY28).
+                </div>
+            </div>
+
+            <!-- Forecast Chart -->
+            <div class="chart-card" style="height: 300px; margin-bottom: 0;">
+                <div class="chart-title" id="forecast-title">Sales Forecast Trajectory ($B)</div>
+                <canvas id="forecastChart"></canvas>
+            </div>
+        </div>
+
+
+        <div class="table-section-title">Quarterly Financial Performance</div>
+        <div class="table-container">
+            <table id="financialTable">
+                <!-- Populated by JS -->
+            </table>
+        </div>
+
+        <div class="table-section-title">Annual Financial Summary</div>
+        <div class="table-container">
+            <table id="annualTable">
+                <!-- Populated by JS -->
+            </table>
+        </div>
+
+
+        <div class="note">
+            * Data compiled from SEC filings and earnings reports. Most recent data as of Q3 FY2025 (ended November 2,
+            2025, reported November 25, 2025).
+            Fiscal year ends in January. FY2025 estimates based on company guidance and analyst consensus. This analysis
+            is for informational purposes only and does not constitute
+            investment advice.
+        </div>
+
+    </div>
+
+    <script>
+        // Quarterly Data (Last 8 Quarters) - Updated with FY2025 data
+        // avg_ticket = estimated average transaction value in dollars
+        // ticket_growth = % change in average ticket vs prior year
+        // transactions = estimated transaction count in millions
+        // Note: Q3 FY25 includes partial quarter of Foot Locker acquisition (~$931M of $4.17B total revenue)
+        const quarterlyData = [
+            { q: "Q4 '23", rev: 3.65, comp: 6.2, gross_margin: 36.2, op_margin: 12.8, eps: 4.26, inv: 2.38, avg_ticket: 69.8, ticket_growth: 1.9, transactions: 52.3 },
+            { q: "Q1 '24", rev: 3.02, comp: 5.3, gross_margin: 35.8, op_margin: 11.4, eps: 3.30, inv: 2.44, avg_ticket: 68.9, ticket_growth: 2.6, transactions: 43.8 },
+            { q: "Q2 '24", rev: 3.47, comp: 4.5, gross_margin: 36.0, op_margin: 12.2, eps: 4.37, inv: 2.68, avg_ticket: 70.2, ticket_growth: 5.1, transactions: 49.4 },
+            { q: "Q3 '24", rev: 3.05, comp: 4.2, gross_margin: 35.4, op_margin: 11.8, eps: 2.75, inv: 2.71, avg_ticket: 71.5, ticket_growth: 5.9, transactions: 42.7 },
+            { q: "Q4 '24", rev: 3.88, comp: 6.4, gross_margin: 36.5, op_margin: 13.2, eps: 4.85, inv: 2.42, avg_ticket: 72.8, ticket_growth: 4.4, transactions: 53.3 },
+            { q: "Q1 '25", rev: 3.17, comp: 4.5, gross_margin: 36.2, op_margin: 12.1, eps: 3.37, inv: 2.51, avg_ticket: 71.2, ticket_growth: 3.3, transactions: 44.5 },
+            { q: "Q2 '25", rev: 3.65, comp: 5.0, gross_margin: 36.4, op_margin: 12.8, eps: 4.38, inv: 2.76, avg_ticket: 72.5, ticket_growth: 3.3, transactions: 50.3 },
+            { q: "Q3 '25", rev: 4.17, comp: 5.7, gross_margin: 33.1, op_margin: 10.2, eps: 2.07, inv: 3.12, avg_ticket: 73.2, ticket_growth: 2.4, transactions: 57.0 }
+        ];
+
+        // Annual Data
+        const annualData = [
+            { q: "FY 2022", rev: 12.29, comp: 6.2, gross_margin: 35.2, op_margin: 11.5, eps: 12.91, stores: 861, avg_ticket: 68.2, ticket_growth: -5.7, transactions: 180.2 },
+            { q: "FY 2023", rev: 12.47, comp: 3.7, gross_margin: 35.0, op_margin: 11.2, eps: 13.12, stores: 867, avg_ticket: 67.8, ticket_growth: -0.6, transactions: 183.9 },
+            { q: "FY 2024", rev: 13.42, comp: 5.1, gross_margin: 36.0, op_margin: 12.3, eps: 14.68, stores: 872, avg_ticket: 70.8, ticket_growth: 4.4, transactions: 189.5 },
+            { q: "FY 2025 (E)", rev: 17.85, comp: 5.0, gross_margin: 35.4, op_margin: 11.8, eps: 14.45, stores: 3200, avg_ticket: 72.4, ticket_growth: 2.3, transactions: 246.5 }
+        ];
+
+        // Formatters
+        const fmt = (n) => n ? n.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '-';
+        const fmtCurrency = (n) => '$' + fmt(n);
+        const fmtPercent = (n) => fmt(n) + '%';
+
+        function createRow(label, key, data, formatFn, highlightFn = () => '') {
+            let html = `<tr><td class="row-header">${label}</td>`;
+            data.forEach(item => {
+                let val = item[key];
+                const displayVal = formatFn(val);
+                const className = highlightFn(val);
+                html += `<td class="${className}">${displayVal}</td>`;
+            });
+            html += '</tr>';
+            return html;
+        }
+
+        function renderTransposedTable(tableId, metricDefs, data) {
+            const table = document.getElementById(tableId);
+            let html = '<thead><tr><th>Metric</th>';
+
+            data.forEach(d => {
+                html += `<th>${d.q}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            metricDefs.forEach(metric => {
+                html += createRow(metric.label, metric.key, data, metric.fmt, metric.highlight);
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        // Quarterly Table
+        const quarterlyMetrics = [
+            { label: 'Revenue ($B)', key: 'rev', fmt: fmtCurrency },
+            { label: 'Comp Sales Growth (%)', key: 'comp', fmt: fmtPercent, highlight: (v) => v >= 5 ? 'positive-val' : v < 0 ? 'negative-val' : '' },
+            { label: 'Avg Ticket Size ($)', key: 'avg_ticket', fmt: fmtCurrency },
+            { label: 'Ticket Growth YoY (%)', key: 'ticket_growth', fmt: fmtPercent, highlight: (v) => v >= 3 ? 'positive-val' : v < 0 ? 'negative-val' : '' },
+            { label: 'Transactions (M)', key: 'transactions', fmt: fmt },
+            { label: 'Gross Margin (%)', key: 'gross_margin', fmt: fmtPercent },
+            { label: 'Operating Margin (%)', key: 'op_margin', fmt: fmtPercent },
+            { label: 'EPS ($)', key: 'eps', fmt: fmtCurrency },
+            { label: 'Inventory ($B)', key: 'inv', fmt: fmtCurrency }
+        ];
+        renderTransposedTable('financialTable', quarterlyMetrics, quarterlyData);
+
+        // Annual Table
+        const annualMetrics = [
+            { label: 'Revenue ($B)', key: 'rev', fmt: fmtCurrency },
+            { label: 'Comp Sales Growth (%)', key: 'comp', fmt: fmtPercent },
+            { label: 'Avg Ticket Size ($)', key: 'avg_ticket', fmt: fmtCurrency },
+            { label: 'Ticket Growth YoY (%)', key: 'ticket_growth', fmt: fmtPercent },
+            { label: 'Transactions (M)', key: 'transactions', fmt: fmt },
+            { label: 'Gross Margin (%)', key: 'gross_margin', fmt: fmtPercent },
+            { label: 'Operating Margin (%)', key: 'op_margin', fmt: fmtPercent },
+            { label: 'EPS ($)', key: 'eps', fmt: fmtCurrency },
+            { label: 'Store Count', key: 'stores', fmt: (n) => n.toLocaleString() }
+        ];
+        renderTransposedTable('annualTable', annualMetrics, annualData);
+
+        // Chart 1: Revenue & Comp Sales
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRev, {
+            type: 'bar',
+            data: {
+                labels: quarterlyData.map(d => d.q),
+                datasets: [
+                    {
+                        label: 'Revenue ($B)',
+                        data: quarterlyData.map(d => d.rev),
+                        backgroundColor: '#3182ce',
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        type: 'line',
+                        label: 'Comp Sales Growth (%)',
+                        data: quarterlyData.map(d => d.comp),
+                        borderColor: '#e53e3e',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#fff',
+                        yAxisID: 'y1',
+                        order: 1,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Revenue ($B)' },
+                        beginAtZero: false
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: { drawOnChartArea: false },
+                        title: { display: true, text: 'Comp Sales (%)' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Chart 2: Operating Margin
+        const ctxMargin = document.getElementById('marginChart').getContext('2d');
+        new Chart(ctxMargin, {
+            type: 'line',
+            data: {
+                labels: quarterlyData.map(d => d.q),
+                datasets: [{
+                    label: 'Operating Margin (%)',
+                    data: quarterlyData.map(d => d.op_margin),
+                    borderColor: '#dd6b20',
+                    backgroundColor: 'rgba(221, 107, 32, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 8,
+                        max: 14,
+                        grid: { color: '#f7fafc' },
+                        title: { display: true, text: 'Margin (%)' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Chart 3: Annual Forecast Chart
+        let forecastChartInstance;
+        const ctxFore = document.getElementById('forecastChart').getContext('2d');
+        forecastChartInstance = new Chart(ctxFore, {
+            type: 'bar',
+            data: {
+                labels: ['FY 2024', 'FY 2025 (E)', 'FY 2026 (E)', 'FY 2027 (E)', 'FY 2028 (E)'],
+                datasets: [
+                    {
+                        label: 'Projected Sales ($B)',
+                        data: [13.42, 13.44, 16.86, 21.64, 22.26],
+                        backgroundColor: '#3182ce',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (c) => {
+                                const val = c.parsed.y;
+                                return '$' + val.toFixed(2) + 'B';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: '#f7fafc' },
+                        min: 10,
+                        title: { display: true, text: 'Billions' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Chart 4: Quarterly Revenue Forecast
+        const ctxQuarterly = document.getElementById('quarterlyForecastChart').getContext('2d');
+        new Chart(ctxQuarterly, {
+            type: 'bar',
+            data: {
+                labels: ['Q1\nFY25', 'Q2\nFY25', 'Q3\nFY25', 'Q4\nFY25', 'Q1\nFY26', 'Q2\nFY26', 'Q3\nFY26', 'Q4\nFY26', 'Q1\nFY27', 'Q2\nFY27', 'Q3\nFY27', 'Q4\nFY27'],
+                datasets: [{
+                    label: 'Quarterly Revenue ($B)',
+                    data: [3.02, 3.47, 3.06, 3.89, 3.18, 3.65, 4.17, 6.06, 5.04, 5.63, 5.12, 6.27],
+                    backgroundColor: function (context) {
+                        const index = context.dataIndex;
+                        if (index <= 3) return '#94a3b8'; // FY25 - gray (historical/current)
+                        if (index <= 7) return '#3b82f6'; // FY26 - blue (Foot Locker integration)
+                        return '#10b981'; // FY27 - green (synergy realization)
+                    },
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (c) => '$' + c.parsed.y.toFixed(2) + 'B'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 2.5,
+                        grid: { color: '#f7fafc' },
+                        title: { display: true, text: 'Revenue ($B)' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // Toggle Logic for Forecast Chart
+        function updateForecast(metric) {
+            const revRow = document.getElementById('row-revenue');
+            const epsRow = document.getElementById('row-eps');
+            const growthFy25 = document.getElementById('growth-fy25');
+            const growthFy26 = document.getElementById('growth-fy26');
+            const growthFy27 = document.getElementById('growth-fy27');
+            const growthFy28 = document.getElementById('growth-fy28');
+
+            if (metric === 'revenue') {
+                revRow.classList.add('selected-row');
+                epsRow.classList.remove('selected-row');
+
+                // Update Chart Data
+                forecastChartInstance.data.labels = ['FY 2024', 'FY 2025 (E)', 'FY 2026 (E)', 'FY 2027 (E)', 'FY 2028 (E)'];
+                forecastChartInstance.data.datasets[0].label = 'Projected Sales ($B)';
+                forecastChartInstance.data.datasets[0].data = [13.42, 13.44, 16.86, 21.64, 22.26];
+                forecastChartInstance.data.datasets[0].backgroundColor = '#3182ce';
+
+                // Update Growth Row - Sales Growth
+                growthFy25.textContent = '3.5%';
+                growthFy26.textContent = '25.4%';
+                growthFy27.textContent = '28.4%';
+                growthFy28.textContent = '2.9%';
+                growthFy25.style.color = '#2f855a';
+                growthFy26.style.color = '#2f855a';
+                growthFy27.style.color = '#2f855a';
+                growthFy28.style.color = '#2f855a';
+
+                // Update Scales/Options
+                forecastChartInstance.options.scales.y.min = 10;
+                forecastChartInstance.options.scales.y.title.text = 'Billions';
+                document.getElementById('forecast-title').innerText = 'Sales Forecast Trajectory ($B)';
+
+            } else {
+                epsRow.classList.add('selected-row');
+                revRow.classList.remove('selected-row');
+
+                // Update Chart Data - GAAP EPS showing decline in FY26 then recovery
+                forecastChartInstance.data.labels = ['FY 2024', 'FY 2025 (E)', 'FY 2026 (E)', 'FY 2027 (E)', 'FY 2028 (E)'];
+                forecastChartInstance.data.datasets[0].label = 'Projected EPS (GAAP) ($)';
+                forecastChartInstance.data.datasets[0].data = [14.68, 14.05, 11.74, 14.56, 16.22];
+                forecastChartInstance.data.datasets[0].backgroundColor = '#dd6b20';
+
+                // Update Growth Row - EPS Growth (calculated: FY25: -4.3%, FY26: -16.4%, FY27: 24.0%, FY28: 11.4%)
+                growthFy25.textContent = '-4.3%';
+                growthFy26.textContent = '-16.4%';
+                growthFy27.textContent = '24.0%';
+                growthFy28.textContent = '11.4%';
+                growthFy25.style.color = '#e53e3e';
+                growthFy26.style.color = '#e53e3e';
+                growthFy27.style.color = '#2f855a';
+                growthFy28.style.color = '#2f855a';
+
+                // Update Scales/Options
+                forecastChartInstance.options.scales.y.min = 10;
+                forecastChartInstance.options.scales.y.title.text = 'Dollars';
+                document.getElementById('forecast-title').innerText = 'EPS (GAAP) Forecast Trajectory ($)';
+            }
+
+            forecastChartInstance.update();
+        }
+
+        // Add clickable row styling
+        const style = document.createElement('style');
+        style.textContent = `
+            .clickable-row {
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+            }
+            .clickable-row:hover {
+                background-color: #f7fafc;
+            }
+            .selected-row {
+                background-color: #ebf8ff !important;
+                border-left: 3px solid #3182ce;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+</body>
+
+</html>
