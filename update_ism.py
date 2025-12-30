@@ -450,26 +450,47 @@ def update_comments_block(updates):
     with open(COMMENTS_FILE, 'w') as f: f.write(content)
 
 def main():
+    print("\n" + "="*60)
+    print("ISM Manufacturing PMI Data Update")
+    print("="*60 + "\n")
+    
     dates = get_last_n_months(6)
     all_updates = {}
+    failed_months = []
     
     for d in dates:
         data = fetch_report_data(d)
         if data:
             all_updates[d.strftime("%Y-%m")] = data
+            print(f"✓ Successfully processed {d.strftime('%B %Y')}\n")
+        else:
+            failed_months.append(d.strftime('%B %Y'))
+            print(f"✗ Failed to process {d.strftime('%B %Y')}\n")
     
     if all_updates:
+        print(f"\n{'='*60}")
+        print(f"Updating HTML files with {len(all_updates)} month(s) of data...")
+        print(f"{'='*60}\n")
+        
         update_html_with_revisions(all_updates)
         update_comments_block(all_updates)
         
-        # Update index page with latest month
-        latest_date = max(dates)
-        # We assume the last fetch was checking if we even need to update title
-        # For simplicity, we just look at the most recent available data
-        
-        # Update timestamps
-        # (This part simpler than full rewrite)
-        pass
+        print(f"✓ HTML files updated successfully!")
+    else:
+        print("\n⚠ WARNING: No data was fetched. HTML files were not updated.")
+        print("This could be due to:")
+        print("  - ISM website is temporarily down")
+        print("  - Network connectivity issues")
+        print("  - The website structure has changed")
+        print("\nPlease try again later or check the ISM website manually:")
+        print("  https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/")
+    
+    if failed_months:
+        print(f"\n⚠ Failed to fetch data for: {', '.join(failed_months)}")
+    
+    print(f"\n{'='*60}")
+    print("ISM Update Complete")
+    print(f"{'='*60}\n")
 
 if __name__ == "__main__":
     main()
