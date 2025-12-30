@@ -59,16 +59,48 @@ def get_last_n_months(n=6):
         curr = curr.replace(day=1) - datetime.timedelta(days=1)
     return dates
 
-def fetch_url(url):
-    print(f"Fetching: {url}")
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
-    try:
-        response = requests.get(url, headers=headers, verify=False, timeout=15)
-        response.raise_for_status()
-        return response.text
-    except Exception as e:
-        print(f"Failed to fetch {url}: {e}")
-        return None
+def fetch_url(url, max_retries=3):
+    """Fetch URL with retry logic and exponential backoff."""
+    import time
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1'
+    }
+    
+    for attempt in range(max_retries):
+        try:
+            print(f"Fetching: {url} (attempt {attempt + 1}/{max_retries})")
+            response = requests.get(url, headers=headers, verify=False, timeout=30)
+            response.raise_for_status()
+            print(f"✓ Successfully fetched {url}")
+            return response.text
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 503:
+                wait_time = 2 ** attempt  # Exponential backoff: 1, 2, 4 seconds
+                print(f"⚠ Server unavailable (503). Waiting {wait_time}s before retry...")
+                if attempt < max_retries - 1:
+                    time.sleep(wait_time)
+                else:
+                    print(f"✗ Failed to fetch {url} after {max_retries} attempts: {e}")
+                    return None
+            else:
+                print(f"✗ HTTP Error {e.response.status_code}: {e}")
+                return None
+        except requests.exceptions.Timeout:
+            print(f"⚠ Request timeout. Retrying...")
+            if attempt == max_retries - 1:
+                print(f"✗ Failed to fetch {url}: Timeout after {max_retries} attempts")
+                return None
+        except Exception as e:
+            print(f"✗ Failed to fetch {url}: {e}")
+            return None
+    
+    return None
 
 def fetch_report_data(target_date):
     month_name = target_date.strftime("%B %Y")
