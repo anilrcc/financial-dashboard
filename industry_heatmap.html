@@ -263,7 +263,7 @@
         </tbody>
     </table>
 
-        <div class="summary-box">
+    <div class="summary-box">
         <span class="summary-title">Key Insights</span>
         <p><strong>Top 3 Industries with Longest Periods of Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -271,16 +271,17 @@
             <li><strong>Nonmetallic Mineral Products</strong> (6 months)</li>
             <li><strong>Petroleum & Coal Products</strong> (6 months)</li>
         </ul>
-        
+
         <p><strong>Top 3 Industries with Longest Periods of Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Paper Products</strong> (10 months)</li>
             <li><strong>Wood Products</strong> (10 months)</li>
             <li><strong>Chemical Products</strong> (8 months)</li>
         </ul>
-        
+
         <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have reversed course, indicating emerging headwinds.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Machinery</strong>,
+            <strong>Miscellaneous Manufacturing</strong> have reversed course, indicating emerging headwinds.</p>
     </div>
 
     <h2>New Orders Industry Growth Rank</h2>
@@ -294,7 +295,7 @@
         <tbody id="rankTableBody"></tbody>
     </table>
 
-        <div class="summary-box">
+    <div class="summary-box">
         <span class="summary-title">Key Insights - New Orders</span>
         <p><strong>Top 3 Industries with Longest Periods of New Orders Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -302,14 +303,14 @@
             <li><strong>Electrical Equipment, Appliances & Comp</strong> (5 months)</li>
             <li><strong>Primary Metals</strong> (5 months)</li>
         </ul>
-        
+
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Nonmetallic Mineral Products</strong> (4 months)</li>
             <li><strong>Furniture & Related Products</strong> (4 months)</li>
             <li><strong>Machinery</strong> (3 months)</li>
         </ul>
-        
+
         <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
         <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> None in the latest report.</p>
     </div>
@@ -394,6 +395,36 @@
         };
 
 
+
+        // --- Transformation: Reverse Positive Ranks in First Table ---
+        // User Request: "If it goes from +1 to +4 ... reverse the order."
+        // We process each month (column). Find all positive values. Reverse their mapping.
+
+        const numMonths = months.length;
+        const industriesList = Object.keys(data);
+
+        for (let i = 0; i < numMonths; i++) {
+            // 1. Collect positive values for this month index `i`
+            let positives = [];
+            industriesList.forEach(ind => {
+                const val = data[ind][i];
+                if (val > 0) positives.push(val);
+            });
+
+            if (positives.length > 0) {
+                // 2. Find min and max
+                const maxVal = Math.max(...positives);
+                const minVal = Math.min(...positives);
+
+                // 3. Apply Reversal
+                industriesList.forEach(ind => {
+                    const val = data[ind][i];
+                    if (val > 0) {
+                        data[ind][i] = maxVal + minVal - val;
+                    }
+                });
+            }
+        }
 
         const headerRow = document.getElementById('headerRow');
         const tableBody = document.getElementById('tableBody');
