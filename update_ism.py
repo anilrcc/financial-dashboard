@@ -151,6 +151,10 @@ def fetch_report_data(target_date):
             no_growth_list = parse_ism_list(no_growth_re.group(1))
 
         no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+        if not no_decline_re:
+             # Try variant: "The X industries reporting a decrease in new orders in [Month] are: ..."
+             no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+        
         if no_decline_re:
             no_decline_list = parse_ism_list(no_decline_re.group(1))
             

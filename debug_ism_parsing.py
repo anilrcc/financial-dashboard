@@ -7,56 +7,50 @@ def debug_fetch(month_name):
     print(f"--- Debugging {month_name} ---")
     month_slug = month_name.split()[0].lower()
     
-    # Try direct URL construction first as per update_ism.py logic (though update_ism uses landing page finding mostly)
-    # Actually update_ism logic:
-    # 1. Landing URL
-    # 2. Find link
-    # 3. Fetch link
-    
     landing_html = fetch_url(LANDING_URL)
-    if not landing_html:
-        print("Failed to fetch landing page")
-        return
+    if not landing_html: return
 
     link_pattern = re.compile(r'href="([^"]*?/pmi/' + month_slug + r'/?)"', re.IGNORECASE)
     match = link_pattern.search(landing_html)
     
-    if not match:
-        print(f"Could not find link for {month_slug}")
-        return
+    if not match: return
 
     report_url = match.group(1)
     if not report_url.startswith("http"):
         report_url = BASE_URL + report_url
     
-    print(f"Report URL: {report_url}")
     text = fetch_url(report_url)
-    if not text:
-        print("Failed to fetch report")
-        return
+    if not text: return
 
-    print(f"Report length: {len(text)}")
+    # --- New Orders Section ---
+    print("\n[New Orders Analysis]")
     
-    # Extract lists
-    main_growth_re = re.search(r"industries reporting growth in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
-    if main_growth_re:
-        raw = main_growth_re.group(1)
-        print(f"Raw Growth String: {raw[:100]}...")
-        growth = parse_ism_list(raw)
-        print("Growth List:", growth)
+    # 1. Regex used in production
+    no_growth_re = re.search(r"industries that reported growth in new orders in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+    if no_growth_re:
+        print(f"✅ Growth Match: {no_growth_re.group(1)[:50]}...")
     else:
-        print("Growth Regex Failed")
+        print("❌ Growth Regex Failed")
 
-    main_cont_re = re.search(r"industries reporting contraction in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
-    if main_cont_re:
-        raw = main_cont_re.group(1)
-        print(f"Raw Contraction String: {raw[:100]}...")
-        contraction = parse_ism_list(raw)
-        print("Contraction List:", contraction)
+    no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+    if no_decline_re:
+        print(f"✅ Decline Match: {no_decline_re.group(1)[:50]}...")
     else:
-        print("Contraction Regex Failed")
+        print("❌ Decline Regex (Standard) Failed")
+
+    # 2. Dump text around "New Orders" to see actual phrasing
+    # Find "New Orders Index" and print next 500 chars
+    start_no = text.find("New Orders Index")
+    if start_no != -1:
+        snippet = text[start_no:start_no+1500]
+        # remove html tags for readability
+        snippet_clean = re.sub(r'<[^>]+>', ' ', snippet)
+        snippet_clean = re.sub(r'\s+', ' ', snippet_clean)
+        print(f"\nContext Snippet:\n{snippet_clean}...")
+    else:
+        print("Could not find 'New Orders Index' section")
 
 if __name__ == "__main__":
     debug_fetch("December 2025")
-    print("\n")
+    print("\n" + "="*50 + "\n")
     debug_fetch("November 2025")
