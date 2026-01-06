@@ -99,7 +99,7 @@
 <body>
     <div class="container">
         <a href="industry_heatmap.html" class="nav-link">&larr; Back to Heatmap</a>
-        <h1>ISM Manufacturing Respondent Comments (Nov 2024 - Nov 2025)</h1>
+        <h1>ISM Manufacturing Respondent Comments (Nov 2024 - Dec 2025)</h1>
         <div id="comments-container"></div>
     </div>
 
@@ -270,8 +270,14 @@
                 }
 
                 if (industry && text) {
-                    // Normalize industry name (remove potential trailing chars or case diffs)
-                    const normIndustry = industry.trim();
+                    // Normalize industry name rigorously
+                    // 1. Replace HTML entities
+                    let normIndustry = industry.replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ');
+                    // 2. Remove common trailing punctuation/junk
+                    normIndustry = normIndustry.replace(/[:"'\u201c\u201d\u2018\u2019]/g, '');
+                    // 3. Trim and collapse whitespace
+                    normIndustry = normIndustry.trim().replace(/\s+/g, ' ');
+
                     if (!industryData[normIndustry]) {
                         industryData[normIndustry] = [];
                     }
