@@ -120,7 +120,10 @@ def fetch_report_data(target_date):
     no_growth_re = re.search(r"industries reporting (?:growth|an increase) in New Orders .*?(?:are|include):? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
     if no_growth_re: no_growth_list = parse_ism_list(no_growth_re.group(1))
 
-    no_decline_re = re.search(r"industries reporting (?:contraction|a decrease) in New Orders .*?(?:are|include):? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+    no_decline_re = re.search(r"industries reporting (?:contraction|a decrease|a decline) in New Orders .*?(?:are|include):? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+    if not no_decline_re:
+        # Fallback for "The X industries reporting..." phrasing
+         no_decline_re = re.search(r"industries reporting a (?:decrease|decline|contraction) in new orders .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
     if no_decline_re: no_decline_list = parse_ism_list(no_decline_re.group(1))
 
     # --- Indices ---
