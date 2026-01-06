@@ -224,7 +224,7 @@ def fetch_report_data(target_date):
         return None
 
 def parse_ism_list(raw_text):
-    text = raw_text.replace('\n', ' ')
+    text = raw_text.replace('\n', ' ').replace('&amp;', '&')
     if ';' in text: tokens = text.split(';')
     else: tokens = text.split(',')
     clean_items = []
