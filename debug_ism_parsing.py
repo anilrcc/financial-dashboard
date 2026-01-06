@@ -33,22 +33,27 @@ def debug_fetch(month_name):
         print("❌ Growth Regex Failed")
 
     no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
-    if no_decline_re:
-        print(f"✅ Decline Match: {no_decline_re.group(1)[:50]}...")
-    else:
-        print("❌ Decline Regex (Standard) Failed")
+    if not no_decline_re:
+            print("Standard regex failed, trying variant...")
+            no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
 
-    # 2. Dump text around "New Orders" to see actual phrasing
-    # Find "New Orders Index" and print next 500 chars
-    start_no = text.find("New Orders Index")
-    if start_no != -1:
-        snippet = text[start_no:start_no+1500]
-        # remove html tags for readability
-        snippet_clean = re.sub(r'<[^>]+>', ' ', snippet)
-        snippet_clean = re.sub(r'\s+', ' ', snippet_clean)
-        print(f"\nContext Snippet:\n{snippet_clean}...")
+    if no_decline_re:
+        print(f"✅ Decline Match: {no_decline_re.group(1)[:100]}...")
+        print(f"Full List: {parse_ism_list(no_decline_re.group(1))}")
     else:
-        print("Could not find 'New Orders Index' section")
+        print("❌ Decline Regex (ALL) Failed")
+
+    # Debugging: Look after growth match
+    if no_growth_re:
+        end_growth = no_growth_re.end()
+        print(f"\n--- Text following Growth List (start at {end_growth}) ---")
+        print(text[end_growth:end_growth+500])
+    
+    # Also search for just "industries reporting" to see all variants
+    print("\n--- All 'industries reporting' occurrences ---")
+    for m in re.finditer(r"industries reporting", text, re.IGNORECASE):
+        start = m.start()
+        print(f"Match at {start}: {text[start:start+100]}...")
 
 if __name__ == "__main__":
     debug_fetch("December 2025")

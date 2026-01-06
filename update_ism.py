@@ -152,8 +152,10 @@ def fetch_report_data(target_date):
 
         no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
         if not no_decline_re:
-             # Try variant: "The X industries reporting a decrease in new orders in [Month] are: ..."
-             no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+             # Try variant: "The X industries reporting a [decline/decrease] in new orders in [Month] are: ..."
+             no_decline_re = re.search(r"industries reporting a (?:decrease|decline|contraction) in new orders in .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
+             # The group index for the list will be 2 now because of the non-capturing group above?
+             # Wait, (?:...) is non-capturing. So group 1 is the list. Correct.
         
         if no_decline_re:
             no_decline_list = parse_ism_list(no_decline_re.group(1))
