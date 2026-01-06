@@ -333,7 +333,7 @@ def update_index_timestamp():
         print(f"Error updating index timestamp: {e}")
 
 def main():
-    dates = get_last_n_months(6)
+    dates = get_last_n_months(2)
     all_updates = {}
     for d in dates:
         data = fetch_report_data(d)

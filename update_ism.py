@@ -454,7 +454,7 @@ def main():
     print("ISM Manufacturing PMI Data Update")
     print("="*60 + "\n")
     
-    dates = get_last_n_months(6)
+    dates = get_last_n_months(2)
     all_updates = {}
     failed_months = []
     
