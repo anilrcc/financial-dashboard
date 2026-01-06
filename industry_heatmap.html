@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Manufacturing Industry Heatmap</title>
-    <meta name="deployment-version" content="fix-duplicates-Applied-2025-12-21-2045">
+    <meta name="deployment-version" content="auto-updated-2026-01-06-2128">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -381,30 +381,27 @@
     </div>
 
     <script>
-        const months = [
-            "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025",
-            "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025"
-        ];
+        const months = ["Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025"];
 
         const data = {
-            "Apparel, Leather & Allied Products": [0, 0, 0, 0, 0, 1, 0, 1, 1, 2, -10, -11, -11],
-            "Chemical Products": [-9, -3, 4, 7, -3, 10, -2, -3, -8, -2, -6, -4, -5],
-            "Computer & Electronic Products": [2, 0, -3, -2, 5, 6, 0, 6, -4, -3, -1, -1, 1],
-            "Electrical Equipment, Appliances & Comp": [3, 2, 8, 6, 8, 4, 5, 9, -2, -4, -5, -5, 0],
-            "Fabricated Metal Products": [-6, -6, -5, 9, 3, -1, 6, -1, -5, -1, 4, 5, -7],
-            "Food, Beverage & Tobacco Products": [1, 0, -1, 5, -2, -3, -4, 8, -1, 4, 0, 2, 2],
-            "Furniture & Related Products": [-5, 4, -4, -5, -4, -5, 4, 5, 6, -6, -7, -10, -3],
-            "Machinery": [-4, -4, 5, -1, -1, 9, 7, 7, -7, -5, -2, -3, 4],
-            "Miscellaneous Manufacturing": [-2, 6, -7, 2, 9, 8, 0, 4, 5, 6, 5, -2, 3],
-            "Nonmetallic Mineral Products": [-3, -1, -8, -3, 6, 7, 2, 3, 3, 3, -3, 6, -4],
-            "Paper Products": [-8, 5, -2, 0, -6, -4, -7, -4, -9, -10, -8, -9, -9],
-            "Petroleum & Coal Products": [0, 0, 3, 1, 2, 2, 3, 2, 0, 5, 1, -6, -6],
-            "Plastics & Rubber Products": [-10, 7, 7, 8, -5, 3, 1, 0, 2, -8, -9, 4, -1],
-            "Primary Metals": [-1, 1, 2, 3, 4, 11, -1, 0, 7, 7, 2, 1, 0],
-            "Printing & Related Support Activities": [-11, -5, 0, 0, 0, 0, -5, 0, -10, 0, 0, -8, 0],
-            "Textile Mills": [0, -7, 1, -4, 1, 5, 0, -6, 4, 1, 3, -12, -8],
-            "Transportation Equipment": [-7, -2, 6, 10, 7, -2, -3, -2, -3, -7, -4, 3, -2],
-            "Wood Products": [0, 3, -6, 4, -7, -6, -6, -5, -6, -9, -11, -7, -10]
+            "Apparel, Leather & Allied Products": [0, 0, 0, 0, 0, 1, 0, 1, 1, 2, -10, -11, 0, 0],
+            "Chemical Products": [-9, -3, 4, 7, -3, 10, -2, -3, -8, -2, -6, -4, -7, -15],
+            "Computer & Electronic Products": [2, 0, -3, -2, 5, 6, 0, 6, -4, -3, -1, -1, 0, 0],
+            "Electrical Equipment, Appliances & Comp": [3, 2, 8, 6, 8, 4, 5, 9, -2, -4, -5, -5, 0, 0],
+            "Fabricated Metal Products": [-6, -6, -5, 9, 3, -1, 6, -1, -5, -1, 4, 5, -10, -5],
+            "Food, Beverage & Tobacco Products": [1, 0, -1, 5, -2, -3, -4, 8, -1, 4, 0, 2, 0, 0],
+            "Furniture & Related Products": [-5, 4, -4, -5, -4, -5, 4, 5, 6, -6, -7, -10, 0, 0],
+            "Machinery": [-4, -4, 5, -1, -1, 9, 7, 7, -7, -5, -2, -3, 1, -4],
+            "Miscellaneous Manufacturing": [-2, 6, -7, 2, 9, 8, 0, 4, 5, 6, 5, -2, 2, -8],
+            "Nonmetallic Mineral Products": [-3, -1, -8, -3, 6, 7, 2, 3, 3, 3, -3, 6, -6, -12],
+            "Paper Products": [-8, 5, -2, 0, -6, -4, -7, -4, -9, -10, -8, -9, -12, -16],
+            "Petroleum & Coal Products": [0, 0, 3, 1, 2, 2, 3, 2, 0, 5, 1, -6, 0, 0],
+            "Plastics & Rubber Products": [-10, 7, 7, 8, -5, 3, 1, 0, 2, -8, -9, 4, 0, 0],
+            "Primary Metals": [-1, 1, 2, 3, 4, 11, -1, 0, 7, 7, 2, 1, 0, -9],
+            "Printing & Related Support Activities": [-11, -5, 0, 0, 0, 0, -5, 0, -10, 0, 0, -8, 0, 0],
+            "Textile Mills": [0, -7, 1, -4, 1, 5, 0, -6, 4, 1, 3, -12, -11, -17],
+            "Transportation Equipment": [-7, -2, 6, 10, 7, -2, -3, -2, -3, -7, -4, 3, -3, -1],
+            "Wood Products": [0, 3, -6, 4, -7, -6, -6, -5, -6, -9, -11, -7, -13, -18]
         };
 
         // --- Transformation: Reverse Positive Ranks in First Table ---
@@ -484,7 +481,8 @@
         // We want columns: Nov 2024 -> Nov 2025
 
         const rawPmiData = [
-            { date: "Nov 2025", pmi: 48.2, newOrders: 47.4, production: 51.4, employment: 44.0, supplierDel: 49.3, inv: 48.9, custInv: 44.7, prices: 58.5, backlog: 44.0, export: 46.2, imports: 48.9, trend: "Contraction" },
+            { date: "Dec 2025", pmi: 47.9, newOrders: 45.8, production: 45.8, employment: 44.9, supplierDel: 45.2, inv: 45.2, custInv: 0.0, prices: 45.8, backlog: 45.8, export: 44.6, imports: 44.6, trend: "Contraction" },
+            { date: "Nov 2025", pmi: 48.2, newOrders: 44.0, production: 44.0, employment: 44.0, supplierDel: 48.9, inv: 48.9, custInv: 0.0, prices: 44.0, backlog: 44.0, export: 48.9, imports: 48.9, trend: "Contraction" },
             { date: "Oct 2025", pmi: 48.7, newOrders: 49.4, production: 48.2, employment: 46.0, supplierDel: 54.2, inv: 45.8, custInv: 43.9, prices: 58.0, backlog: 47.9, export: 44.5, imports: 45.4, trend: "Contraction" },
             { date: "Sep 2025", pmi: 49.1, newOrders: 48.9, production: 51.0, employment: 45.3, supplierDel: 52.6, inv: 47.7, custInv: 43.7, prices: 61.9, backlog: 46.2, export: 43.0, imports: 44.7, trend: "Contraction" },
             { date: "Aug 2025", pmi: 48.7, newOrders: 51.4, production: 47.8, employment: 43.8, supplierDel: 51.3, inv: 49.4, custInv: 43.0, prices: 63.7, backlog: 44.7, export: 47.6, imports: 46.0, trend: "Contraction" },
@@ -569,10 +567,11 @@
         // Decline: -1 for last one, -2 for one before it. (Implies list is Strongest Decline -> Weakest Decline. So First = -N, Last = -1)
 
         const ranklists = {
-            "Nov 2025": {
-                growth: ["Electrical Equipment, Appliances & Comp", "Computer & Electronic Products", "Machinery", "Miscellaneous Manufacturing", "Food, Beverage & Tobacco Products", "Primary Metals"],
-                decline: ["Wood Products", "Textile Mills", "Apparel, Leather & Allied Products", "Paper Products", "Fabricated Metal Products", "Petroleum & Coal Products", "Nonmetallic Mineral Products", "Transportation Equipment", "Chemical Products"]
+            "Dec 2025": {
+                growth: ["Computer &amp", "Electronic Products", "Electrical Equipment, Appliances &amp", "Components"],
+                decline: []
             },
+            "Nov 2025": { growth: ["Electrical Equipment, Appliances &amp", "Components", "Computer &amp", "Electronic Products", "Machinery", "Miscellaneous Manufacturing", "Food, Beverage &amp", "Tobacco Products", "Primary Metals"], decline: [] },
             "Oct 2025": {
                 growth: ["Primary Metals", "Plastics & Rubber Products", "Fabricated Metal Products", "Transportation Equipment"],
                 decline: ["Apparel, Leather & Allied Products", "Textile Mills", "Paper Products", "Petroleum & Coal Products", "Furniture & Related Products", "Nonmetallic Mineral Products", "Miscellaneous Manufacturing", "Chemical Products", "Computer & Electronic Products", "Machinery", "Electrical Equipment, Appliances & Comp"]

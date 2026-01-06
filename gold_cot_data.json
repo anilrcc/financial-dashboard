@@ -7138,5 +7138,12 @@
     "mm_long": 160581,
     "mm_short": 24311,
     "open_interest": 492103
+  },
+  {
+    "date": "2025-12-30",
+    "net_pct_oi": 26.16,
+    "mm_long": 148642,
+    "mm_short": 22602,
+    "open_interest": 481866
   }
 ]
