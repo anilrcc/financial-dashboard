@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Manufacturing Industry Heatmap</title>
-    <meta name="deployment-version" content="auto-updated-2026-01-06-2128">
+    <meta name="deployment-version" content="auto-updated-2026-01-06-2133">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -263,7 +263,7 @@
         </tbody>
     </table>
 
-    <div class="summary-box">
+        <div class="summary-box">
         <span class="summary-title">Key Insights</span>
         <p><strong>Top 3 Industries with Longest Periods of Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -271,21 +271,16 @@
             <li><strong>Nonmetallic Mineral Products</strong> (6 months)</li>
             <li><strong>Petroleum & Coal Products</strong> (6 months)</li>
         </ul>
-
+        
         <p><strong>Top 3 Industries with Longest Periods of Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
-            <li><strong>Paper Products</strong> (9 months)</li>
-            <li><strong>Wood Products</strong> (9 months)</li>
-            <li><strong>Chemical Products</strong> (7 months)</li>
+            <li><strong>Paper Products</strong> (10 months)</li>
+            <li><strong>Wood Products</strong> (10 months)</li>
+            <li><strong>Chemical Products</strong> (8 months)</li>
         </ul>
-
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Computer & Electronic
-                Products</strong>, <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have shifted
-            from negative to positive territory, signaling renewed demand in these sectors.</p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Fabricated Metal
-                Products</strong>, <strong>Nonmetallic Mineral Products</strong>, <strong>Plastics & Rubber
-                Products</strong>, <strong>Transportation Equipment</strong> have reversed course, indicating emerging
-            headwinds.</p>
+        
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have reversed course, indicating emerging headwinds.</p>
     </div>
 
     <h2>New Orders Industry Growth Rank</h2>
@@ -299,30 +294,24 @@
         <tbody id="rankTableBody"></tbody>
     </table>
 
-    <div class="summary-box">
+        <div class="summary-box">
         <span class="summary-title">Key Insights - New Orders</span>
         <p><strong>Top 3 Industries with Longest Periods of New Orders Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Petroleum & Coal Products</strong> (6 months)</li>
-            <li><strong>Primary Metals</strong> (5 months)</li>
             <li><strong>Electrical Equipment, Appliances & Comp</strong> (5 months)</li>
+            <li><strong>Primary Metals</strong> (5 months)</li>
         </ul>
-
+        
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
-            <li><strong>Paper Products</strong> (4 months)</li>
             <li><strong>Nonmetallic Mineral Products</strong> (4 months)</li>
             <li><strong>Furniture & Related Products</strong> (4 months)</li>
+            <li><strong>Machinery</strong> (3 months)</li>
         </ul>
-
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Electrical Equipment,
-                Appliances & Comp</strong>, <strong>Computer & Electronic Products</strong>, <strong>Machinery</strong>,
-            <strong>Miscellaneous Manufacturing</strong> have all shifted to positive new order growth, indicating
-            renewed demand.
-        </p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Transportation
-                Equipment</strong>, <strong>Fabricated Metal Products</strong> have reversed from growth to contraction.
-        </p>
+        
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> None in the latest report.</p>
     </div>
 
     <h2 id="pmiHeader">ISM Manufacturing PMI Data</h2>
@@ -567,10 +556,7 @@
         // Decline: -1 for last one, -2 for one before it. (Implies list is Strongest Decline -> Weakest Decline. So First = -N, Last = -1)
 
         const ranklists = {
-            "Dec 2025": {
-                growth: ["Computer &amp", "Electronic Products", "Electrical Equipment, Appliances &amp", "Components"],
-                decline: []
-            },
+            "Dec 2025": { growth: ["Computer &amp", "Electronic Products", "Electrical Equipment, Appliances &amp", "Components"], decline: [] },
             "Nov 2025": { growth: ["Electrical Equipment, Appliances &amp", "Components", "Computer &amp", "Electronic Products", "Machinery", "Miscellaneous Manufacturing", "Food, Beverage &amp", "Tobacco Products", "Primary Metals"], decline: [] },
             "Oct 2025": {
                 growth: ["Primary Metals", "Plastics & Rubber Products", "Fabricated Metal Products", "Transportation Equipment"],
