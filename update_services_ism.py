@@ -177,11 +177,20 @@ def fetch_report_data(target_date):
         list_items = re.findall(r"<li>(.*?)</li>", section, re.DOTALL)
         for item in list_items:
             clean_item = re.sub(r'<[^>]+>', '', item).strip().replace('&amp;', '&')
+            # Format A: Industry: "Quote"
             if ":" in clean_item:
                 parts = clean_item.split(":", 1)
                 ind = clean_name(parts[0].strip())
                 quote = parts[1].strip().strip('"')
                 comments_list.append((ind, quote))
+            # Format B: "Quote" (Industry) or "Quote" [Industry]
+            else:
+                m = re.search(r'[\(\[]\s*(.*?)\s*[\)\]]\s*$', clean_item)
+                if m:
+                    potential_ind = m.group(1)
+                    quote = clean_item[:m.start()].strip().strip('"')
+                    ind = clean_name(potential_ind)
+                    comments_list.append((ind, quote))
 
     return {
         "month_name": month_name,
