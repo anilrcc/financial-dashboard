@@ -219,6 +219,8 @@ def fetch_report_data(target_date):
                         quote = clean_item[:m.start()].strip().strip('"')
                         ind = clean_name(potential_ind)
                         comments_list.append((ind, quote))
+                    else:
+                        print(f"Skipping comment (no industry found): {clean_item[:50]}...")
         
         return {
             "month_name": month_name,

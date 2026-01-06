@@ -50,10 +50,27 @@ def debug_fetch(month_name):
         print(text[end_growth:end_growth+500])
     
     # Also search for just "industries reporting" to see all variants
-    print("\n--- All 'industries reporting' occurrences ---")
-    for m in re.finditer(r"industries reporting", text, re.IGNORECASE):
-        start = m.start()
-        print(f"Match at {start}: {text[start:start+100]}...")
+    print("\n--- Comments Section Analysis ---")
+    start_comments = text.find("WHAT RESPONDENTS ARE SAYING")
+    if start_comments != -1:
+        # Look for end of section (roughly around "ISM® Manufacturing PMI®")
+        # Or usually it ends before the next big header 'Manufacturing PMI®' or specific table
+        end_comments = text.find("Manufacturing PMI", start_comments + 100)
+        # Just grab a chunk
+        section = text[start_comments:start_comments+4000]
+        
+        print(f"Found Comments Section at index {start_comments}")
+        
+        # Regex to find <li> items as used in main script
+        list_items = re.findall(r"<li>(.*?)</li>", section, re.DOTALL)
+        print(f"Found {len(list_items)} raw list items.")
+        
+        for i, item in enumerate(list_items):
+            clean = re.sub(r'<[^>]+>', '', item).strip()
+            print(f"[{i+1}] {clean[:100]}...")
+            
+    else:
+        print("Could not find 'WHAT RESPONDENTS ARE SAYING'")
 
 if __name__ == "__main__":
     debug_fetch("December 2025")
