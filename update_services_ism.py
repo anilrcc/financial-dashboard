@@ -214,7 +214,7 @@ def update_html_with_revisions(updates):
     except: return
 
     # 2. Parse data
-    data_match = re.search(r'const data = ({[\s\S]*?});', content, re.DOTALL)
+    data_match = re.search(r'const servicesData = ({[\s\S]*?});', content, re.DOTALL)
     if not data_match: return
     current_data = {}
     data_block = data_match.group(1)
@@ -275,8 +275,8 @@ def update_html_with_revisions(updates):
     data_lines = []
     for k in sorted(current_data.keys()):
         data_lines.append(f'            "{k}": {json.dumps(current_data[k])}')
-    new_data_js = "const data = {\n" + ",\n".join(data_lines) + "\n        };"
-    content = re.sub(r'const data = \{[\s\S]*?\};', new_data_js, content, flags=re.DOTALL)
+    new_data_js = "const servicesData = {\n" + ",\n".join(data_lines) + "\n        };"
+    content = re.sub(r'const servicesData = \{[\s\S]*?\};', new_data_js, content, flags=re.DOTALL)
     
     content = content.replace(",,", ",")
     
@@ -285,6 +285,12 @@ def update_html_with_revisions(updates):
         content = re.sub(r'<meta name="deployment-version" content=".*?">', 
                          f'<meta name="deployment-version" content="auto-updated-{timestamp}">', 
                          content)
+
+    # Update Visible Last Updated Date
+    today_str = datetime.date.today().strftime("%b %d, %Y")
+    content = re.sub(r'<span id="last-updated-date">.*?</span>', 
+                     f'<span id="last-updated-date">{today_str}</span>', 
+                     content)
 
     with open(HEATMAP_FILE, 'w') as f: f.write(content)
     print("Services HTML Updated.")

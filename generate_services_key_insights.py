@@ -308,21 +308,23 @@ def update_key_insights():
     
     # Pattern to find and remove existing Trend Analysis in main summary
     # We want to keep everything up to </ul> after the narrative bullets, then remove any existing Trend Analysis
-    main_pattern = r'(id="main-summary-box"[^>]*>.*?</ul>)\s*<h4[^>]*>Trend Analysis</h4>.*?(?=</div>)'
+    # Pattern to find and remove existing Trend Analysis in main summary
+    # Match content inside the div up to "Trend Analysis", handling any HTML structure
+    main_pattern = r'(id="main-summary-box"[^>]*>[\s\S]*?)\s*<h4[^>]*>Trend Analysis</h4>[\s\S]*?(?=</div>)'
     if re.search(main_pattern, content, re.DOTALL):
         # Remove existing trend analysis
         content = re.sub(main_pattern, r'\1', content, flags=re.DOTALL)
     
     # Now add the new trend analysis before the closing </div> of main-summary-box
-    main_insert_pattern = r'(id="main-summary-box"[^>]*>.*?</ul>)(\s*</div>)'
+    main_insert_pattern = r'(id="main-summary-box"[^>]*>[\s\S]*?)(\s*</div>)'
     content = re.sub(main_insert_pattern, r'\1' + main_trend_html + r'\2', content, count=1, flags=re.DOTALL)
     
     # Same for New Orders section
-    new_orders_pattern = r'(id="new-orders-summary-box"[^>]*>.*?</ul>)\s*<h4[^>]*>Trend Analysis</h4>.*?(?=</div>)'
+    new_orders_pattern = r'(id="new-orders-summary-box"[^>]*>[\s\S]*?)\s*<h4[^>]*>Trend Analysis</h4>[\s\S]*?(?=</div>)'
     if re.search(new_orders_pattern, content, re.DOTALL):
         content = re.sub(new_orders_pattern, r'\1', content, flags=re.DOTALL)
     
-    new_orders_insert_pattern = r'(id="new-orders-summary-box"[^>]*>.*?</ul>)(\s*</div>)'
+    new_orders_insert_pattern = r'(id="new-orders-summary-box"[^>]*>[\s\S]*?)(\s*</div>)'
     content = re.sub(new_orders_insert_pattern, r'\1' + new_orders_trend_html + r'\2', content, count=1, flags=re.DOTALL)
     
     # Write back
