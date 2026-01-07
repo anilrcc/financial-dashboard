@@ -56,16 +56,39 @@ def get_last_n_months(n=6):
         curr = curr.replace(day=1) - datetime.timedelta(days=1)
     return dates
 
-def fetch_url(url):
-    print(f"Fetching: {url}")
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'}
-    try:
-        response = requests.get(url, headers=headers, verify=False, timeout=15)
-        response.raise_for_status()
-        return response.text
-    except Exception as e:
-        print(f"Failed to fetch {url}: {e}")
-        return None
+def fetch_url(url, max_retries=3):
+    import time
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1'
+    }
+    
+    for attempt in range(max_retries):
+        try:
+            print(f"Fetching: {url} (attempt {attempt + 1}/{max_retries})")
+            response = requests.get(url, headers=headers, verify=False, timeout=30)
+            response.raise_for_status()
+            return response.text
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 503:
+                wait_time = 2 ** attempt
+                print(f"⚠ Server unavailable (503). Waiting {wait_time}s before retry...")
+                if attempt < max_retries - 1:
+                    time.sleep(wait_time)
+                else:
+                    print(f"✗ Failed to fetch {url} after {max_retries} attempts: {e}")
+                    return None
+            else:
+                print(f"✗ HTTP Error {e.response.status_code}: {e}")
+                return None
+        except Exception as e:
+            print(f"✗ Failed to fetch {url}: {e}")
+            return None
+    return None
 
 def parse_ism_list(raw_text):
     text = raw_text.replace('\n', ' ').replace('&amp;', '&')
@@ -167,6 +190,12 @@ def fetch_report_data(target_date):
     if summ_match: summary_text = summ_match.group(1).strip()
     else: summary_text = f"The Services PMI registered {pmi_data['pmi']} percent in {month_name}."
 
+    # --- New Orders Summary ---
+    no_val = pmi_data["newOrders"]
+    no_trend = "grew" if no_val > 50 else "contracted"
+    if no_val == 50: no_trend = "remained unchanged"
+    no_summary = f"The New Orders Index registered {no_val} percent in {month_name}. New orders {no_trend} for the month."
+
     # --- Comments ---
     comments_list = []
     start_comments = text.find("WHAT RESPONDENTS ARE SAYING")
@@ -200,6 +229,7 @@ def fetch_report_data(target_date):
         "no_decline": no_decline_list,
         "pmi_data": data_mapped,
         "summary": summary_text,
+        "no_summary": no_summary,
         "comments": comments_list
     }
 
@@ -286,11 +316,69 @@ def update_html_with_revisions(updates):
                          f'<meta name="deployment-version" content="auto-updated-{timestamp}">', 
                          content)
 
-    # Update Visible Last Updated Date
     today_str = datetime.date.today().strftime("%b %d, %Y")
     content = re.sub(r'<span id="last-updated-date">.*?</span>', 
                      f'<span id="last-updated-date">{today_str}</span>', 
                      content)
+
+    # Update Bottom Summary Box (services-pmi-survey-insights)
+    # Using the latest update's summary
+    if sorted_updates:
+        latest_update = sorted_updates[-1]
+        l_month = latest_update['month_name']
+        l_summary = latest_update['summary']
+        l_no_summary = latest_update.get('no_summary', '')
+        # Short month format: Nov 2025
+        l_short_month = l_month[:3] + " " + l_month[-4:]
+        
+        # 1. Bottom Summary (services-pmi-survey-insights)
+        summary_pattern = r'(<div id="services-pmi-survey-insights"[^>]*>)\s*<span class="summary-title">Key Insights \(.*?\)</span>\s*<p>.*?</p>\s*(?=</div>)'
+        new_summary_html = f'\\1\n        <span class="summary-title">Key Insights ({l_short_month})</span>\n        <p>{l_summary}</p>'
+        
+        if re.search(summary_pattern, content, re.DOTALL):
+            content = re.sub(summary_pattern, new_summary_html, content, flags=re.DOTALL)
+
+        # 2. Main Summary Box (main-summary-box)
+        # Note: generate_services_key_insights.py appends Trend Analysis *after* the <p>.
+        # We want to replace the <h3> and <p> but KEEP the Trend Analysis if present (or let the other script handle it).
+        # Actually, replace_file_content replaces the whole block.
+        # Let's match up to the <p>...</p>.
+        # If Trend Analysis exists, it follows the <p>.
+        
+        main_sum_pat = r'(<div id="main-summary-box"[^>]*>)\s*<h3>Key Insights \(.*?\)</h3>\s*<p>.*?</p>'
+        new_main_html = f'\\1\n        <h3>Key Insights ({l_short_month})</h3>\n        <p>{l_summary}</p>'
+        if re.search(main_sum_pat, content, re.DOTALL):
+            content = re.sub(main_sum_pat, new_main_html, content, flags=re.DOTALL)
+
+        # 3. New Orders Summary Box (new-orders-summary-box)
+        no_sum_pat = r'(<div id="new-orders-summary-box"[^>]*>)\s*<h3>New Orders Key Insights \(.*?\)</h3>\s*<p>.*?</p>'
+        new_no_html = f'\\1\n        <h3>New Orders Key Insights ({l_short_month})</h3>\n        <p>{l_no_summary}</p>'
+        if re.search(no_sum_pat, content, re.DOTALL):
+            content = re.sub(no_sum_pat, new_no_html, content, flags=re.DOTALL)
+
+        if re.search(no_sum_pat, content, re.DOTALL):
+            content = re.sub(no_sum_pat, new_no_html, content, flags=re.DOTALL)
+
+    # Update Title Date Range
+    # current_months is fully updated now.
+    if current_months:
+        start_m = current_months[0] # e.g. "Nov 2024"
+        end_m = current_months[-1]   # e.g. "Dec 2025"
+        
+        def format_title_date(m_str):
+            parts = m_str.split()
+            if len(parts) == 2:
+                return f"{parts[0]} '{parts[1][2:]}"
+            return m_str
+
+        title_start = format_title_date(start_m)
+        title_end = format_title_date(end_m)
+        new_title = f"ISM Services Industry Trends ({title_start} - {title_end})"
+        
+        # Regex to find H1
+        # <h1>ISM Services Industry Trends (Nov '24 - Nov '25)</h1>
+        title_pattern = r'<h1>ISM Services Industry Trends \(.*?\)</h1>'
+        content = re.sub(title_pattern, f'<h1>{new_title}</h1>', content)
 
     with open(HEATMAP_FILE, 'w') as f: f.write(content)
     print("Services HTML Updated.")
