@@ -379,7 +379,7 @@ HTML_TEMPLATE = '''<!DOCTYPE html>
                             displayColors: true,
                             callbacks: {{
                                 title: function(context) {{
-                                    return new Date(context[0].label).toLocaleDateString(undefined, {{ year: 'numeric', month: 'long', day: 'numeric' }});
+                                    return new Date(context[0].parsed.x).toLocaleDateString(undefined, {{ year: 'numeric', month: 'long', day: 'numeric' }});
                                 }},
                                 label: function (context) {{
                                     const dataPoint = data[context.dataIndex];
