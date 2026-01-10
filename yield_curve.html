@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>US Treasury Yield Curve - Market Pulse</title>
-    <meta name="deployment-version" content="auto-updated-2026-01-09-1409">
+    <meta name="deployment-version" content="auto-updated-2026-01-10-0701">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -215,28 +215,28 @@
                     <h1>US Treasury Yield Curve</h1>
                     <div class="subtitle">Daily Snapshot & Trend Analysis</div>
                 </div>
-                <div class="refresh-badge" id="last-updated">Last Updated: Jan 08, 2026</div>
+                <div class="refresh-badge" id="last-updated">Last Updated: Jan 09, 2026</div>
             </header>
 
             <!-- KPI Cards -->
             <div class="metrics-grid">
                 <div class="card">
                     <div class="metric-label">2-Year Yield</div>
-                    <div class="metric-value" id="kpi-2y">3.49%</div>
+                    <div class="metric-value" id="kpi-2y">3.54%</div>
                     <div class="metric-change positive">
                         <span>&darr; -2 bps</span>
                     </div>
                 </div>
                 <div class="card">
                     <div class="metric-label">10-Year Yield</div>
-                    <div class="metric-value" id="kpi-10y">4.19%</div>
+                    <div class="metric-value" id="kpi-10y">4.18%</div>
                     <div class="metric-change negative">
                         <span>&uarr; +3 bps</span>
                     </div>
                 </div>
                 <div class="card">
                     <div class="metric-label">2s10s Spread</div>
-                    <div class="metric-value" id="kpi-spread">+70 bps</div>
+                    <div class="metric-value" id="kpi-spread">+64 bps</div>
                     <div class="metric-change positive">
                         <span>Steepening (Normal)</span>
                     </div>
@@ -315,7 +315,7 @@
             const maturitiesLabels = ['1M', '3M', '6M', '1Y', '2Y', '3Y', '5Y', '7Y', '10Y', '20Y', '30Y'];
 
             // Yield Data Comparison
-            const currentData = [3.7, 3.62, 3.56, 3.48, 3.49, 3.56, 3.74, 3.95, 4.19, 4.79, 4.85]; // Dec 19, 2025
+            const currentData = [3.7, 3.62, 3.57, 3.52, 3.54, 3.59, 3.75, 3.95, 4.18, 4.76, 4.82]; // Dec 19, 2025
             const lastMonthData = [3.95, 3.88, 3.85, 3.80, 3.75, 3.82, 4.00, 4.20, 4.35, 4.80, 4.95]; // Nov 2025 (Higher rates previously)
             const lastYearData = [4.50, 4.65, 4.70, 4.55, 4.35, 4.15, 4.00, 4.05, 4.10, 4.40, 4.55]; // Dec 2024 (Inverted curve era)
 
