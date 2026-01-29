@@ -600,5 +600,19 @@
     "mm_long": 3282,
     "mm_short": 50,
     "open_interest": 9944
+  },
+  {
+    "date": "2026-01-13",
+    "net_pct_oi": 35.4,
+    "mm_long": 3675,
+    "mm_short": 50,
+    "open_interest": 10240
+  },
+  {
+    "date": "2026-01-20",
+    "net_pct_oi": 38.14,
+    "mm_long": 4079,
+    "mm_short": 50,
+    "open_interest": 10563
   }
 ]
