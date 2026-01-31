@@ -84,9 +84,10 @@ def fetch_url(url, max_retries=3):
             
             print(f"✓ Successfully fetched {url}")
             return response.text
-    except Exception as e:
-        print(f"✗ Failed to fetch {url}: {e}")
-        return None
+        except Exception as e:
+            print(f"✗ Failed to fetch {url}: {e}")
+            if attempt == max_retries - 1:
+                return None
     
     return None
 
@@ -94,42 +95,43 @@ def fetch_report_data(target_date):
     month_name = target_date.strftime("%B %Y")
     print(f"Targeting Report: {month_name}")
     
-    report_url = None
-    
-    # 1. Try Landing Page
-    landing_html = fetch_url(LANDING_URL)
-    
-    if landing_html:
-        # 2. Find Link to Report
-        month_slug = month_name.split()[0].lower() # "november"
+    try:
+        report_url = None
         
-        # Regex to find link with /pmi/monthname/
-        # Checks for: href="/.../pmi/november/" or href=".../pmi/november"
-        link_pattern = re.compile(r'href="([^"]*?/pmi/' + month_slug + r'/?)"', re.IGNORECASE)
-        match = link_pattern.search(landing_html)
+        # 1. Try Landing Page
+        landing_html = fetch_url(LANDING_URL)
         
-        if match:
-            report_url = match.group(1)
-            if not report_url.startswith("http"):
-                report_url = BASE_URL + report_url
-            print(f"✓ Found link on landing page: {report_url}")
-        else:
-            print(f"⚠ Could not find link for {month_slug} on landing page.")
-    
-    # 3. Fallback: Guess URL if not found (or if landing page blocked)
-    if not report_url:
-        month_slug = month_name.split()[0].lower()
-        print(f"➜ Attempting direct URL fallback for {month_slug}...")
-        # Pattern observed: https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/december/
-        report_url = f"{LANDING_URL}pmi/{month_slug}/"
-        print(f"  Trying: {report_url}")
+        if landing_html:
+            # 2. Find Link to Report
+            month_slug = month_name.split()[0].lower() # "november"
+            
+            # Regex to find link with /pmi/monthname/
+            # Checks for: href="/.../pmi/november/" or href=".../pmi/november"
+            link_pattern = re.compile(r'href="([^"]*?/pmi/' + month_slug + r'/?)"', re.IGNORECASE)
+            match = link_pattern.search(landing_html)
+            
+            if match:
+                report_url = match.group(1)
+                if not report_url.startswith("http"):
+                    report_url = BASE_URL + report_url
+                print(f"✓ Found link on landing page: {report_url}")
+            else:
+                print(f"⚠ Could not find link for {month_slug} on landing page.")
+        
+        # 3. Fallback: Guess URL if not found (or if landing page blocked)
+        if not report_url:
+            month_slug = month_name.split()[0].lower()
+            print(f"➜ Attempting direct URL fallback for {month_slug}...")
+            # Pattern observed: https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/december/
+            report_url = f"{LANDING_URL}pmi/{month_slug}/"
+            print(f"  Trying: {report_url}")
 
-    # 4. Fetch Report
-    text = fetch_url(report_url)
-    if not text: 
-        print("✗ Failed to fetch report content.")
-        return None
-        
+        # 4. Fetch Report
+        text = fetch_url(report_url)
+        if not text: 
+            print("✗ Failed to fetch report content.")
+            return None
+            
         # --- Extract Main PMI Industries ---
         growth_list = []
         contraction_list = []
@@ -152,10 +154,8 @@ def fetch_report_data(target_date):
 
         no_decline_re = re.search(r"industries reporting a decrease in new orders in .*? are: (.*?)\.", text, re.IGNORECASE | re.DOTALL)
         if not no_decline_re:
-             # Try variant: "The X industries reporting a [decline/decrease] in new orders in [Month] are: ..."
-             no_decline_re = re.search(r"industries reporting a (?:decrease|decline|contraction) in new orders in .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
-             # The group index for the list will be 2 now because of the non-capturing group above?
-             # Wait, (?:...) is non-capturing. So group 1 is the list. Correct.
+                # Try variant: "The X industries reporting a [decline/decrease] in new orders in [Month] are: ..."
+                no_decline_re = re.search(r"industries reporting a (?:decrease|decline|contraction) in new orders in .*? are:? (.*?)\.", text, re.IGNORECASE | re.DOTALL)
         
         if no_decline_re:
             no_decline_list = parse_ism_list(no_decline_re.group(1))
