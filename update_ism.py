@@ -77,12 +77,13 @@ def fetch_url(url, max_retries=3):
             print(f"Fetching: {url} (attempt {attempt + 1}/{max_retries})")
             response = requests.get(url, headers=headers, verify=False, timeout=30)
             response.raise_for_status()
-        if "captcha_form" in response.text or "grecaptcha" in response.text:
-            print(f"⚠ BLOCKED BY CAPTCHA at {url}")
-            return None
             
-        print(f"✓ Successfully fetched {url}")
-        return response.text
+            if "captcha_form" in response.text or "grecaptcha" in response.text:
+                print(f"⚠ BLOCKED BY CAPTCHA at {url}")
+                return None
+            
+            print(f"✓ Successfully fetched {url}")
+            return response.text
     except Exception as e:
         print(f"✗ Failed to fetch {url}: {e}")
         return None

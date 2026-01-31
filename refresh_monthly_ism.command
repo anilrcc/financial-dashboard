@@ -15,9 +15,7 @@ python3 update_ism.py
 echo ">> Regenerating Key Insights..."
 python3 generate_key_insights.py
 
-# 3. Update GDP Growth Rate Data
-echo ">> Updating GDP Growth Rate data..."
-python3 update_gdp_data.py
+
 
 # 3b. Update Executive Summary
 echo ">> Updating Executive Summary..."
