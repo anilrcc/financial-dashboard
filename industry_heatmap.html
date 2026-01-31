@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Manufacturing Industry Heatmap</title>
-    <meta name="deployment-version" content="auto-updated-2026-01-14-1928">
+    <meta name="deployment-version" content="auto-updated-2026-01-31-1658">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -263,7 +263,7 @@
         </tbody>
     </table>
 
-                                    <div class="summary-box">
+                                        <div class="summary-box">
         <span class="summary-title">Key Insights</span>
         <p><strong>Top 3 Industries with Longest Periods of Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -294,20 +294,20 @@
         <tbody id="rankTableBody"></tbody>
     </table>
 
-                                    <div class="summary-box">
+                                        <div class="summary-box">
         <span class="summary-title">Key Insights - New Orders</span>
         <p><strong>Top 3 Industries with Longest Periods of New Orders Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Petroleum & Coal Products</strong> (6 months)</li>
-            <li><strong>Primary Metals</strong> (5 months)</li>
             <li><strong>Electrical Equipment, Appliances & Comp</strong> (5 months)</li>
+            <li><strong>Primary Metals</strong> (5 months)</li>
         </ul>
         
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Paper Products</strong> (5 months)</li>
+            <li><strong>Chemical Products</strong> (4 months)</li>
             <li><strong>Furniture & Related Products</strong> (4 months)</li>
-            <li><strong>Nonmetallic Mineral Products</strong> (4 months)</li>
         </ul>
         
         <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
@@ -472,8 +472,8 @@
         // We want columns: Nov 2024 -> Nov 2025
 
         const rawPmiData = [
-            { date: "Dec 2025", pmi: 47.9, newOrders: 45.8, production: 45.8, employment: 44.9, supplierDel: 45.2, inv: 45.2, custInv: 0.0, prices: 45.8, backlog: 45.8, export: 44.6, imports: 44.6, trend: "Contraction" },
-            { date: "Nov 2025", pmi: 48.2, newOrders: 44.0, production: 44.0, employment: 44.0, supplierDel: 48.9, inv: 48.9, custInv: 0.0, prices: 44.0, backlog: 44.0, export: 48.9, imports: 48.9, trend: "Contraction" },
+            { date: "Dec 2025", pmi: 47.9, newOrders: 0.0, production: 0.0, employment: 0.0, supplierDel: 0.0, inv: 0.0, custInv: 0.0, prices: 0.0, backlog: 0.0, export: 0.0, imports: 0.0, trend: "Contraction" },
+            { date: "Nov 2025", pmi: 48.2, newOrders: 0.0, production: 0.0, employment: 0.0, supplierDel: 0.0, inv: 0.0, custInv: 0.0, prices: 0.0, backlog: 0.0, export: 0.0, imports: 0.0, trend: "Contraction" },
             { date: "Oct 2025", pmi: 48.7, newOrders: 49.4, production: 48.2, employment: 46.0, supplierDel: 54.2, inv: 45.8, custInv: 43.9, prices: 58.0, backlog: 47.9, export: 44.5, imports: 45.4, trend: "Contraction" },
             { date: "Sep 2025", pmi: 49.1, newOrders: 48.9, production: 51.0, employment: 45.3, supplierDel: 52.6, inv: 47.7, custInv: 43.7, prices: 61.9, backlog: 46.2, export: 43.0, imports: 44.7, trend: "Contraction" },
             { date: "Aug 2025", pmi: 48.7, newOrders: 51.4, production: 47.8, employment: 43.8, supplierDel: 51.3, inv: 49.4, custInv: 43.0, prices: 63.7, backlog: 44.7, export: 47.6, imports: 46.0, trend: "Contraction" },
