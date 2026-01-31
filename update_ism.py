@@ -77,28 +77,15 @@ def fetch_url(url, max_retries=3):
             print(f"Fetching: {url} (attempt {attempt + 1}/{max_retries})")
             response = requests.get(url, headers=headers, verify=False, timeout=30)
             response.raise_for_status()
-            print(f"✓ Successfully fetched {url}")
-            return response.text
-        except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 503:
-                wait_time = 2 ** attempt  # Exponential backoff: 1, 2, 4 seconds
-                print(f"⚠ Server unavailable (503). Waiting {wait_time}s before retry...")
-                if attempt < max_retries - 1:
-                    time.sleep(wait_time)
-                else:
-                    print(f"✗ Failed to fetch {url} after {max_retries} attempts: {e}")
-                    return None
-            else:
-                print(f"✗ HTTP Error {e.response.status_code}: {e}")
-                return None
-        except requests.exceptions.Timeout:
-            print(f"⚠ Request timeout. Retrying...")
-            if attempt == max_retries - 1:
-                print(f"✗ Failed to fetch {url}: Timeout after {max_retries} attempts")
-                return None
-        except Exception as e:
-            print(f"✗ Failed to fetch {url}: {e}")
+        if "captcha_form" in response.text or "grecaptcha" in response.text:
+            print(f"⚠ BLOCKED BY CAPTCHA at {url}")
             return None
+            
+        print(f"✓ Successfully fetched {url}")
+        return response.text
+    except Exception as e:
+        print(f"✗ Failed to fetch {url}: {e}")
+        return None
     
     return None
 
@@ -106,29 +93,41 @@ def fetch_report_data(target_date):
     month_name = target_date.strftime("%B %Y")
     print(f"Targeting Report: {month_name}")
     
-    try:
-        # 1. Get Landing Page
-        landing_html = fetch_url(LANDING_URL)
-        if not landing_html: return None
-        
+    report_url = None
+    
+    # 1. Try Landing Page
+    landing_html = fetch_url(LANDING_URL)
+    
+    if landing_html:
         # 2. Find Link to Report
         month_slug = month_name.split()[0].lower() # "november"
         
         # Regex to find link with /pmi/monthname/
+        # Checks for: href="/.../pmi/november/" or href=".../pmi/november"
         link_pattern = re.compile(r'href="([^"]*?/pmi/' + month_slug + r'/?)"', re.IGNORECASE)
         match = link_pattern.search(landing_html)
         
-        if not match:
-            print(f"Could not find link for {month_slug} report.")
-            return None
+        if match:
+            report_url = match.group(1)
+            if not report_url.startswith("http"):
+                report_url = BASE_URL + report_url
+            print(f"✓ Found link on landing page: {report_url}")
+        else:
+            print(f"⚠ Could not find link for {month_slug} on landing page.")
+    
+    # 3. Fallback: Guess URL if not found (or if landing page blocked)
+    if not report_url:
+        month_slug = month_name.split()[0].lower()
+        print(f"➜ Attempting direct URL fallback for {month_slug}...")
+        # Pattern observed: https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/december/
+        report_url = f"{LANDING_URL}pmi/{month_slug}/"
+        print(f"  Trying: {report_url}")
 
-        report_url = match.group(1)
-        if not report_url.startswith("http"):
-            report_url = BASE_URL + report_url
-            
-        # 3. Fetch Report
-        text = fetch_url(report_url)
-        if not text: return None
+    # 4. Fetch Report
+    text = fetch_url(report_url)
+    if not text: 
+        print("✗ Failed to fetch report content.")
+        return None
         
         # --- Extract Main PMI Industries ---
         growth_list = []
