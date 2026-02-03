@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-REVERT the incorrect fix - restore January 2026 to original rankings
-All months use: first mentioned = highest rank
+Fix January 2026 rankings - REVERSE them
+First mentioned should get LOWEST rank (+1)
+Last mentioned should get HIGHEST rank (+9)
 """
 
 import re
@@ -9,35 +10,9 @@ import json
 
 HEATMAP_FILE = "industry_heatmap.html"
 
-# ORIGINAL correct ranking for Jan 2026 (first mentioned = highest)
-# Growth: first mentioned should get highest rank
-GROWTH_CORRECT_ORDER = [
-    "Printing & Related Support Activities",  # Should be +9 (first = highest)
-    "Apparel, Leather & Allied Products",  # Should be +8
-    "Fabricated Metal Products",  # Should be +7
-    "Primary Metals",  # Should be +6
-    "Transportation Equipment",  # Should be +5
-    "Machinery",  # Should be +4
-    "Chemical Products",  # Should be +3
-    "Food, Beverage & Tobacco Products",  # Should be +2
-    "Computer & Electronic Products"  # Should be +1 (last = lowest)
-]
-
-# Contraction: first mentioned should get highest negative rank (most severe)
-CONTRACTION_CORRECT_ORDER = [
-    "Textile Mills",  # Should be -8 (first = most severe)
-    "Wood Products",  # Should be -7
-    "Nonmetallic Mineral Products",  # Should be -6
-    "Electrical Equipment, Appliances & Comp",  # Should be -5
-    "Petroleum & Coal Products",  # Should be -4
-    "Plastics & Rubber Products",  # Should be -3
-    "Furniture & Related Products",  # Should be -2
-    "Miscellaneous Manufacturing"  # Should be -1 (last = least severe)
-]
-
 def main():
     print("=" * 60)
-    print("REVERTING January 2026 Rankings to Original")
+    print("Reversing January 2026 Rankings")
     print("=" * 60)
     
     with open(HEATMAP_FILE, 'r') as f:
@@ -56,15 +31,40 @@ def main():
         arr_str = match.group(2)
         current_data[ind] = json.loads(arr_str)
     
-    # Jan 2026 is at index 14 (15th month, 0-indexed)
+    # Jan 2026 is at index 14
     jan_2026_idx = 14
     
-    print(f"\nRestoring rankings for index {jan_2026_idx} (Jan 2026)...\n")
-    print("Rule: First mentioned = Highest rank\n")
+    print(f"\nReversing rankings for index {jan_2026_idx} (Jan 2026)...\n")
+    print("New rule: First mentioned = LOWEST rank, Last mentioned = HIGHEST rank\n")
     
-    # Apply correct growth rankings (first = highest)
-    for i, industry in enumerate(GROWTH_CORRECT_ORDER):
-        rank = len(GROWTH_CORRECT_ORDER) - i  # First gets highest
+    # Growth industries in ISM report order (first to last)
+    growth_order = [
+        "Printing & Related Support Activities",  # First = +1
+        "Apparel, Leather & Allied Products",  # +2
+        "Fabricated Metal Products",  # +3
+        "Primary Metals",  # +4
+        "Transportation Equipment",  # +5
+        "Machinery",  # +6
+        "Chemical Products",  # +7
+        "Food, Beverage & Tobacco Products",  # +8
+        "Computer & Electronic Products"  # Last = +9
+    ]
+    
+    # Contraction industries in ISM report order (first to last)
+    contraction_order = [
+        "Textile Mills",  # First = -1
+        "Wood Products",  # -2
+        "Nonmetallic Mineral Products",  # -3
+        "Electrical Equipment, Appliances & Comp",  # -4
+        "Petroleum & Coal Products",  # -5
+        "Plastics & Rubber Products",  # -6
+        "Furniture & Related Products",  # -7
+        "Miscellaneous Manufacturing"  # Last = -8
+    ]
+    
+    # Apply reversed growth rankings (first = lowest)
+    for i, industry in enumerate(growth_order):
+        rank = i + 1  # First gets +1, last gets +9
         if industry in current_data:
             old_rank = current_data[industry][jan_2026_idx]
             current_data[industry][jan_2026_idx] = rank
@@ -72,9 +72,9 @@ def main():
     
     print()
     
-    # Apply correct contraction rankings (first = most severe)
-    for i, industry in enumerate(CONTRACTION_CORRECT_ORDER):
-        rank = -(len(CONTRACTION_CORRECT_ORDER) - i)  # First gets highest negative
+    # Apply reversed contraction rankings (first = least severe)
+    for i, industry in enumerate(contraction_order):
+        rank = -(i + 1)  # First gets -1, last gets -8
         if industry in current_data:
             old_rank = current_data[industry][jan_2026_idx]
             current_data[industry][jan_2026_idx] = rank
@@ -93,7 +93,7 @@ def main():
     with open(HEATMAP_FILE, 'w') as f:
         f.write(content)
     
-    print(f"\n✓ Restored {HEATMAP_FILE}")
+    print(f"\n✓ Updated {HEATMAP_FILE}")
     print("=" * 60)
     
     return 0
