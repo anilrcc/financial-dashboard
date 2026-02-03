@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISM Manufacturing Industry Heatmap</title>
-    <meta name="deployment-version" content="auto-updated-2026-01-31-1658">
+    <meta name="deployment-version" content="manual-update-2026-02-03-2147">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -263,7 +263,7 @@
         </tbody>
     </table>
 
-                                        <div class="summary-box">
+                                            <div class="summary-box">
         <span class="summary-title">Key Insights</span>
         <p><strong>Top 3 Industries with Longest Periods of Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
@@ -274,13 +274,13 @@
         
         <p><strong>Top 3 Industries with Longest Periods of Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
+            <li><strong>Wood Products</strong> (11 months)</li>
             <li><strong>Paper Products</strong> (10 months)</li>
-            <li><strong>Wood Products</strong> (10 months)</li>
             <li><strong>Chemical Products</strong> (8 months)</li>
         </ul>
         
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Food, Beverage & Tobacco Products</strong>, <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong> have reversed course, indicating emerging headwinds.</p>
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Apparel, Leather & Allied Products</strong>, <strong>Chemical Products</strong>, <strong>Fabricated Metal Products</strong>, <strong>Food, Beverage & Tobacco Products</strong>, <strong>Machinery</strong>, <strong>Primary Metals</strong>, <strong>Printing & Related Support Activities</strong>, <strong>Transportation Equipment</strong> have shifted from negative to positive territory, signaling renewed demand in these sectors.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Electrical Equipment, Appliances & Comp</strong> have reversed course, indicating emerging headwinds.</p>
     </div>
 
     <h2>New Orders Industry Growth Rank</h2>
@@ -294,24 +294,24 @@
         <tbody id="rankTableBody"></tbody>
     </table>
 
-                                        <div class="summary-box">
+                                            <div class="summary-box">
         <span class="summary-title">Key Insights - New Orders</span>
         <p><strong>Top 3 Industries with Longest Periods of New Orders Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
             <li><strong>Petroleum & Coal Products</strong> (6 months)</li>
-            <li><strong>Electrical Equipment, Appliances & Comp</strong> (5 months)</li>
             <li><strong>Primary Metals</strong> (5 months)</li>
+            <li><strong>Electrical Equipment, Appliances & Comp</strong> (5 months)</li>
         </ul>
         
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
-            <li><strong>Paper Products</strong> (5 months)</li>
+            <li><strong>Paper Products</strong> (6 months)</li>
+            <li><strong>Nonmetallic Mineral Products</strong> (5 months)</li>
             <li><strong>Chemical Products</strong> (4 months)</li>
-            <li><strong>Furniture & Related Products</strong> (4 months)</li>
         </ul>
         
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
-        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Machinery</strong>, <strong>Miscellaneous Manufacturing</strong>, <strong>Primary Metals</strong> have reversed from growth to contraction.</p>
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Chemical Products</strong>, <strong>Primary Metals</strong>, <strong>Apparel, Leather & Allied Products</strong>, <strong>Machinery</strong>, <strong>Transportation Equipment</strong>, <strong>Fabricated Metal Products</strong> have all shifted to positive new order growth, indicating renewed demand.</p>
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Electrical Equipment, Appliances & Comp</strong>, <strong>Computer & Electronic Products</strong> have reversed from growth to contraction.</p>
     </div>
 
     <h2 id="pmiHeader">ISM Manufacturing PMI Data</h2>
@@ -370,27 +370,27 @@
     </div>
 
     <script>
-        const months = ["Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025"];
+        const months = ["Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026"];
 
         const data = {
-            "Apparel, Leather & Allied Products": [0, 0, 0, 0, 0, 1, 0, 1, 1, 2, -10, -11, -11, -15],
-            "Chemical Products": [-9, -3, 4, 7, -3, 10, -2, -3, -8, -2, -6, -4, -5, -11],
-            "Computer & Electronic Products": [2, 0, -3, -2, 5, 6, 0, 6, -4, -3, -1, -1, 4, 1],
-            "Electrical Equipment, Appliances & Comp": [3, 2, 8, 6, 8, 4, 5, 9, -2, -4, -5, -5, 0, 2],
-            "Fabricated Metal Products": [-6, -6, -5, 9, 3, -1, 6, -1, -5, -1, 4, 5, -7, -4],
-            "Food, Beverage & Tobacco Products": [1, 0, -1, 5, -2, -3, -4, 8, -1, 4, 0, 2, 3, -2],
-            "Furniture & Related Products": [-5, 4, -4, -5, -4, -5, 4, 5, 6, -6, -7, -10, -3, 0],
-            "Machinery": [-4, -4, 5, -1, -1, 9, 7, 7, -7, -5, -2, -3, 1, -3],
-            "Miscellaneous Manufacturing": [-2, 6, -7, 2, 9, 8, 0, 4, 5, 6, 5, -2, 2, -6],
-            "Nonmetallic Mineral Products": [-3, -1, -8, -3, 6, 7, 2, 3, 3, 3, -3, 6, -4, -9],
-            "Paper Products": [-8, 5, -2, 0, -6, -4, -7, -4, -9, -10, -8, -9, -9, -12],
-            "Petroleum & Coal Products": [0, 0, 3, 1, 2, 2, 3, 2, 0, 5, 1, -6, -6, -8],
-            "Plastics & Rubber Products": [-10, 7, 7, 8, -5, 3, 1, 0, 2, -8, -9, 4, -1, -5],
-            "Primary Metals": [-1, 1, 2, 3, 4, 11, -1, 0, 7, 7, 2, 1, 0, -7],
-            "Printing & Related Support Activities": [-11, -5, 0, 0, 0, 0, -5, 0, -10, 0, 0, -8, 0, -10],
-            "Textile Mills": [0, -7, 1, -4, 1, 5, 0, -6, 4, 1, 3, -12, -8, -13],
-            "Transportation Equipment": [-7, -2, 6, 10, 7, -2, -3, -2, -3, -7, -4, 3, -2, -1],
-            "Wood Products": [0, 3, -6, 4, -7, -6, -6, -5, -6, -9, -11, -7, -10, -14]
+            "Apparel, Leather & Allied Products": [0, 0, 0, 0, 0, 1, 0, 1, 1, 2, -10, -11, -11, -15, 8],
+            "Chemical Products": [-9, -3, 4, 7, -3, 10, -2, -3, -8, -2, -6, -4, -5, -11, 3],
+            "Computer & Electronic Products": [2, 0, -3, -2, 5, 6, 0, 6, -4, -3, -1, -1, 4, 1, 1],
+            "Electrical Equipment, Appliances & Comp": [3, 2, 8, 6, 8, 4, 5, 9, -2, -4, -5, -5, 0, 2, -5],
+            "Fabricated Metal Products": [-6, -6, -5, 9, 3, -1, 6, -1, -5, -1, 4, 5, -7, -4, 7],
+            "Food, Beverage & Tobacco Products": [1, 0, -1, 5, -2, -3, -4, 8, -1, 4, 0, 2, 3, -2, 2],
+            "Furniture & Related Products": [-5, 4, -4, -5, -4, -5, 4, 5, 6, -6, -7, -10, -3, 0, -2],
+            "Machinery": [-4, -4, 5, -1, -1, 9, 7, 7, -7, -5, -2, -3, 1, -3, 4],
+            "Miscellaneous Manufacturing": [-2, 6, -7, 2, 9, 8, 0, 4, 5, 6, 5, -2, 2, -6, -1],
+            "Nonmetallic Mineral Products": [-3, -1, -8, -3, 6, 7, 2, 3, 3, 3, -3, 6, -4, -9, -6],
+            "Paper Products": [-8, 5, -2, 0, -6, -4, -7, -4, -9, -10, -8, -9, -9, -12, 0],
+            "Petroleum & Coal Products": [0, 0, 3, 1, 2, 2, 3, 2, 0, 5, 1, -6, -6, -8, -4],
+            "Plastics & Rubber Products": [-10, 7, 7, 8, -5, 3, 1, 0, 2, -8, -9, 4, -1, -5, -3],
+            "Primary Metals": [-1, 1, 2, 3, 4, 11, -1, 0, 7, 7, 2, 1, 0, -7, 6],
+            "Printing & Related Support Activities": [-11, -5, 0, 0, 0, 0, -5, 0, -10, 0, 0, -8, 0, -10, 9],
+            "Textile Mills": [0, -7, 1, -4, 1, 5, 0, -6, 4, 1, 3, -12, -8, -13, -8],
+            "Transportation Equipment": [-7, -2, 6, 10, 7, -2, -3, -2, -3, -7, -4, 3, -2, -1, 5],
+            "Wood Products": [0, 3, -6, 4, -7, -6, -6, -5, -6, -9, -11, -7, -10, -14, -7]
         };
 
 
@@ -472,6 +472,7 @@
         // We want columns: Nov 2024 -> Nov 2025
 
         const rawPmiData = [
+            { date: "Jan 2026", pmi: 52.6, newOrders: 57.1, production: 55.9, employment: 48.1, supplierDel: 54.4, inv: 47.6, custInv: 38.7, prices: 59.0, backlog: 51.6, export: 50.2, imports: 50.0, trend: "Expansion" },
             { date: "Dec 2025", pmi: 47.9, newOrders: 0.0, production: 0.0, employment: 0.0, supplierDel: 0.0, inv: 0.0, custInv: 0.0, prices: 0.0, backlog: 0.0, export: 0.0, imports: 0.0, trend: "Contraction" },
             { date: "Nov 2025", pmi: 48.2, newOrders: 0.0, production: 0.0, employment: 0.0, supplierDel: 0.0, inv: 0.0, custInv: 0.0, prices: 0.0, backlog: 0.0, export: 0.0, imports: 0.0, trend: "Contraction" },
             { date: "Oct 2025", pmi: 48.7, newOrders: 49.4, production: 48.2, employment: 46.0, supplierDel: 54.2, inv: 45.8, custInv: 43.9, prices: 58.0, backlog: 47.9, export: 44.5, imports: 45.4, trend: "Contraction" },
@@ -558,6 +559,10 @@
         // Decline: -1 for last one, -2 for one before it. (Implies list is Strongest Decline -> Weakest Decline. So First = -N, Last = -1)
 
         const ranklists = {
+            "Jan 2026": {
+                growth: ["Apparel, Leather & Allied Products", "Printing & Related Support Activities", "Primary Metals", "Machinery", "Transportation Equipment", "Chemical Products", "Fabricated Metal Products", "Food, Beverage & Tobacco Products"],
+                decline: ["Wood Products", "Nonmetallic Mineral Products", "Textile Mills", "Paper Products", "Electrical Equipment, Appliances & Comp", "Miscellaneous Manufacturing", "Computer & Electronic Products"]
+            },
             "Dec 2025": { growth: ["Computer & Electronic Products", "Electrical Equipment, Appliances & Comp"], decline: ["Apparel, Leather & Allied Products", "Wood Products", "Nonmetallic Mineral Products", "Paper Products", "Textile Mills", "Petroleum & Coal Products", "Chemical Products", "Primary Metals", "Miscellaneous Manufacturing", "Fabricated Metal Products", "Plastics & Rubber Products", "Machinery", "Transportation Equipment"] },
             "Nov 2025": { growth: ["Electrical Equipment, Appliances & Comp", "Computer & Electronic Products", "Machinery", "Miscellaneous Manufacturing", "Food, Beverage & Tobacco Products", "Primary Metals"], decline: ["Wood Products", "Textile Mills", "Apparel, Leather & Allied Products", "Paper Products", "Fabricated Metal Products", "Petroleum & Coal Products", "Nonmetallic Mineral Products", "Transportation Equipment", "Chemical Products"] },
             "Oct 2025": {
