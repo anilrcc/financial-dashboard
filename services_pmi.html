@@ -188,13 +188,13 @@
 
     <div id="main-summary-box" class="summary-box">
         <h3>Key Insights (Dec 2025)</h3>
-        <p>The Services PMI registered 0.0 percent in December 2025.</p>
+        <p>The Services PMI registered 54.4 percent in December 2025.</p>
         <h4 style="margin-top: 25px; color: #d35400;">Trend Analysis</h4>
         <p><strong>Top 3 Industries with Longest Periods of Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
-            <li><strong>Accommodation & Food Services</strong> (12 months)</li>
-            <li><strong>Health Care & Social Assistance</strong> (12 months)</li>
-            <li><strong>Utilities</strong> (12 months)</li>
+            <li><strong>Accommodation & Food Services</strong> (14 months)</li>
+            <li><strong>Health Care & Social Assistance</strong> (14 months)</li>
+            <li><strong>Utilities</strong> (14 months)</li>
         </ul>
         
         <p><strong>Top 3 Industries with Longest Periods of Contraction:</strong></p>
@@ -204,7 +204,9 @@
             <li><strong>Agriculture, Forestry, Fishing & Hunting</strong> (2 months)</li>
         </ul>
         
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p></div>
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> <strong>Mining</strong>, <strong>Transportation & Warehousing</strong> have shifted from negative to positive territory, signaling renewed momentum in these sectors.</p>
+        
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Agriculture, Forestry, Fishing & Hunting</strong>, <strong>Educational Services</strong>, <strong>Professional, Scientific & Technical Services</strong> have reversed course, indicating emerging headwinds.</p></div>
 
     <h2>New Orders Rank</h2>
 
@@ -224,23 +226,25 @@
 
     <div id="new-orders-summary-box" class="summary-box" style="margin-top: 40px;">
         <h3>New Orders Key Insights (Dec 2025)</h3>
-        <p>The New Orders Index registered 0.0 percent in December 2025. New orders contracted for the month.</p>
+        <p>The New Orders Index registered 54.4 percent in December 2025. New orders grew for the month.</p>
         <h4 style="margin-top: 25px; color: #d35400;">Trend Analysis</h4>
         <p><strong>Top 3 Industries with Longest Periods of New Orders Growth:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
+            <li><strong>Utilities</strong> (7 months)</li>
+            <li><strong>Wholesale Trade</strong> (7 months)</li>
             <li><strong>Transportation & Warehousing</strong> (6 months)</li>
-            <li><strong>Utilities</strong> (6 months)</li>
-            <li><strong>Health Care & Social Assistance</strong> (6 months)</li>
         </ul>
         
         <p><strong>Top 3 Industries with Longest Periods of New Orders Contraction:</strong></p>
         <ul style="margin: 5px 0 15px 20px;">
-            <li><strong>Construction</strong> (7 months)</li>
+            <li><strong>Construction</strong> (9 months)</li>
             <li><strong>Management of Companies & Support Services</strong> (5 months)</li>
             <li><strong>Real Estate, Rental & Leasing</strong> (3 months)</li>
         </ul>
         
-        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p></div>
+        <p><strong>Industries Moving from Contraction to Growth (Latest Report):</strong> None in the latest report.</p>
+        
+        <p><strong>Industries Moving from Growth to Contraction (Latest Report):</strong> <strong>Educational Services</strong>, <strong>Professional, Scientific & Technical Services</strong> have reversed from growth to contraction, suggesting potential seasonal adjustments or sector-specific headwinds.</p></div>
 
     <div class="footer">
         <p>Source: Institute for Supply Management (ISM) - Services Report on Business</p>
@@ -256,24 +260,24 @@
         //         Negative for Contraction (Rank -1 = Lowest Decline, Rank -N = Highest Decline)
         //         0 for No Change or Not Listed
         const servicesData = {
-            "Accommodation & Food Services": [14, 3, 13, 4, 12, 11, 10, 10, 11, 1, 4, 7, 0, 0],
-            "Agriculture, Forestry, Fishing & Hunting": [10, -4, 14, 10, 5, -6, -5, 4, 6, 8, 12, -2, 0, 0],
-            "Arts, Entertainment & Recreation": [13, 8, 0, 0, -2, 6, 9, 7, 7, -2, -2, 11, 0, 0],
-            "Construction": [2, 0, 4, 6, 1, -1, -3, 3, -6, 3, 4, 0, 0, 0],
-            "Educational Services": [-1, -5, 8, -1, 3, 2, 5, 2, 5, -3, 9, -2, 0, 0],
-            "Finance & Insurance": [8, 9, 10, 13, 9, -4, -4, 8, -3, 11, 8, 12, 0, 0],
-            "Health Care & Social Assistance": [12, 6, 9, 7, 2, 5, 2, 2, 7, 7, 9, 10, 0, 0],
-            "Information": [4, -2, 5, 2, 0, 3, 3, 2, 6, 3, 5, -2, 0, 0],
-            "Management of Companies & Support Services": [7, -1, 3, -3, -3, -3, -6, -6, 1, -2, 2, -1, 0, 0],
-            "Mining": [-3, 0, 12, 9, 0, 9, 7, 9, 6, 9, 11, 0, 0, 0],
+            "Accommodation & Food Services": [14, 3, 13, 4, 12, 11, 10, 10, 11, 1, 4, 7, 10, 9],
+            "Agriculture, Forestry, Fishing & Hunting": [10, -4, 14, 10, 5, -6, -5, 4, 6, 8, 12, -2, 5, -3],
+            "Arts, Entertainment & Recreation": [13, 8, 0, 0, -2, 6, 9, 7, 7, -2, -2, 11, 11, 7],
+            "Construction": [2, 0, 4, 6, 1, -1, -3, 3, -6, 3, 4, 0, -5, -1],
+            "Educational Services": [-1, -5, 8, -1, 3, 2, 5, 2, 5, -3, 9, -2, 7, -2],
+            "Finance & Insurance": [8, 9, 10, 13, 9, -4, -4, 8, -3, 11, 8, 12, 4, 10],
+            "Health Care & Social Assistance": [12, 6, 9, 7, 2, 5, 2, 2, 7, 7, 9, 10, 8, 5],
+            "Information": [4, -2, 5, 2, 0, 3, 3, 2, 6, 3, 5, -2, 3, 4],
+            "Management of Companies & Support Services": [7, -1, 3, -3, -3, -3, -6, -6, 1, -2, 2, -1, -2, -5],
+            "Mining": [-3, 0, 12, 9, 0, 9, 7, 9, 6, 9, 11, 0, -3, 6],
             "Other Services": [0, 0, -3, 14, 0, 0, -8, 1, -3, 13, -3, 0, 0, 0],
-            "Professional, Scientific & Technical Services": [3, -3, -1, 3, -1, -5, 1, -2, 3, 2, -2, -2, 0, 0],
-            "Public Administration": [9, 4, 2, 1, 6, -2, 8, 6, 2, 1, 2, 8, 0, 0],
-            "Real Estate, Rental & Leasing": [-2, -6, -2, 8, 10, 8, 4, 4, 5, 6, -2, -4, 0, 0],
-            "Retail Trade": [6, 7, 6, -2, 7, 7, -7, 6, -2, -2, 4, 7, 0, 0],
-            "Transportation & Warehousing": [5, 5, 7, 5, 11, 4, -2, 9, 6, 4, 7, 9, 0, 0],
-            "Utilities": [1, 1, 1, 11, 4, 1, 6, 1, 4, 7, 1, 5, 0, 0],
-            "Wholesale Trade": [11, 2, 11, 12, 8, 10, -1, 7, 8, 10, 10, 6, 0, 0]
+            "Professional, Scientific & Technical Services": [3, -3, -1, 3, -1, -5, 1, -2, 3, 2, -2, -2, 2, -4],
+            "Public Administration": [9, 4, 2, 1, 6, -2, 8, 6, 2, 1, 2, 8, 6, 2],
+            "Real Estate, Rental & Leasing": [-2, -6, -2, 8, 10, 8, 4, 4, 5, 6, -2, -4, -4, 0],
+            "Retail Trade": [6, 7, 6, -2, 7, 7, -7, 6, -2, -2, 4, 7, 12, 11],
+            "Transportation & Warehousing": [5, 5, 7, 5, 11, 4, -2, 9, 6, 4, 7, 9, -1, 8],
+            "Utilities": [1, 1, 1, 11, 4, 1, 6, 1, 4, 7, 1, 5, 1, 1],
+            "Wholesale Trade": [11, 2, 11, 12, 8, 10, -1, 7, 8, 10, 10, 6, 9, 3]
         };
 
         const headerRow = document.getElementById('headerRow');
@@ -333,7 +337,7 @@
     <script>
         // --- New Orders Rank Data ---
         const ranklists = {
-            "Dec 2025": { growth: [], decline: [] },
+            "Dec 2025": { growth: ["Mining", "Transportation & Warehousing", "Finance & Insurance", "Arts, Entertainment & Recreation", "Other Services", "Health Care & Social Assistance", "Retail Trade", "Information", "Wholesale Trade"], decline: ["Management of Companies & Support Services", "Agriculture, Forestry, Fishing & Hunting", "Accommodation & Food Services", "Professional, Scientific & Technical Services", "Construction", "Educational Services"] },
             "Nov 2024": {
                 growth: ["Arts, Entertainment & Recreation", "Accommodation & Food Services", "Management of Companies & Support Services", "Public Administration", "Information", "Wholesale Trade", "Retail Trade", "Agriculture, Forestry, Fishing & Hunting", "Health Care & Social Assistance", "Professional, Scientific & Technical Services", "Finance & Insurance", "Transportation & Warehousing", "Utilities"],
                 decline: ["Mining", "Real Estate, Rental & Leasing", "Educational Services"]
@@ -382,7 +386,7 @@
                 growth: ["Accommodation & Food Services", "Retail Trade", "Wholesale Trade", "Real Estate, Rental & Leasing", "Health Care & Social Assistance", "Utilities", "Transportation & Warehousing", "Agriculture, Forestry, Fishing & Hunting", "Information", "Professional, Scientific & Technical Services", "Educational Services"],
                 decline: ["Arts, Entertainment & Recreation", "Management of Companies & Support Services", "Finance & Insurance", "Public Administration", "Construction", "Other Services"]
             },
-            "Nov 2025": { growth: [], decline: [] },
+            "Nov 2025": { growth: ["Public Administration", "Arts, Entertainment & Recreation", "Retail Trade", "Other Services", "Wholesale Trade", "Health Care & Social Assistance", "Educational Services", "Transportation & Warehousing", "Finance & Insurance", "Professional, Scientific & Technical Services", "Utilities", "Information"], decline: ["Real Estate, Rental & Leasing", "Management of Companies & Support Services", "Construction", "Accommodation & Food Services"] },
         };
 
         // Normalize Name Function (Map variations to standard keys if needed)
@@ -490,8 +494,8 @@
         // ISM Services PMI Data (Pivoted)
         // Data from ISM Services Reports (Nov 2024 - Nov 2025)
         const rawServicesPmiData = [
-            { date: "Dec 2025", servicesPmi: 0.0, businessActivity: 0.0, newOrders: 0.0, employment: 0.0, supplierDeliveries: 0.0, inventories: 0.0, prices: 0.0, backlogOrders: 0.0, newExportOrders: 0.0, imports: 0.0, inventorySentiment: 0.0 },
-            { date: "Nov 2025", servicesPmi: 0.0, businessActivity: 0.0, newOrders: 0.0, employment: 0.0, supplierDeliveries: 0.0, inventories: 0.0, prices: 0.0, backlogOrders: 0.0, newExportOrders: 0.0, imports: 0.0, inventorySentiment: 0.0 },
+            { date: "Dec 2025", servicesPmi: 54.4, businessActivity: 56.0, newOrders: 57.9, employment: 52.0, supplierDeliveries: 51.8, inventories: 54.2, prices: 64.3, backlogOrders: 42.6, newExportOrders: 54.2, imports: 50.3, inventorySentiment: 54.1 },
+            { date: "Nov 2025", servicesPmi: 52.6, businessActivity: 54.5, newOrders: 52.9, employment: 48.9, supplierDeliveries: 54.1, inventories: 53.4, prices: 65.4, backlogOrders: 49.1, newExportOrders: 48.7, imports: 48.9, inventorySentiment: 54.8 },
             { date: "Oct 2025", servicesPmi: 52.4, businessActivity: 54.3, newOrders: 56.2, employment: 48.2, supplierDeliveries: 50.8, inventories: 49.5, prices: 70.0, backlogOrders: 40.8, newExportOrders: 47.8, imports: 43.7, inventorySentiment: 55.5 },
             { date: "Sep 2025", servicesPmi: 50.0, businessActivity: 49.9, newOrders: 51.9, employment: 48.1, supplierDeliveries: 52.1, inventories: 51.6, prices: 64.0, backlogOrders: 45.3, newExportOrders: 49.5, imports: 50.2, inventorySentiment: 56.2 },
             { date: "Aug 2025", servicesPmi: 52.0, businessActivity: 55.0, newOrders: 53.0, employment: 50.2, supplierDeliveries: 52.4, inventories: 52.1, prices: 67.8, backlogOrders: 46.8, newExportOrders: 50.1, imports: 51.3, inventorySentiment: 55.8 },
@@ -577,7 +581,7 @@
     <!-- Key Insights for Services PMI Survey Results -->
     <div id="services-pmi-survey-insights" class="summary-box" style="margin-top: 30px;">
         <span class="summary-title">Key Insights (Dec 2025)</span>
-        <p>The Services PMI registered 0.0 percent in December 2025.</p></div>
+        <p>The Services PMI registered 54.4 percent in December 2025.</p></div>
 
 </body>
 
