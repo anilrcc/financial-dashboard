@@ -60,18 +60,21 @@ def get_last_n_months(n=6):
     return dates
 
 def fetch_url(url, max_retries=3):
-    """Fetch URL with retry logic and exponential backoff."""
+    """Fetch URL with retry logic using requests, falling back to curl."""
     import time
+    import subprocess
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1'
+        'Upgrade-Insecure-Requests': '1',
+        'Cache-Control': 'max-age=0'
     }
     
+    # 1. Try requests first (standard)
     for attempt in range(max_retries):
         try:
             print(f"Fetching: {url} (attempt {attempt + 1}/{max_retries})")
@@ -79,17 +82,41 @@ def fetch_url(url, max_retries=3):
             response.raise_for_status()
             
             if "captcha_form" in response.text or "grecaptcha" in response.text:
-                print(f"⚠ BLOCKED BY CAPTCHA at {url}")
-                return None
+                print(f"⚠ Requests Blocked by CAPTCHA at {url}")
+                break # Try curl next
             
-            print(f"✓ Successfully fetched {url}")
+            print(f"✓ Successfully fetched {url} with requests")
             return response.text
         except Exception as e:
-            print(f"✗ Failed to fetch {url}: {e}")
+            print(f"✗ Failed to fetch {url} with requests: {e}")
             if attempt == max_retries - 1:
-                return None
+                break
     
-    return None
+    # 2. Fallback to curl
+    print(f"➜ Falling back to system curl...")
+    try:
+        # Use simple curl command mimicking browser user agent
+        cmd = [
+            'curl', '-s', '-L', 
+            '-A', headers['User-Agent'],
+            url
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        
+        if result.returncode == 0 and result.stdout:
+            # Check for captcha in curl output too
+            if "captcha_form" in result.stdout or "grecaptcha" in result.stdout:
+                 print(f"⚠ Curl also blocked by CAPTCHA")
+                 return None
+            
+            print(f"✓ Successfully fetched {url} with curl")
+            return result.stdout
+        else:
+            print(f"✗ Curl failed: {result.stderr}")
+            return None
+    except Exception as e:
+        print(f"✗ Curl execution failed: {e}")
+        return None
 
 def fetch_report_data(target_date):
     month_name = target_date.strftime("%B %Y")

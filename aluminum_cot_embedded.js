@@ -3729,5 +3729,12 @@ const cotData = [
     "mm_long": 381,
     "mm_short": 325,
     "open_interest": 25900
+  },
+  {
+    "date": "2026-01-27",
+    "net_pct_oi": 0.26,
+    "mm_long": 396,
+    "mm_short": 325,
+    "open_interest": 27078
   }
 ];
