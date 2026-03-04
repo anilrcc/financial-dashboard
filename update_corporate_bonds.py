@@ -175,6 +175,15 @@ def main():
                 # Also update the index page card
                 update_index_page()
                 
+                # Trigger executive summary update
+                print("Updating Executive Summary...")
+                import subprocess
+                try:
+                    subprocess.run(["python3", "update_executive_summary.py"], check=True)
+                    print("✓ Successfully triggered Executive Summary update.")
+                except Exception as e:
+                    print(f"Warning: Could not update Executive Summary: {e}")
+                
                 print(f"\nLatest data points:")
                 print(f"  AAA: {aaa_data[-1]['value']}% on {aaa_data[-1]['date']}")
                 print(f"  BBB: {bbb_data[-1]['value']}% on {bbb_data[-1]['date']}")

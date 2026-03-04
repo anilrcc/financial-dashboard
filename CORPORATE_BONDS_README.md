@@ -4,14 +4,7 @@ This directory contains scripts to update the corporate bond yield data from the
 
 ## Setup
 
-1. **Get a FRED API Key** (free):
-   - Visit: https://fred.stlouisfed.org/docs/api/api_key.html
-   - Sign up for a free account
-   - Request an API key
-
-2. **Configure the Script**:
-   - Open `update_corporate_bonds.py`
-   - Replace `YOUR_FRED_API_KEY_HERE` with your actual FRED API key
+The script uses direct CSV downloads from the FRED website and does **not** require an API key. 
 
 ## Usage
 
@@ -68,13 +61,8 @@ After updating the data:
 
 ## Troubleshooting
 
-**"FRED API key not set" error**:
-- Make sure you've replaced `YOUR_FRED_API_KEY_HERE` in `update_corporate_bonds.py`
-
 **"Error fetching data from FRED"**:
 - Check your internet connection
-- Verify your API key is valid
-- Check if you've exceeded the API rate limit (120 requests/minute)
 
 **"corporate_bonds.html not found"**:
 - Make sure you're running the script from the `financial_dashboard_dist` directory
