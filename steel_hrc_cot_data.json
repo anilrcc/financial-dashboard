@@ -4590,5 +4590,33 @@
     "mm_long": 14964,
     "mm_short": 1092,
     "open_interest": 41926
+  },
+  {
+    "date": "2026-02-03",
+    "net_pct_oi": 35.62,
+    "mm_long": 14055,
+    "mm_short": 969,
+    "open_interest": 36738
+  },
+  {
+    "date": "2026-02-10",
+    "net_pct_oi": 34.85,
+    "mm_long": 14030,
+    "mm_short": 977,
+    "open_interest": 37457
+  },
+  {
+    "date": "2026-02-17",
+    "net_pct_oi": 34.35,
+    "mm_long": 14381,
+    "mm_short": 866,
+    "open_interest": 39347
+  },
+  {
+    "date": "2026-02-24",
+    "net_pct_oi": 32.21,
+    "mm_long": 13998,
+    "mm_short": 714,
+    "open_interest": 41240
   }
 ]

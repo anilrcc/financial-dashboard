@@ -7173,5 +7173,33 @@ const cotData = [
     "mm_long": 19423,
     "mm_short": 11724,
     "open_interest": 156637
+  },
+  {
+    "date": "2026-02-03",
+    "net_pct_oi": 3.48,
+    "mm_long": 13189,
+    "mm_short": 8206,
+    "open_interest": 143180
+  },
+  {
+    "date": "2026-02-10",
+    "net_pct_oi": 3.42,
+    "mm_long": 12222,
+    "mm_short": 7653,
+    "open_interest": 133641
+  },
+  {
+    "date": "2026-02-17",
+    "net_pct_oi": 4.54,
+    "mm_long": 12121,
+    "mm_short": 6153,
+    "open_interest": 131496
+  },
+  {
+    "date": "2026-02-24",
+    "net_pct_oi": 6.79,
+    "mm_long": 13365,
+    "mm_short": 4842,
+    "open_interest": 125454
   }
 ];
